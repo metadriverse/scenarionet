@@ -345,10 +345,11 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=250, poi
     return ret
 
 
-def convert_one_nuscenes_scenario(scene_token: str, nuscenes: NuScenes):
+def convert_one_nuscenes_scenario(scene, nuscenes: NuScenes):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
+    scene_token = scene["token"]
     scenario_log_interval = 0.1
     scene_info = nuscenes.get("scene", scene_token)
     frames = []

@@ -14,7 +14,7 @@ from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_one
 from scenarionet.converter.utils import dict_recursive_remove_array
 
 
-def convert_nuplan(output_path, dataset_params, worker_index=None, force_overwrite=False):
+def convert_nuplan(dataset_params, output_path, worker_index=None, force_overwrite=False):
     save_path = copy.deepcopy(output_path)
     output_path = output_path + "_tmp"
     # meta recorder and data summary
