@@ -16,8 +16,8 @@ if __name__ == "__main__":
 
     data_root = os.path.join(os.getenv("NUPLAN_DATA_ROOT"), "nuplan-v1.1/splits/mini")
     map_root = os.getenv("NUPLAN_MAPS_ROOT")
-    # scenarios = get_nuplan_scenarios(data_root, map_root, logs=["2021.07.16.20.45.29_veh-35_01095_01486"])
-    scenarios = get_nuplan_scenarios(data_root, map_root)
+    scenarios = get_nuplan_scenarios(data_root, map_root, logs=["2021.07.16.20.45.29_veh-35_01095_01486"])
+    # scenarios = get_nuplan_scenarios(data_root, map_root)
 
     write_to_directory(
         convert_func=convert_nuplan_scenario,

@@ -100,7 +100,7 @@ def write_to_directory(
     for scenario in tqdm.tqdm(scenarios):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
-        scenario_id = sd_scenario[SD.METADATA][SD.ID]
+        scenario_id = sd_scenario[SD.ID]
         export_file_name = "sd_{}_{}.pkl".format(dataset_name + "_" + dataset_version, scenario_id)
 
         # add agents summary
