@@ -50,11 +50,12 @@ def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None] = None, bu
     :return:
     """
     nuplan_package_path = NUPLAN_PACKAGE_PATH
-
     logs = logs or [file for file in os.listdir(data_root)]
     log_string = ""
     for log in logs:
-        log_string += log[:-3]  # remove .db
+        if log[-3:] == ".db":
+            log = log[:-3]
+        log_string += log
         log_string += ","
     log_string = log_string[:-1]
 
@@ -356,9 +357,9 @@ def extract_traffic(scenario: NuPlanScenario, center):
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
