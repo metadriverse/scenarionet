@@ -388,7 +388,7 @@ def extract_traffic(scenario: NuPlanScenario, center):
     return tracks
 
 
-def convert_one_nuplan_scenario(scenario: NuPlanScenario):
+def convert_nuplan_scenario(scenario: NuPlanScenario):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """

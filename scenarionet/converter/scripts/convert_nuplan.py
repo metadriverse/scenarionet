@@ -10,7 +10,7 @@ import shutil
 import tqdm
 from metadrive.scenario.scenario_description import ScenarioDescription
 
-from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_one_nuplan_scenario
+from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario
 from scenarionet.converter.utils import dict_recursive_remove_array
 
 
@@ -41,7 +41,7 @@ def convert_nuplan(dataset_params, output_path, worker_index=None, force_overwri
     # Init.
     scenarios = get_nuplan_scenarios(dataset_params)
     for scenario in tqdm.tqdm(scenarios):
-        sd_scenario = convert_one_nuplan_scenario(scenario)
+        sd_scenario = convert_nuplan_scenario(scenario)
         sd_scenario = sd_scenario.to_dict()
         ScenarioDescription.sanity_check(sd_scenario, check_self_type=True)
         export_file_name = "sd_{}_{}.pkl".format("nuplan", scenario.scenario_name)

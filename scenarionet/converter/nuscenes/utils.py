@@ -345,7 +345,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=250, poi
     return ret
 
 
-def convert_one_nuscenes_scenario(scene, nuscenes: NuScenes):
+def convert_nuscenes_scenario(scene, nuscenes: NuScenes):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
@@ -386,4 +386,4 @@ def convert_one_nuscenes_scenario(scene, nuscenes: NuScenes):
     map_center = result[SD.TRACKS]["ego"]["state"]["position"][0]
     result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, 250)
 
-    return result
+    return result, scene_token
