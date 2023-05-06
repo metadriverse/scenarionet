@@ -31,10 +31,11 @@ try:
     from nuplan.planning.script.builders.scenario_filter_builder import build_scenario_filter
     from nuplan.planning.script.utils import set_up_common_builder
     import nuplan
-except ImportError:
-    logger.warning("Can not import nuplan-devkit")
 
-NUPLAN_PACKAGE_PATH = os.path.dirname(nuplan.__file__)
+    NUPLAN_PACKAGE_PATH = os.path.dirname(nuplan.__file__)
+except ImportError as e:
+    raise ImportError("Can not import nuplan-devkit: {}".format(e))
+
 EGO = "ego"
 
 
@@ -429,4 +430,4 @@ def convert_nuplan_scenario(scenario: NuPlanScenario):
     # map
     result[SD.MAP_FEATURES] = extract_map_features(scenario.map_api, scenario_center)
 
-    return result
+    return result, scenario.scenario_name

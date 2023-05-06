@@ -17,8 +17,8 @@ try:
     from nuscenes.map_expansion.arcline_path_utils import discretize_lane
     from nuscenes.map_expansion.map_api import NuScenesMap
     from pyquaternion import Quaternion
-except ImportError:
-    logger.warning("Can not import nuscenes-devkit")
+except ImportError as e:
+    logger.warning("Can not import nuscenes-devkit: {}".format(e))
 
 EGO = "ego"
 

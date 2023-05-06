@@ -8,10 +8,10 @@ logger = logging.getLogger(__name__)
 try:
     from nuplan.common.actor_state.tracked_objects_types import TrackedObjectType
     from nuplan.common.maps.maps_datatypes import TrafficLightStatusType
-except ImportError:
-    logger.warning("Can not import nuplan-devkit")
 
-NuPlanEgoType = TrackedObjectType.EGO
+    NuPlanEgoType = TrackedObjectType.EGO
+except ImportError as e:
+    logger.warning("Can not import nuplan-devkit: {}".format(e))
 
 
 def get_traffic_obj_type(nuplan_type):

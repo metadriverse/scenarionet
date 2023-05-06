@@ -2,64 +2,10 @@
 This script aims to convert nuplan scenarios to ScenarioDescription, so that we can load any nuplan scenarios into
 MetaDrive.
 """
-import copy
+from scenarionet import SCENARIONET_DATASET_PATH
 import os
-import pickle
-import shutil
-
-import tqdm
-from metadrive.scenario.scenario_description import ScenarioDescription
-
 from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario
-from scenarionet.converter.utils import dict_recursive_remove_array_and_set
-
-
-def convert_nuplan(dataset_params, output_path, worker_index=None, force_overwrite=False):
-    save_path = copy.deepcopy(output_path)
-    output_path = output_path + "_tmp"
-    # meta recorder and data summary
-    if os.path.exists(output_path):
-        shutil.rmtree(output_path)
-    os.makedirs(output_path, exist_ok=False)
-
-    # make real save dir
-    delay_remove = None
-    if os.path.exists(save_path):
-        if force_overwrite:
-            delay_remove = save_path
-        else:
-            raise ValueError("Directory already exists! Abort")
-
-    metadata_recorder = {}
-    total_scenarios = 0
-    desc = ""
-    summary_file = "dataset_summary.pkl"
-    if worker_index is not None:
-        desc += "Worker {} ".format(worker_index)
-        summary_file = "dataset_summary_worker{}.pkl".format(worker_index)
-
-    # Init.
-    scenarios = get_nuplan_scenarios(dataset_params)
-    for scenario in tqdm.tqdm(scenarios):
-        sd_scenario = convert_nuplan_scenario(scenario)
-        sd_scenario = sd_scenario.to_dict()
-        ScenarioDescription.sanity_check(sd_scenario, check_self_type=True)
-        export_file_name = "sd_{}_{}.pkl".format("nuplan", scenario.scenario_name)
-        p = os.path.join(output_path, export_file_name)
-        with open(p, "wb") as f:
-            pickle.dump(sd_scenario, f)
-        metadata_recorder[export_file_name] = copy.deepcopy(sd_scenario[ScenarioDescription.METADATA])
-    # rename and save
-    if delay_remove is not None:
-        shutil.rmtree(delay_remove)
-    os.rename(output_path, save_path)
-    summary_file = os.path.join(save_path, summary_file)
-    with open(summary_file, "wb") as file:
-        pickle.dump(dict_recursive_remove_array_and_set(metadata_recorder), file)
-    print("Summary is saved at: {}".format(summary_file))
-    if delay_remove is not None:
-        assert delay_remove == save_path, delay_remove + " vs. " + save_path
-
+from scenarionet.converter.utils import write_to_directory
 
 if __name__ == "__main__":
     # 14 types
@@ -98,7 +44,15 @@ if __name__ == "__main__":
         # "scenario_filter.limit_scenarios_per_type=10",  # use 10 scenarios per scenario type
         "scenario_filter.timestamp_threshold_s=20",  # minial scenario duration (s)
     ]
-    output_path = AssetLoader.file_path("nuplan", return_raw_style=False)
-    worker_index = None
     force_overwrite = True
-    convert_nuplan(output_path, dataset_params, worker_index=worker_index, force_overwrite=force_overwrite)
+    output_path = os.path.join(SCENARIONET_DATASET_PATH, "nuplan")
+    version = 'v1.2'
+
+    scenarios = get_nuplan_scenarios(dataset_params)
+    write_to_directory(convert_func=convert_nuplan_scenario,
+                       scenarios=scenarios,
+                       output_path=output_path,
+                       dataset_version=version,
+                       dataset_name="nuscenes",
+                       force_overwrite=force_overwrite,
+                       )

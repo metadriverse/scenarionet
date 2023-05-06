@@ -23,6 +23,7 @@ except ImportError:
 try:
     from waymo_open_dataset.protos import scenario_pb2
 except ImportError:
+    # TODO, redo all waymo import error!
     try:
         from metadrive.utils.waymo.protos import scenario_pb2  # Local files that only in PZH's computer.
     except ImportError:
