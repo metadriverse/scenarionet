@@ -1,4 +1,5 @@
 import ast
+import json
 import copy
 import inspect
 import math
@@ -140,7 +141,7 @@ def write_to_directory(convert_func,
         else:
             raise ValueError("Directory already exists! Abort")
 
-    summary_file = "dataset_summary.pkl"
+    summary_file = "dataset_summary.json"
 
     metadata_recorder = {}
     for scenario in tqdm.tqdm(scenarios):
@@ -178,6 +179,6 @@ def write_to_directory(convert_func,
     os.rename(output_path, save_path)
     summary_file = os.path.join(save_path, summary_file)
     with open(summary_file, "wb") as file:
-        pickle.dump(dict_recursive_remove_array(metadata_recorder), file)
+        json.dump(dict_recursive_remove_array(metadata_recorder), file)
     print("Summary is saved at: {}".format(summary_file))
 
