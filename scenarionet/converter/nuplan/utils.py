@@ -40,7 +40,7 @@ except ImportError as e:
 EGO = "ego"
 
 
-def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None], builder="nuplan_mini"):
+def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None] = None, builder="nuplan_mini"):
     """
     Getting scenarios. You could use your parameters to get a bunch of scenarios
     :param data_root: path contains .db files, like /nuplan-v1.1/splits/mini
@@ -54,7 +54,7 @@ def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None], builder="
     logs = logs or [file for file in os.listdir(data_root)]
     log_string = ""
     for log in logs:
-        log_string += log
+        log_string += log[:-3]  # remove .db
         log_string += ","
     log_string = log_string[:-1]
 
