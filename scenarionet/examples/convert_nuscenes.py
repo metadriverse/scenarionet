@@ -13,7 +13,8 @@ from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario
 from scenarionet.converter.utils import write_to_directory
 
 if __name__ == "__main__":
-    output_path = os.path.join(SCENARIONET_DATASET_PATH, "nuscenes")
+    dataset_name = "nuscenes"
+    output_path = os.path.join(SCENARIONET_DATASET_PATH, dataset_name)
     version = 'v1.0-mini'
     dataroot = '/home/shady/data/nuscenes'
     force_overwrite = True
@@ -24,6 +25,6 @@ if __name__ == "__main__":
                        scenarios=scenarios,
                        output_path=output_path,
                        dataset_version=version,
-                       dataset_name="nuscenes",
+                       dataset_name=dataset_name,
                        force_overwrite=force_overwrite,
                        nuscenes=nusc)

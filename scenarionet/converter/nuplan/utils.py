@@ -191,7 +191,9 @@ def extract_map_features(map_api, center, radius=250):
                     continue
                 left = lane_meta_data.left_boundary
                 if left.id not in ret:
-                    line_type = get_line_type(int(boundaries.loc[[str(left.id)]]["boundary_type_fid"]))
+                    # only broken line in nuPlan data
+                    # line_type = get_line_type(int(boundaries.loc[[str(left.id)]]["boundary_type_fid"]))
+                    line_type = MetaDriveType.LINE_BROKEN_SINGLE_WHITE
                     if line_type != MetaDriveType.LINE_UNKNOWN:
                         ret[left.id] = {SD.TYPE: line_type, SD.POLYLINE: get_points_from_boundary(left, center)}
 

@@ -2,8 +2,9 @@
 This script aims to convert nuplan scenarios to ScenarioDescription, so that we can load any nuplan scenarios into
 MetaDrive.
 """
-from scenarionet import SCENARIONET_DATASET_PATH
 import os
+
+from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario
 from scenarionet.converter.utils import write_to_directory
 
@@ -45,14 +46,15 @@ if __name__ == "__main__":
         "scenario_filter.timestamp_threshold_s=20",  # minial scenario duration (s)
     ]
     force_overwrite = True
-    output_path = os.path.join(SCENARIONET_DATASET_PATH, "nuplan")
-    version = 'v1.2'
+    dataset_name = "nuplan"
+    output_path = os.path.join(SCENARIONET_DATASET_PATH, dataset_name)
+    version = 'v1.1'
 
     scenarios = get_nuplan_scenarios(dataset_params)
     write_to_directory(convert_func=convert_nuplan_scenario,
                        scenarios=scenarios,
                        output_path=output_path,
                        dataset_version=version,
-                       dataset_name="nuscenes",
+                       dataset_name=dataset_name,
                        force_overwrite=force_overwrite,
                        )
