@@ -379,7 +379,7 @@ def convert_nuscenes_scenario(scene, nuscenes: NuScenes):
     result[SD.TRACKS] = get_tracks_from_frames(nuscenes, scene_info, frames, num_to_interpolate=5)
     result[SD.METADATA][SD.SDC_ID] = "ego"
 
-    # TODO Traffic Light
+    # No traffic light in nuscenes at this stage
     result[SD.DYNAMIC_MAP_STATES] = {}
 
     # map

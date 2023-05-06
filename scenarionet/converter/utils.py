@@ -60,7 +60,7 @@ def mph_to_kmh(speed_in_mph: float):
 
 def get_agent_summary(state_dict, id, type):
     track = state_dict["position"]
-    valid_track = track[state_dict["valid"], :2]
+    valid_track = track[state_dict["valid"].astype(int), :2]
     distance = float(sum(np.linalg.norm(valid_track[i] - valid_track[i + 1]) for i in range(valid_track.shape[0] - 1)))
     valid_length = int(sum(state_dict["valid"]))
 
@@ -173,10 +173,11 @@ def write_to_directory(convert_func,
 
     # rename and save
     if delay_remove is not None:
+        assert delay_remove == save_path
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
     summary_file = os.path.join(save_path, summary_file)
     with open(summary_file, "wb") as file:
         pickle.dump(dict_recursive_remove_array(metadata_recorder), file)
     print("Summary is saved at: {}".format(summary_file))
-    assert delay_remove == save_path
+

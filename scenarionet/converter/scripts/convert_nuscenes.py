@@ -4,12 +4,14 @@ MetaDrive.
 """
 import os.path
 
-from nuscenes import NuScenes
+try:
+    from nuscenes import NuScenes
+except ImportError:
+    raise ImportError("nuscenes-devkit has to be set up before running data conversion")
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario
 from scenarionet.converter.utils import write_to_directory
 
-#
 if __name__ == "__main__":
     output_path = os.path.join(SCENARIONET_DATASET_PATH, "nuscenes")
     version = 'v1.0-mini'
