@@ -18,6 +18,7 @@ if __name__ == "__main__":
     version = 'v1.0-mini'
     dataroot = '/home/shady/data/nuscenes'
     force_overwrite = True
+
     nusc = NuScenes(version=version, dataroot=dataroot)
     scenarios = nusc.scene
 
