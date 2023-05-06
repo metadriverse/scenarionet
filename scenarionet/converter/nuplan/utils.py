@@ -3,6 +3,7 @@ import os
 import tempfile
 from dataclasses import dataclass
 from os.path import join
+from typing import Union
 
 import numpy as np
 from metadrive.scenario import ScenarioDescription as SD
@@ -39,10 +40,46 @@ except ImportError as e:
 EGO = "ego"
 
 
-def get_nuplan_scenarios(dataset_parameters, nuplan_package_path=NUPLAN_PACKAGE_PATH):
+def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None], builder="nuplan_mini"):
     """
-    Return a list of nuplan scenarios according to dataset_parameters
+    Getting scenarios. You could use your parameters to get a bunch of scenarios
+    :param data_root: path contains .db files, like /nuplan-v1.1/splits/mini
+    :param map_root: path to map
+    :param logs: a list of logs, like ['2021.07.16.20.45.29_veh-35_01095_01486']. If none, load all files in data_root
+    :param builder: builder file, we use the default nuplan builder file
+    :return:
     """
+    nuplan_package_path = NUPLAN_PACKAGE_PATH
+
+    logs = logs or [file for file in os.listdir(data_root)]
+    log_string = ""
+    for log in logs:
+        log_string += log
+        log_string += ","
+    log_string = log_string[:-1]
+
+    dataset_parameters = [
+        # builder setting
+        "scenario_builder={}".format(builder),
+        "scenario_builder.scenario_mapping.subsample_ratio_override=0.5",  # 10 hz
+        "scenario_builder.data_root={}".format(data_root),
+        "scenario_builder.map_root={}".format(map_root),
+
+        # filter
+        "scenario_filter=all_scenarios",  # simulate only one log
+        "scenario_filter.remove_invalid_goals=true",
+        "scenario_filter.shuffle=true",
+        "scenario_filter.log_names=[{}]".format(log_string),
+        # "scenario_filter.scenario_types={}".format(all_scenario_types),
+        # "scenario_filter.scenario_tokens=[]",
+        # "scenario_filter.map_names=[]",
+        # "scenario_filter.num_scenarios_per_type=1",
+        # "scenario_filter.limit_total_scenarios=1000",
+        # "scenario_filter.expand_scenarios=true",
+        # "scenario_filter.limit_scenarios_per_type=10",  # use 10 scenarios per scenario type
+        "scenario_filter.timestamp_threshold_s=20",  # minial scenario duration (s)
+    ]
+
     base_config_path = os.path.join(nuplan_package_path, "planning", "script")
     simulation_hydra_paths = construct_simulation_hydra_paths(base_config_path)
 
@@ -452,23 +489,3 @@ example_scenario_types = "[behind_pedestrian_on_pickup_dropoff,  \
                         starting_unprotected_cross_turn, \
                         starting_protected_noncross_turn, \
                         on_pickup_dropoff]"
-
-example_dataset_params = [
-    # builder setting
-    "scenario_builder=nuplan_mini",
-    "scenario_builder.scenario_mapping.subsample_ratio_override=0.5",  # 10 hz
-
-    # filter
-    "scenario_filter=all_scenarios",  # simulate only one log
-    "scenario_filter.remove_invalid_goals=true",
-    "scenario_filter.shuffle=true",
-    "scenario_filter.log_names=['2021.07.16.20.45.29_veh-35_01095_01486']",
-    # "scenario_filter.scenario_types={}".format(all_scenario_types),
-    # "scenario_filter.scenario_tokens=[]",
-    # "scenario_filter.map_names=[]",
-    # "scenario_filter.num_scenarios_per_type=1",
-    # "scenario_filter.limit_total_scenarios=1000",
-    # "scenario_filter.expand_scenarios=true",
-    # "scenario_filter.limit_scenarios_per_type=10",  # use 10 scenarios per scenario type
-    "scenario_filter.timestamp_threshold_s=20",  # minial scenario duration (s)
-]
