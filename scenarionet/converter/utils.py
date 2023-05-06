@@ -66,13 +66,9 @@ def contains_explicit_return(f):
     return any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(f))))
 
 
-def write_to_directory(convert_func,
-                       scenarios,
-                       output_path,
-                       dataset_version,
-                       dataset_name,
-                       force_overwrite=False,
-                       **kwargs):
+def write_to_directory(
+    convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
+):
     """
     Convert a batch of scenarios.
     """

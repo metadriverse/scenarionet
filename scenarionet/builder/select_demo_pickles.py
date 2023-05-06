@@ -1,6 +1,5 @@
 import pickle
 
-
 if __name__ == '__main__':
 
     with open("waymo120/0408_output_final/dataset_summary.pkl", "rb") as f:

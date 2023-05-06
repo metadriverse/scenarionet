@@ -356,9 +356,9 @@ def extract_traffic(scenario: NuPlanScenario, center):
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len,)),
+                heading=np.zeros(shape=(episode_len, )),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len,)),
+                valid=np.zeros(shape=(episode_len, )),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))

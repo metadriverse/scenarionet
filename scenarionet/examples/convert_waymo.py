@@ -17,9 +17,11 @@ if __name__ == '__main__':
     waymo_data_direction = os.path.join(SCENARIONET_DATASET_PATH, "waymo_origin")
     scenarios = get_waymo_scenarios(waymo_data_direction)
 
-    write_to_directory(convert_func=convert_waymo_scenario,
-                       scenarios=scenarios,
-                       output_path=output_path,
-                       dataset_version=version,
-                       dataset_name=dataset_name,
-                       force_overwrite=force_overwrite)
+    write_to_directory(
+        convert_func=convert_waymo_scenario,
+        scenarios=scenarios,
+        output_path=output_path,
+        dataset_version=version,
+        dataset_name=dataset_name,
+        force_overwrite=force_overwrite
+    )

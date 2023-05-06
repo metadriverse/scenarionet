@@ -17,10 +17,12 @@ if __name__ == "__main__":
     dataroot = '/home/shady/data/nuscenes'
     scenarios, nusc = get_nuscenes_scenarios(dataroot, version)
 
-    write_to_directory(convert_func=convert_nuscenes_scenario,
-                       scenarios=scenarios,
-                       output_path=output_path,
-                       dataset_version=version,
-                       dataset_name=dataset_name,
-                       force_overwrite=force_overwrite,
-                       nuscenes=nusc)
+    write_to_directory(
+        convert_func=convert_nuscenes_scenario,
+        scenarios=scenarios,
+        output_path=output_path,
+        dataset_version=version,
+        dataset_name=dataset_name,
+        force_overwrite=force_overwrite,
+        nuscenes=nusc
+    )
