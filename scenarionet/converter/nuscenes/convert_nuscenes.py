@@ -5,14 +5,13 @@ MetaDrive.
 import copy
 import os
 import pickle
+import shutil
 
 import tqdm
-
-from metadrive.engine.asset_loader import AssetLoader
 from metadrive.scenario.scenario_description import ScenarioDescription
-from metadrive.utils.nuscenes.utils import convert_one_scenario
-from metadrive.utils.utils import dict_recursive_remove_array
-import shutil
+
+from scenarionet.converter.nuscenes.utils import convert_one_nuscenes_scenario
+from scenarionet.converter.utils import dict_recursive_remove_array
 
 try:
     from nuscenes import NuScenes
@@ -20,7 +19,7 @@ except ImportError:
     print("Can not find nuscenes-devkit")
 
 
-def convert_scenarios(version, dataroot, output_path, worker_index=None, verbose=True, force_overwrite=False):
+def convert_nuscenes(version, dataroot, output_path, worker_index=None, verbose=True, force_overwrite=False):
     save_path = copy.deepcopy(output_path)
     output_path = output_path + "_tmp"
     # meta recorder and data summary
@@ -48,7 +47,7 @@ def convert_scenarios(version, dataroot, output_path, worker_index=None, verbose
     nusc = NuScenes(version=version, verbose=verbose, dataroot=dataroot)
     scenes = nusc.scene
     for scene in tqdm.tqdm(scenes):
-        sd_scene = convert_one_scenario(scene["token"], nusc)
+        sd_scene = convert_one_nuscenes_scenario(scene["token"], nusc)
         sd_scene = sd_scene.to_dict()
         ScenarioDescription.sanity_check(sd_scene, check_self_type=True)
         export_file_name = "sd_{}_{}.pkl".format("nuscenes_" + version, scene["token"])
@@ -74,4 +73,4 @@ if __name__ == "__main__":
     dataroot = '/home/shady/data/nuscenes'
     worker_index = None
     force_overwrite = True
-    convert_scenarios(version, dataroot, output_path, force_overwrite=force_overwrite)
+    convert_nuscenes(version, dataroot, output_path, force_overwrite=force_overwrite)

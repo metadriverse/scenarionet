@@ -1,18 +1,16 @@
 import matplotlib.pyplot as plt
-from metadrive.scenario.utils import read_scenario_data
 from matplotlib.pyplot import figure
 
 from metadrive.type import MetaDriveType
-from metadrive.utils.math import mph_to_kmh
-from metadrive.utils.waymo.waymo_type import WaymoLaneType, WaymoAgentType
-from metadrive.utils.waymo.waymo_type import WaymoRoadLineType, WaymoRoadEdgeType
+from scenarionet.converter.utils import mph_to_kmh
+from scenarionet.converter.waymo.type import WaymoLaneType, WaymoAgentType, WaymoRoadLineType, WaymoRoadEdgeType
 
 try:
     import tensorflow as tf
 except ImportError:
     pass
 try:
-    from metadrive.utils.waymo.protos import scenario_pb2
+    from scenarionet.converter.waymo.protos import scenario_pb2
 except ImportError:
     pass
 import pickle
@@ -100,7 +98,6 @@ def extract_edge(f):
     edge = dict()
     f_ = f.road_edge
 
-    # TODO: Need to transform this to MetaDrive version
     edge["type"] = WaymoRoadEdgeType.from_waymo(f_.type)
 
     edge["polyline"] = extract_poly(f_.polyline)
@@ -302,24 +299,6 @@ class CustomUnpickler(pickle.Unpickler):
             return super().find_class(module, name)
 
 
-def read_waymo_data(file_path):
-    return read_scenario_data(file_path)
-
-
-def draw_waymo_map(data):
-    """
-    TODO: Need this function in future.
-    """
-    figure(figsize=(8, 6), dpi=500)
-    for key, value in data[ScenarioDescription.MAP_FEATURES].items():
-        if value.get("type", None) == "center_lane":
-            plt.scatter([x[0] for x in value["polyline"]], [y[1] for y in value["polyline"]], s=0.5)
-        elif value.get("type", None) == "road_edge":
-            plt.scatter([x[0] for x in value["polyline"]], [y[1] for y in value["polyline"]], s=0.5, c=(0, 0, 0))
-        # elif value.get("type", None) == "road_line":
-        #     plt.scatter([x[0] for x in value["polyline"]], [y[1] for y in value["polyline"]], s=0.5, c=(0.8,0.8,0.8))
-    plt.show()
-
 
 # return the nearest point"s index of the line
 def nearest_point(point, line):
@@ -368,7 +347,6 @@ def compute_width(map):
 
         lane["width"] = width
     return
-
 
 # parse raw data from input path to output path
 

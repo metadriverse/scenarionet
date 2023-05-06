@@ -1,19 +1,25 @@
 import copy
+import logging
 
 import geopandas as gpd
 import numpy as np
-from nuscenes import NuScenes
-from nuscenes.can_bus.can_bus_api import NuScenesCanBus
-from nuscenes.eval.common.utils import quaternion_yaw
-from nuscenes.map_expansion.arcline_path_utils import discretize_lane
-from nuscenes.map_expansion.map_api import NuScenesMap
-from pyquaternion import Quaternion
-from shapely.ops import unary_union, cascaded_union
-import logging
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
-from metadrive.utils.nuscenes.detection_type import ALL_TYPE, HUMAN_TYPE, BICYCLE_TYPE, VEHICLE_TYPE
+from shapely.ops import unary_union
+
+from scenarionet.converter.nuscenes.type import ALL_TYPE, HUMAN_TYPE, BICYCLE_TYPE, VEHICLE_TYPE
+
 logger = logging.getLogger(__name__)
+try:
+    from nuscenes import NuScenes
+    from nuscenes.can_bus.can_bus_api import NuScenesCanBus
+    from nuscenes.eval.common.utils import quaternion_yaw
+    from nuscenes.map_expansion.arcline_path_utils import discretize_lane
+    from nuscenes.map_expansion.map_api import NuScenesMap
+    from pyquaternion import Quaternion
+except ImportError:
+    logger.warning("Can not import nuscenes-devkit")
+
 EGO = "ego"
 
 
@@ -122,9 +128,9 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -177,7 +183,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         interpolate_tracks[id]["metadata"]["track_length"] = new_episode_len
 
         # valid first
-        new_valid = np.zeros(shape=(new_episode_len, ))
+        new_valid = np.zeros(shape=(new_episode_len,))
         if track["state"]["valid"][0]:
             new_valid[0] = 1
         for k, valid in enumerate(track["state"]["valid"][1:], start=1):
@@ -339,7 +345,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=250, poi
     return ret
 
 
-def convert_one_scenario(scene_token: str, nuscenes: NuScenes):
+def convert_one_nuscenes_scenario(scene_token: str, nuscenes: NuScenes):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """

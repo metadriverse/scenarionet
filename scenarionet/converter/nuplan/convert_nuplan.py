@@ -8,14 +8,13 @@ import pickle
 import shutil
 
 import tqdm
-
-from metadrive.engine.asset_loader import AssetLoader
 from metadrive.scenario.scenario_description import ScenarioDescription
-from metadrive.utils.nuplan.utils import get_nuplan_scenarios, convert_one_scenario
-from metadrive.utils.utils import dict_recursive_remove_array
+
+from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_one_nuplan_scenario
+from scenarionet.converter.utils import dict_recursive_remove_array
 
 
-def convert_scenarios(output_path, dataset_params, worker_index=None, force_overwrite=False):
+def convert_nuplan(output_path, dataset_params, worker_index=None, force_overwrite=False):
     save_path = copy.deepcopy(output_path)
     output_path = output_path + "_tmp"
     # meta recorder and data summary
@@ -42,7 +41,7 @@ def convert_scenarios(output_path, dataset_params, worker_index=None, force_over
     # Init.
     scenarios = get_nuplan_scenarios(dataset_params)
     for scenario in tqdm.tqdm(scenarios):
-        sd_scenario = convert_one_scenario(scenario)
+        sd_scenario = convert_one_nuplan_scenario(scenario)
         sd_scenario = sd_scenario.to_dict()
         ScenarioDescription.sanity_check(sd_scenario, check_self_type=True)
         export_file_name = "sd_{}_{}.pkl".format("nuplan", scenario.scenario_name)
@@ -102,4 +101,4 @@ if __name__ == "__main__":
     output_path = AssetLoader.file_path("nuplan", return_raw_style=False)
     worker_index = None
     force_overwrite = True
-    convert_scenarios(output_path, dataset_params, worker_index=worker_index, force_overwrite=force_overwrite)
+    convert_nuplan(output_path, dataset_params, worker_index=worker_index, force_overwrite=force_overwrite)

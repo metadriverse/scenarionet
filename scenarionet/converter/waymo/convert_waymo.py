@@ -7,7 +7,6 @@ This script will create the output folder "processed_data" sharing the same leve
 
 """
 import argparse
-from metadrive.utils.utils import dict_recursive_remove_array
 import copy
 import os
 import pickle
@@ -15,7 +14,7 @@ from collections import defaultdict
 
 import numpy as np
 
-from metadrive.constants import DATA_VERSION
+from scenarionet.converter.utils import dict_recursive_remove_array
 
 try:
     import tensorflow as tf
@@ -35,7 +34,7 @@ except ImportError:
 
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
-from metadrive.utils.waymo.utils import extract_tracks, extract_dynamic_map_states, extract_map_features, \
+from scenarionet.converter.waymo.utils import extract_tracks, extract_dynamic_map_states, extract_map_features, \
     compute_width
 import sys
 
@@ -118,7 +117,7 @@ def _get_number_summary(scenario):
     return number_summary_dict
 
 
-def parse_data(file_list, input_path, output_path, worker_index=None):
+def convert_waymo(file_list, input_path, output_path, worker_index=None):
     scenario = scenario_pb2.Scenario()
 
     metadata_recorder = {}
@@ -145,8 +144,8 @@ def parse_data(file_list, input_path, output_path, worker_index=None):
             md_scenario = SD()
 
             md_scenario[SD.ID] = scenario.scenario_id
-
-            md_scenario[SD.VERSION] = DATA_VERSION
+            # TODO LQY, get version from original files
+            md_scenario[SD.VERSION] = "1.2"
 
             # Please note that SDC track index is not identical to sdc_id.
             # sdc_id is a unique indicator to a track, while sdc_track_index is only the index of the sdc track
@@ -255,7 +254,7 @@ if __name__ == "__main__":
     # parse raw data from input path to output path,
     # there is 1000 raw data in google cloud, each of them produce about 500 pkl file
     file_list = os.listdir(raw_data_path)
-    parse_data(file_list, raw_data_path, output_path)
+    convert_waymo(file_list, raw_data_path, output_path)
     sys.exit()
     # file_path = AssetLoader.file_path("waymo", "processed", "0.pkl", return_raw_style=False)
     # data = read_waymo_data(file_path)

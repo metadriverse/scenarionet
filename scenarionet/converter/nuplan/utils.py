@@ -5,27 +5,25 @@ from dataclasses import dataclass
 from os.path import join
 
 import numpy as np
-from nuplan.common.actor_state.agent import Agent
-from nuplan.common.actor_state.static_object import StaticObject
-from nuplan.common.actor_state.tracked_objects_types import TrackedObjectType
-from nuplan.common.maps.maps_datatypes import TrafficLightStatusType
+from metadrive.scenario import ScenarioDescription as SD
+from metadrive.type import MetaDriveType
 from shapely.geometry.linestring import LineString
 from shapely.geometry.multilinestring import MultiLineString
 
-from metadrive.scenario import ScenarioDescription as SD
-from metadrive.type import MetaDriveType
-from metadrive.utils.coordinates_shift import nuplan_to_metadrive_vector
-from metadrive.utils.math import compute_angular_velocity
+from scenarionet.converter.nuplan.type import get_traffic_obj_type, NuPlanEgoType, set_light_status
+from scenarionet.converter.utils import nuplan_to_metadrive_vector, compute_angular_velocity
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-from metadrive.utils import is_win
+import geopandas as gpd
+from shapely.ops import unary_union
 
 try:
-    import geopandas as gpd
+    from nuplan.common.actor_state.agent import Agent
+    from nuplan.common.actor_state.static_object import StaticObject
     from nuplan.common.actor_state.state_representation import Point2D
     from nuplan.common.maps.maps_datatypes import SemanticMapLayer, StopLineType
-    from shapely.ops import unary_union
+
     from nuplan.planning.scenario_builder.nuplan_db.nuplan_scenario import NuPlanScenario
     import hydra
     from nuplan.planning.scenario_builder.nuplan_db.nuplan_scenario import NuPlanScenario
@@ -213,17 +211,6 @@ def extract_map_features(map_api, center, radius=250):
     return ret
 
 
-def set_light_status(status):
-    if status == TrafficLightStatusType.GREEN:
-        return MetaDriveType.LIGHT_GREEN
-    elif status == TrafficLightStatusType.RED:
-        return MetaDriveType.LIGHT_RED
-    elif status == TrafficLightStatusType.YELLOW:
-        return MetaDriveType.LIGHT_YELLOW
-    elif status == TrafficLightStatusType.UNKNOWN:
-        return MetaDriveType.LIGHT_UNKNOWN
-
-
 def set_light_position(scenario, lane_id, center, target_position=8):
     lane = scenario.map_api.get_map_object(str(lane_id), SemanticMapLayer.LANE_CONNECTOR)
     assert lane is not None, "Can not find lane: {}".format(lane_id)
@@ -272,23 +259,6 @@ def extract_traffic_light(scenario, center):
                 lights[lane_id][SD.METADATA][SD.TYPE] = MetaDriveType.TRAFFIC_LIGHT
 
     return lights
-
-
-def get_traffic_obj_type(nuplan_type):
-    if nuplan_type == TrackedObjectType.VEHICLE:
-        return MetaDriveType.VEHICLE
-    elif nuplan_type == TrackedObjectType.TRAFFIC_CONE:
-        return MetaDriveType.TRAFFIC_CONE
-    elif nuplan_type == TrackedObjectType.PEDESTRIAN:
-        return MetaDriveType.PEDESTRIAN
-    elif nuplan_type == TrackedObjectType.BICYCLE:
-        return MetaDriveType.CYCLIST
-    elif nuplan_type == TrackedObjectType.BARRIER:
-        return MetaDriveType.TRAFFIC_BARRIER
-    elif nuplan_type == TrackedObjectType.EGO:
-        raise ValueError("Ego should not be in detected resukts")
-    else:
-        return None
 
 
 def parse_object_state(obj_state, nuplan_center):
@@ -346,9 +316,9 @@ def extract_traffic(scenario: NuPlanScenario, center):
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -392,7 +362,7 @@ def extract_traffic(scenario: NuPlanScenario, center):
         obj_type = MetaDriveType.VEHICLE
         ego_track[SD.TYPE] = obj_type
         if ego_track[SD.METADATA]["nuplan_type"] is None:
-            ego_track[SD.METADATA]["nuplan_type"] = int(TrackedObjectType.EGO)
+            ego_track[SD.METADATA]["nuplan_type"] = int(NuPlanEgoType)
             ego_track[SD.METADATA]["type"] = obj_type
         state = obj_state
         ego_track["state"]["position"][frame_idx] = [state["position"][0], state["position"][1], 0.0]
@@ -418,7 +388,7 @@ def extract_traffic(scenario: NuPlanScenario, center):
     return tracks
 
 
-def convert_one_scenario(scenario: NuPlanScenario):
+def convert_one_nuplan_scenario(scenario: NuPlanScenario):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """

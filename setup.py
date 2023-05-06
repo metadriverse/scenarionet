@@ -35,6 +35,8 @@ install_requires = [
     "pandas",
     "tqdm",
     "metadrive-simulator",
+    "geopandas",
+    "shapely"
 ]
 
 setup(
