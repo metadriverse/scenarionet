@@ -13,7 +13,7 @@ import pickle
 
 import numpy as np
 
-from scenarionet.converter.utils import dict_recursive_remove_array_and_set, get_agent_summary, get_number_summary
+from scenarionet.converter.utils import dict_recursive_remove_array_and_set, get_object_summary, get_number_summary
 
 try:
     import tensorflow as tf
@@ -123,11 +123,11 @@ def convert_waymo(file_list, input_path, output_path, worker_index=None):
             export_file_name = "sd_{}_{}.pkl".format(file, scenario.scenario_id)
 
             summary_dict = {}
-            summary_dict["sdc"] = get_agent_summary(
+            summary_dict["sdc"] = get_object_summary(
                 state_dict=md_scenario.get_sdc_track()["state"], id=sdc_id, type=md_scenario.get_sdc_track()["type"]
             )
             for track_id, track in md_scenario[SD.TRACKS].items():
-                summary_dict[track_id] = get_agent_summary(state_dict=track["state"], id=track_id, type=track["type"])
+                summary_dict[track_id] = get_object_summary(state_dict=track["state"], id=track_id, type=track["type"])
             md_scenario[SD.METADATA]["object_summary"] = summary_dict
 
             # Count some objects occurrence
