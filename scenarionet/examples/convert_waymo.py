@@ -1,12 +1,10 @@
 import logging
 import os
-
+from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.utils import write_to_directory
 from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios
 
 logger = logging.getLogger(__name__)
-
-from scenarionet import SCENARIONET_DATASET_PATH
 
 if __name__ == '__main__':
     force_overwrite = True

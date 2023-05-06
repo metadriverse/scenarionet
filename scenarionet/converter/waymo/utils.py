@@ -9,11 +9,14 @@ logger = logging.getLogger(__name__)
 import numpy as np
 
 try:
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
+    logging.getLogger('tensorflow').setLevel(logging.FATAL)
     import tensorflow as tf
+
 except ImportError as e:
     logger.info(e)
 try:
-    from waymo_open_dataset.protos.scenario_pb2 import Scenario
+    from waymo_open_dataset.protos import scenario_pb2
 except ImportError as e:
     logger.warning(e, "\n Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0==1.5.0")
 
@@ -429,7 +432,7 @@ def get_waymo_scenarios(waymo_data_direction):
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
         for data in tf.data.TFRecordDataset(file_path, compression_type="").as_numpy_iterator():
-            scenario = Scenario()
+            scenario = scenario_pb2.Scenario()
             scenario.ParseFromString(data)
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
