@@ -1,0 +1,11 @@
+/scenarionet.egg-info/
+*.pyc
+*.egg-info
+/.idea/
+*.glf
+*.rar
+/docs/build/
+/docs/.idea/
+/build/
+/dist/
+/documentation/build/
