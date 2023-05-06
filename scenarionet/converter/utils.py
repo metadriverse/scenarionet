@@ -79,7 +79,7 @@ def write_to_directory(convert_func,
     if not contains_explicit_return(convert_func):
         raise RuntimeError("The convert function should return a metadata dict")
 
-    if "version" not in kwargs:
+    if "version" in kwargs:
         kwargs.pop("version")
         logger.info("the specified version in kwargs is replaced by argument: 'dataset_version'")
 

@@ -382,13 +382,14 @@ def convert_waymo_scenario(scenario, version):
     compute_width(md_scenario[SD.MAP_FEATURES])
 
     md_scenario[SD.METADATA] = {}
+    md_scenario[SD.METADATA][SD.ID] = md_scenario[SD.ID]
     md_scenario[SD.METADATA][SD.COORDINATE] = MetaDriveType.COORDINATE_WAYMO
     md_scenario[SD.METADATA][SD.TIMESTEP] = np.asarray(list(scenario_pb2.timestamps_seconds), dtype=np.float32)
     md_scenario[SD.METADATA][SD.METADRIVE_PROCESSED] = False
     md_scenario[SD.METADATA][SD.SDC_ID] = str(sdc_id)
     md_scenario[SD.METADATA]["dataset"] = "waymo"
     md_scenario[SD.METADATA]["scenario_id"] = scenario_pb2.scenario_id
-    # TODO Can we infer it?
+    # TODO LQY Can we infer it?
     # md_scenario[SD.METADATA]["source_file"] = str(file)
     md_scenario[SD.METADATA]["track_length"] = track_length
 
@@ -425,5 +426,5 @@ def get_waymo_scenarios(waymo_data_direction):
         file_path = os.path.join(waymo_data_direction, file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
-        scenarios += [s for s in tf.data.TFRecordDataset(file_path, compression_type="")]
+        scenarios += [s for s in tf.data.TFRecordDataset(file_path, compression_type="").as_numpy_iterator()]
     return scenarios

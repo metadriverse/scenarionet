@@ -5,7 +5,7 @@ MetaDrive.
 import os
 
 from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario, example_scenario_types
+from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario, example_dataset_params
 from scenarionet.converter.utils import write_to_directory
 
 if __name__ == "__main__":
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     output_path = os.path.join(SCENARIONET_DATASET_PATH, dataset_name)
     version = 'v1.1'
 
-    scenarios = get_nuplan_scenarios(example_scenario_types)
+    scenarios = get_nuplan_scenarios(example_dataset_params)
 
     write_to_directory(convert_func=convert_nuplan_scenario,
                        scenarios=scenarios,

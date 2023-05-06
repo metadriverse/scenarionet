@@ -370,6 +370,7 @@ def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
     result[SD.METADATA]["date"] = nuscenes.get("log", scene_info["log_token"])["date_captured"]
     result[SD.METADATA]["coordinate"] = "right-handed"
     result[SD.METADATA]["scenario_token"] = scene_token
+    result[SD.METADATA][SD.ID] = scene_info["name"]
     result[SD.METADATA]["scenario_id"] = scene_info["name"]
     result[SD.METADATA]["sample_rate"] = scenario_log_interval
     result[SD.METADATA][SD.TIMESTEP] = np.arange(0., (len(frames) - 1) * 0.5 + 0.1, 0.1)

@@ -415,6 +415,7 @@ def convert_nuplan_scenario(scenario: NuPlanScenario, version):
     result[SD.METADATA]["coordinate"] = "right-handed"
     result[SD.METADATA]["scenario_token"] = scenario.scenario_name
     result[SD.METADATA]["scenario_id"] = scenario.scenario_name
+    result[SD.METADATA][SD.ID] = scenario.scenario_name
     result[SD.METADATA]["scenario_type"] = scenario.scenario_type
     result[SD.METADATA]["sample_rate"] = scenario_log_interval
     result[SD.METADATA][SD.TIMESTEP] = np.asarray([i * scenario_log_interval for i in range(result[SD.LENGTH])])
