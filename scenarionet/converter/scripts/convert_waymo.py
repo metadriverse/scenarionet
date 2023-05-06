@@ -10,11 +10,10 @@ import argparse
 import copy
 import os
 import pickle
-from collections import defaultdict
 
 import numpy as np
 
-from scenarionet.converter.utils import dict_recursive_remove_array
+from scenarionet.converter.utils import dict_recursive_remove_array, get_agent_summary, get_number_summary
 
 try:
     import tensorflow as tf
@@ -37,84 +36,6 @@ from metadrive.type import MetaDriveType
 from scenarionet.converter.waymo.utils import extract_tracks, extract_dynamic_map_states, extract_map_features, \
     compute_width
 import sys
-
-
-def validate_sdc_track(sdc_state):
-    """
-    This function filters the scenario based on SDC information.
-
-    Rule 1: Filter out if the trajectory length < 10
-
-    Rule 2: Filter out if the whole trajectory last < 5s, assuming sampling frequency = 10Hz.
-    """
-    valid_array = sdc_state["valid"]
-    sdc_trajectory = sdc_state["position"][valid_array, :2]
-    sdc_track_length = [
-        np.linalg.norm(sdc_trajectory[i] - sdc_trajectory[i + 1]) for i in range(sdc_trajectory.shape[0] - 1)
-    ]
-    sdc_track_length = sum(sdc_track_length)
-
-    # Rule 1
-    if sdc_track_length < 10:
-        return False
-
-    print("sdc_track_length: ", sdc_track_length)
-
-    # Rule 2
-    if valid_array.sum() < 50:
-        return False
-
-    return True
-
-
-def _get_agent_summary(state_dict, id, type):
-    track = state_dict["position"]
-    valid_track = track[state_dict["valid"], :2]
-    distance = float(sum(np.linalg.norm(valid_track[i] - valid_track[i + 1]) for i in range(valid_track.shape[0] - 1)))
-    valid_length = int(sum(state_dict["valid"]))
-
-    continuous_valid_length = 0
-    for v in state_dict["valid"]:
-        if v:
-            continuous_valid_length += 1
-        if continuous_valid_length > 0 and not v:
-            break
-
-    return {
-        "type": type,
-        "object_id": str(id),
-        "track_length": int(len(track)),
-        "distance": float(distance),
-        "valid_length": int(valid_length),
-        "continuous_valid_length": int(continuous_valid_length)
-    }
-
-
-def _get_number_summary(scenario):
-    number_summary_dict = {}
-    number_summary_dict["object"] = len(scenario[SD.TRACKS])
-    number_summary_dict["dynamic_object_states"] = len(scenario[SD.DYNAMIC_MAP_STATES])
-    number_summary_dict["map_features"] = len(scenario[SD.MAP_FEATURES])
-    number_summary_dict["object_types"] = set(v["type"] for v in scenario[SD.TRACKS].values())
-
-    object_types_counter = defaultdict(int)
-    for v in scenario[SD.TRACKS].values():
-        object_types_counter[v["type"]] += 1
-    number_summary_dict["object_types_counter"] = dict(object_types_counter)
-
-    # Number of different dynamic object states
-    dynamic_object_states_types = set()
-    dynamic_object_states_counter = defaultdict(int)
-    for v in scenario[SD.DYNAMIC_MAP_STATES].values():
-        for step_state in v["state"]["object_state"]:
-            if step_state is None:
-                continue
-            dynamic_object_states_types.add(step_state)
-            dynamic_object_states_counter[step_state] += 1
-    number_summary_dict["dynamic_object_states_types"] = dynamic_object_states_types
-    number_summary_dict["dynamic_object_states_counter"] = dict(dynamic_object_states_counter)
-
-    return number_summary_dict
 
 
 def convert_waymo(file_list, input_path, output_path, worker_index=None):
@@ -202,15 +123,15 @@ def convert_waymo(file_list, input_path, output_path, worker_index=None):
             export_file_name = "sd_{}_{}.pkl".format(file, scenario.scenario_id)
 
             summary_dict = {}
-            summary_dict["sdc"] = _get_agent_summary(
+            summary_dict["sdc"] = get_agent_summary(
                 state_dict=md_scenario.get_sdc_track()["state"], id=sdc_id, type=md_scenario.get_sdc_track()["type"]
             )
             for track_id, track in md_scenario[SD.TRACKS].items():
-                summary_dict[track_id] = _get_agent_summary(state_dict=track["state"], id=track_id, type=track["type"])
+                summary_dict[track_id] = get_agent_summary(state_dict=track["state"], id=track_id, type=track["type"])
             md_scenario[SD.METADATA]["object_summary"] = summary_dict
 
             # Count some objects occurrence
-            md_scenario[SD.METADATA]["number_summary"] = _get_number_summary(md_scenario)
+            md_scenario[SD.METADATA]["number_summary"] = get_number_summary(md_scenario)
 
             metadata_recorder[export_file_name] = copy.deepcopy(md_scenario[SD.METADATA])
 

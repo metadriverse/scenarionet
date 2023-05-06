@@ -55,6 +55,7 @@ def convert_nuscenes(version, dataroot, output_path, worker_index=None, verbose=
         with open(p, "wb") as f:
             pickle.dump(sd_scene, f)
         metadata_recorder[export_file_name] = copy.deepcopy(sd_scene[ScenarioDescription.METADATA])
+
     # rename and save
     if delay_remove is not None:
         shutil.rmtree(delay_remove)
