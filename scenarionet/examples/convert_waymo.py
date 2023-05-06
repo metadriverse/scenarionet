@@ -13,7 +13,7 @@ import pickle
 
 import numpy as np
 
-from scenarionet.converter.utils import dict_recursive_remove_array, get_agent_summary, get_number_summary
+from scenarionet.converter.utils import dict_recursive_remove_array_and_set, get_agent_summary, get_number_summary
 
 try:
     import tensorflow as tf
@@ -152,7 +152,7 @@ def convert_waymo(file_list, input_path, output_path, worker_index=None):
 
     summary_file = os.path.join(output_path, summary_file)
     with open(summary_file, "wb") as file:
-        pickle.dump(dict_recursive_remove_array(metadata_recorder), file)
+        pickle.dump(dict_recursive_remove_array_and_set(metadata_recorder), file)
     print("Summary is saved at: {}".format(summary_file))
 
 

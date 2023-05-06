@@ -1,5 +1,4 @@
 import ast
-import json
 import copy
 import inspect
 import math
@@ -45,12 +44,14 @@ def compute_angular_velocity(initial_heading, final_heading, dt):
     return angular_vel
 
 
-def dict_recursive_remove_array(d):
+def dict_recursive_remove_array_and_set(d):
     if isinstance(d, np.ndarray):
         return d.tolist()
+    if isinstance(d, set):
+        return tuple(d)
     if isinstance(d, dict):
         for k in d.keys():
-            d[k] = dict_recursive_remove_array(d[k])
+            d[k] = dict_recursive_remove_array_and_set(d[k])
     return d
 
 
@@ -141,7 +142,7 @@ def write_to_directory(convert_func,
         else:
             raise ValueError("Directory already exists! Abort")
 
-    summary_file = "dataset_summary.json"
+    summary_file = "dataset_summary.pkl"
 
     metadata_recorder = {}
     for scenario in tqdm.tqdm(scenarios):
@@ -172,13 +173,14 @@ def write_to_directory(convert_func,
         with open(p, "wb") as f:
             pickle.dump(sd_scenario, f)
 
+    # store summary file, which is human-readable
+    summary_file = os.path.join(output_path, summary_file)
+    with open(summary_file, "wb") as file:
+        pickle.dump(dict_recursive_remove_array_and_set(metadata_recorder), file)
+    print("Summary is saved at: {}".format(summary_file))
+
     # rename and save
     if delay_remove is not None:
         assert delay_remove == save_path
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
-    summary_file = os.path.join(save_path, summary_file)
-    with open(summary_file, "wb") as file:
-        json.dump(dict_recursive_remove_array(metadata_recorder), file)
-    print("Summary is saved at: {}".format(summary_file))
-

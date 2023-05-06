@@ -11,7 +11,7 @@ import tqdm
 from metadrive.scenario.scenario_description import ScenarioDescription
 
 from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario
-from scenarionet.converter.utils import dict_recursive_remove_array
+from scenarionet.converter.utils import dict_recursive_remove_array_and_set
 
 
 def convert_nuplan(dataset_params, output_path, worker_index=None, force_overwrite=False):
@@ -55,7 +55,7 @@ def convert_nuplan(dataset_params, output_path, worker_index=None, force_overwri
     os.rename(output_path, save_path)
     summary_file = os.path.join(save_path, summary_file)
     with open(summary_file, "wb") as file:
-        pickle.dump(dict_recursive_remove_array(metadata_recorder), file)
+        pickle.dump(dict_recursive_remove_array_and_set(metadata_recorder), file)
     print("Summary is saved at: {}".format(summary_file))
     if delay_remove is not None:
         assert delay_remove == save_path, delay_remove + " vs. " + save_path
