@@ -1,21 +1,24 @@
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure
+import logging
+import os
+import pickle
 
-from metadrive.type import MetaDriveType
 from scenarionet.converter.utils import mph_to_kmh
 from scenarionet.converter.waymo.type import WaymoLaneType, WaymoAgentType, WaymoRoadLineType, WaymoRoadEdgeType
 
+logger = logging.getLogger(__name__)
+import numpy as np
+
 try:
     import tensorflow as tf
-except ImportError:
-    pass
+except ImportError as e:
+    logger.info(e)
 try:
-    from scenarionet.converter.waymo.protos import scenario_pb2
-except ImportError:
-    pass
-import pickle
-import numpy as np
-from metadrive.scenario.scenario_description import ScenarioDescription
+    from waymo_open_dataset.protos.scenario_pb2 import Scenario
+except ImportError as e:
+    logger.warning(e, "\n Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0==1.5.0")
+
+from metadrive.scenario import ScenarioDescription as SD
+from metadrive.type import MetaDriveType
 
 
 def extract_poly(message):
@@ -299,7 +302,6 @@ class CustomUnpickler(pickle.Unpickler):
             return super().find_class(module, name)
 
 
-
 # return the nearest point"s index of the line
 def nearest_point(point, line):
     dist = np.square(line - point)
@@ -348,10 +350,80 @@ def compute_width(map):
         lane["width"] = width
     return
 
-# parse raw data from input path to output path
 
-# def convert_polyline_to_metadrive(waymo_polyline, coordinate_transform=True):
-#     """
-#     Waymo lane is in a different coordinate system, using them after converting
-#     """
-#     convert_polyline_to_metadrive(waymo_polyline, coordinate_transform)
+def convert_waymo_scenario(scenario, version):
+    scenario_pb2 = Scenario()
+    scenario_pb2.ParseFromString(scenario)
+
+    md_scenario = SD()
+
+    md_scenario[SD.ID] = scenario_pb2.scenario_id
+    md_scenario[SD.VERSION] = version
+
+    # Please note that SDC track index is not identical to sdc_id.
+    # sdc_id is a unique indicator to a track, while sdc_track_index is only the index of the sdc track
+    # in the tracks datastructure.
+
+    track_length = len(list(scenario_pb2.timestamps_seconds))
+
+    tracks, sdc_id = extract_tracks(scenario_pb2.tracks, scenario_pb2.sdc_track_index, track_length)
+
+    md_scenario[SD.LENGTH] = track_length
+
+    md_scenario[SD.TRACKS] = tracks
+
+    dynamic_states = extract_dynamic_map_states(scenario_pb2.dynamic_map_states, track_length)
+
+    md_scenario[SD.DYNAMIC_MAP_STATES] = dynamic_states
+
+    map_features = extract_map_features(scenario_pb2.map_features)
+    md_scenario[SD.MAP_FEATURES] = map_features
+
+    compute_width(md_scenario[SD.MAP_FEATURES])
+
+    md_scenario[SD.METADATA] = {}
+    md_scenario[SD.METADATA][SD.COORDINATE] = MetaDriveType.COORDINATE_WAYMO
+    md_scenario[SD.METADATA][SD.TIMESTEP] = np.asarray(list(scenario_pb2.timestamps_seconds), dtype=np.float32)
+    md_scenario[SD.METADATA][SD.METADRIVE_PROCESSED] = False
+    md_scenario[SD.METADATA][SD.SDC_ID] = str(sdc_id)
+    md_scenario[SD.METADATA]["dataset"] = "waymo"
+    md_scenario[SD.METADATA]["scenario_id"] = scenario_pb2.scenario_id
+    # TODO Can we infer it?
+    # md_scenario[SD.METADATA]["source_file"] = str(file)
+    md_scenario[SD.METADATA]["track_length"] = track_length
+
+    # === Waymo specific data. Storing them here ===
+    md_scenario[SD.METADATA]["current_time_index"] = scenario_pb2.current_time_index
+    md_scenario[SD.METADATA]["sdc_track_index"] = scenario_pb2.sdc_track_index
+
+    # obj id
+    md_scenario[SD.METADATA]["objects_of_interest"] = [str(obj) for obj in scenario_pb2.objects_of_interest]
+
+    track_index = [obj.track_index for obj in scenario_pb2.tracks_to_predict]
+    track_id = [str(scenario_pb2.tracks[ind].id) for ind in track_index]
+    track_difficulty = [obj.difficulty for obj in scenario_pb2.tracks_to_predict]
+    track_obj_type = [tracks[id]["type"] for id in track_id]
+    md_scenario[SD.METADATA]["tracks_to_predict"] = {
+        id: {
+            "track_index": track_index[count],
+            "track_id": id,
+            "difficulty": track_difficulty[count],
+            "object_type": track_obj_type[count]
+        }
+        for count, id in enumerate(track_id)
+    }
+    return md_scenario
+
+
+def get_waymo_scenarios(waymo_data_direction):
+    # parse raw data from input path to output path,
+    # there is 1000 raw data in google cloud, each of them produce about 500 pkl file
+    file_list = os.listdir(waymo_data_direction)
+
+    scenarios = []
+    for file_count, file in enumerate(file_list):
+        file_path = os.path.join(waymo_data_direction, file)
+        if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
+            continue
+        scenarios += [s for s in tf.data.TFRecordDataset(file_path, compression_type="")]
+    return scenarios

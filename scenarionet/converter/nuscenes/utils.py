@@ -325,8 +325,6 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=250, poi
             SD.TYPE: MetaDriveType.LANE_SURFACE_STREET,
             SD.POLYLINE: discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance),
             SD.POLYGON: boundary_polygon,
-            # TODO Add speed limit if needed
-            "speed_limit_kmh": 100
         }
 
     for id in map_objs["lane_connector"]:
@@ -345,7 +343,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=250, poi
     return ret
 
 
-def convert_nuscenes_scenario(scene, nuscenes: NuScenes):
+def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
@@ -363,7 +361,7 @@ def convert_nuscenes_scenario(scene, nuscenes: NuScenes):
 
     result = SD()
     result[SD.ID] = scene_info["name"]
-    result[SD.VERSION] = "nuscenes" + nuscenes.version
+    result[SD.VERSION] = "nuscenes" + version
     result[SD.LENGTH] = (len(frames) - 1) * 5 + 1
     result[SD.METADATA] = {}
     result[SD.METADATA]["dataset"] = "nuscenes"
@@ -386,4 +384,10 @@ def convert_nuscenes_scenario(scene, nuscenes: NuScenes):
     map_center = result[SD.TRACKS]["ego"]["state"]["position"][0]
     result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, 250)
 
-    return result, scene_token
+    return result
+
+
+def get_nuscenes_scenarios(dataroot, version):
+    nusc = NuScenes(version=version, dataroot=dataroot)
+    scenarios = nusc.scene
+    return scenarios, nusc

@@ -1,15 +1,17 @@
 import ast
 import copy
 import inspect
+import logging
 import math
 import os
 import pickle
 import shutil
-from collections import defaultdict
 
 import numpy as np
 import tqdm
 from metadrive.scenario import ScenarioDescription as SD
+
+logger = logging.getLogger(__file__)
 
 
 def nuplan_to_metadrive_vector(vector, nuplan_center=(0, 0)):
@@ -77,6 +79,10 @@ def write_to_directory(convert_func,
     if not contains_explicit_return(convert_func):
         raise RuntimeError("The convert function should return a metadata dict")
 
+    if "version" not in kwargs:
+        kwargs.pop("version")
+        logger.info("the specified version in kwargs is replaced by argument: 'dataset_version'")
+
     save_path = copy.deepcopy(output_path)
     output_path = output_path + "_tmp"
     # meta recorder and data summary
@@ -97,7 +103,8 @@ def write_to_directory(convert_func,
     metadata_recorder = {}
     for scenario in tqdm.tqdm(scenarios):
         # convert scenario
-        sd_scenario, scenario_id = convert_func(scenario, **kwargs)
+        sd_scenario = convert_func(scenario, dataset_version, **kwargs)
+        scenario_id = sd_scenario[SD.METADATA][SD.ID]
         export_file_name = "sd_{}_{}.pkl".format(dataset_name + "_" + dataset_version, scenario_id)
 
         # add agents summary

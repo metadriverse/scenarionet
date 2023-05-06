@@ -34,7 +34,7 @@ try:
 
     NUPLAN_PACKAGE_PATH = os.path.dirname(nuplan.__file__)
 except ImportError as e:
-    raise ImportError("Can not import nuplan-devkit: {}".format(e))
+    logger.warning("Can not import nuplan-devkit: {}".format(e))
 
 EGO = "ego"
 
@@ -391,7 +391,7 @@ def extract_traffic(scenario: NuPlanScenario, center):
     return tracks
 
 
-def convert_nuplan_scenario(scenario: NuPlanScenario):
+def convert_nuplan_scenario(scenario: NuPlanScenario, version):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
@@ -401,7 +401,7 @@ def convert_nuplan_scenario(scenario: NuPlanScenario):
 
     result = SD()
     result[SD.ID] = scenario.scenario_name
-    result[SD.VERSION] = "nuplan" + scenario.map_version
+    result[SD.VERSION] = "nuplan_" + version
     result[SD.LENGTH] = scenario.get_number_of_iterations()
     # metadata
     result[SD.METADATA] = {}
@@ -432,7 +432,7 @@ def convert_nuplan_scenario(scenario: NuPlanScenario):
     # map
     result[SD.MAP_FEATURES] = extract_map_features(scenario.map_api, scenario_center)
 
-    return result, scenario.scenario_name
+    return result
 
 
 # only for example using
