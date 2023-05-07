@@ -8,10 +8,12 @@ from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.builder.utils import combine_multiple_dataset
 
 if __name__ == '__main__':
-    dataset_paths = [os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
-                     os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
-                     os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
-                     os.path.join(SCENARIONET_DATASET_PATH, "pg")]
+    dataset_paths = [
+        os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
+        os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
+        os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
+        os.path.join(SCENARIONET_DATASET_PATH, "pg")
+    ]
 
     combine_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
     combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
@@ -47,11 +49,9 @@ if __name__ == '__main__':
                 c_lane = env.vehicle.lane
                 long, lat, = c_lane.local_coordinates(env.vehicle.position)
                 # if env.config["use_render"]:
-                env.render(
-                    text={
-                        "seed": env.engine.global_seed + env.config["start_scenario_index"],
-                    }
-                )
+                env.render(text={
+                    "seed": env.engine.global_seed + env.config["start_scenario_index"],
+                })
 
                 if d:
                     if info["arrive_dest"]:

@@ -49,11 +49,9 @@ if __name__ == '__main__':
             c_lane = env.vehicle.lane
             long, lat, = c_lane.local_coordinates(env.vehicle.position)
             if env.config["use_render"]:
-                env.render(
-                    text={
-                        "seed": env.engine.global_seed + env.config["start_scenario_index"],
-                    }
-                )
+                env.render(text={
+                    "seed": env.engine.global_seed + env.config["start_scenario_index"],
+                })
 
             if d and info["arrive_dest"]:
                 print("seed:{}, success".format(env.engine.global_random_seed))

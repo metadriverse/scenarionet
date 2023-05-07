@@ -17,10 +17,14 @@ def convert_pg_scenario(scenario_index, version, env):
 
 
 def get_pg_scenarios(num_scenarios, policy, start_seed=0):
-    env = MetaDriveEnv(dict(start_seed=start_seed,
-                            num_scenarios=num_scenarios,
-                            traffic_density=0.2,
-                            agent_policy=policy,
-                            crash_vehicle_done=False,
-                            map=2))
+    env = MetaDriveEnv(
+        dict(
+            start_seed=start_seed,
+            num_scenarios=num_scenarios,
+            traffic_density=0.2,
+            agent_policy=policy,
+            crash_vehicle_done=False,
+            map=2
+        )
+    )
     return [i for i in range(num_scenarios)], env

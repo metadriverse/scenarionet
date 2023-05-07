@@ -25,4 +25,5 @@ if __name__ == "__main__":
             dataset_version=version,
             dataset_name=dataset_name,
             force_overwrite=force_overwrite,
-            nuscenes=nusc)
+            nuscenes=nusc
+        )

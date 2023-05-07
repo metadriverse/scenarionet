@@ -13,14 +13,12 @@ from functools import partial
 
 def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=1000, num_workers=8):
     if result_save_dir is not None:
-        assert os.path.exists(result_save_dir) and os.path.isdir(
-            result_save_dir), "Argument result_save_dir must be an existing dir"
+        assert os.path.exists(result_save_dir
+                              ) and os.path.isdir(result_save_dir), "Argument result_save_dir must be an existing dir"
     num_scenario = get_number_of_scenarios(dataset_path)
     argument_list = []
 
-    func = partial(loading_wrapper,
-                   dataset_path=dataset_path,
-                   steps_to_run=steps_to_run)
+    func = partial(loading_wrapper, dataset_path=dataset_path, steps_to_run=steps_to_run)
 
     num_scenario_each_worker = int(num_scenario // num_workers)
     for i in range(num_workers):
@@ -50,8 +48,11 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=10
 
 
 def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run):
-    print("================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
-        start_scenario_index, num_scenario + start_scenario_index))
+    print(
+        "================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
+            start_scenario_index, num_scenario + start_scenario_index
+        )
+    )
     success = True
     env = ScenarioEnv(
         {
@@ -81,9 +82,10 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
         file_path = os.path.join(dataset_path, env.engine.data_manager.mapping[file_name], file_name)
         error_file = {"scenario_index": scenario_index, "file_path": file_path, "error": str(e)}
         error_files.append(error_file)
-        logger.warning("\n Scenario Error, "
-                       "scenario_index: {}, file_path: {}.\n Error message: {}".format(scenario_index, file_path,
-                                                                                       str(e)))
+        logger.warning(
+            "\n Scenario Error, "
+            "scenario_index: {}, file_path: {}.\n Error message: {}".format(scenario_index, file_path, str(e))
+        )
         success = False
     finally:
         env.close()
@@ -92,7 +94,4 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
 
 def loading_wrapper(arglist, dataset_path, steps_to_run):
     assert len(arglist) == 2, "Too much arguments!"
-    return loading_into_metadrive(arglist[0],
-                                  arglist[1],
-                                  dataset_path=dataset_path,
-                                  steps_to_run=steps_to_run)
+    return loading_into_metadrive(arglist[0], arglist[1], dataset_path=dataset_path, steps_to_run=steps_to_run)

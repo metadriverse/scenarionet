@@ -67,7 +67,7 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-        convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
+    convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
 ):
     """
     Convert a batch of scenarios.

@@ -6,10 +6,12 @@ from scenarionet.verifier.utils import verify_loading_into_metadrive
 
 
 def _test_combine_dataset():
-    dataset_paths = [os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
-                     os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
-                     os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
-                     os.path.join(SCENARIONET_DATASET_PATH, "pg")]
+    dataset_paths = [
+        os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
+        os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
+        os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
+        os.path.join(SCENARIONET_DATASET_PATH, "pg")
+    ]
 
     combine_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
     combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
