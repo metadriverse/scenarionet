@@ -21,9 +21,11 @@ def test_combine_multiple_dataset():
         summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
         for scenario_file in sorted_scenarios:
             read_scenario(os.path.join(dataset_path, mapping[scenario_file], scenario_file))
+        num_worker = 4 if len(summary) > 4 else 1
         success, result = verify_loading_into_metadrive(dataset_path,
                                                         result_save_dir="test_dataset",
-                                                        steps_to_run=300)
+                                                        steps_to_run=1000,
+                                                        num_workers=num_worker)
         assert success
 
 

@@ -38,22 +38,23 @@ if __name__ == '__main__':
         }
     )
     success = []
-    env.reset(force_seed=2)
     while True:
-        env.reset(force_seed=2)
-        for t in range(10000):
-            o, r, d, info = env.step([0, 0])
-            assert env.observation_space.contains(o)
-            c_lane = env.vehicle.lane
-            long, lat, = c_lane.local_coordinates(env.vehicle.position)
-            # if env.config["use_render"]:
-            env.render(
-                text={
-                    "seed": env.engine.global_seed + env.config["start_scenario_index"],
-                }
-            )
+        for seed in [91]:
+            env.reset(force_seed=seed)
+            for t in range(10000):
+                o, r, d, info = env.step([0, 0])
+                assert env.observation_space.contains(o)
+                c_lane = env.vehicle.lane
+                long, lat, = c_lane.local_coordinates(env.vehicle.position)
+                # if env.config["use_render"]:
+                env.render(
+                    text={
+                        "seed": env.engine.global_seed + env.config["start_scenario_index"],
+                    }
+                )
 
-            if d:
-                if info["arrive_dest"]:
-                    print("seed:{}, success".format(env.engine.global_random_seed))
-                break
+                if d:
+                    if info["arrive_dest"]:
+                        print("seed:{}, success".format(env.engine.global_random_seed))
+                        print(t)
+                    break

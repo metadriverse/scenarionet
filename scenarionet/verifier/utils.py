@@ -11,7 +11,7 @@ from metadrive.scenario.utils import get_number_of_scenarios
 from functools import partial
 
 
-def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=300, num_workers=8):
+def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=1000, num_workers=8):
     if result_save_dir is not None:
         assert os.path.exists(result_save_dir) and os.path.isdir(
             result_save_dir), "Argument result_save_dir must be an existing dir"
@@ -45,7 +45,7 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=30
     if result:
         print("All scenarios can be loaded successfully!")
     else:
-        print("Fail to load all scenarios, see log for more details! Number of failed scenarios: {}".format(logs))
+        print("Fail to load all scenarios, see log for more details! Number of failed scenarios: {}".format(len(logs)))
     return result, logs
 
 
