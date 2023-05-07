@@ -18,29 +18,40 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=30
     num_scenario = get_number_of_scenarios(dataset_path)
     argument_list = []
 
-    func = partial(_loading_into_metadrive,
+    func = partial(loading_wrapper,
                    dataset_path=dataset_path,
-                   result_save_dir=result_save_dir,
                    steps_to_run=steps_to_run)
 
-    num_scenario_each_worker = int(num_scenario / num_workers)
+    num_scenario_each_worker = int(num_scenario // num_workers)
     for i in range(num_workers):
         if i == num_workers - 1:
-            num_scenario_each_worker = num_scenario - num_scenario_each_worker * (num_workers - 1)
-        argument_list.append([i * num_scenario_each_worker, num_scenario_each_worker])
+            scenario_num = num_scenario - num_scenario_each_worker * (num_workers - 1)
+        else:
+            scenario_num = num_scenario_each_worker
+        argument_list.append([i * num_scenario_each_worker, scenario_num])
 
     with multiprocessing.Pool(num_workers) as p:
-        result = list(p.imap(func, argument_list))
-    if all([i[0] for i in result]):
+        all_result = list(p.imap(func, argument_list))
+    result = all([i[0] for i in all_result])
+    logs = []
+    for _, log in all_result:
+        logs += log
+
+    if result_save_dir is not None:
+        file_name = "error_scenarios_for_{}.json".format(os.path.basename(dataset_path))
+        with open(os.path.join(result_save_dir, file_name), "w+") as f:
+            json.dump(logs, f, indent=4)
+
+    if result:
         print("All scenarios can be loaded successfully!")
     else:
-        print("Fail to load all scenarios, see log for more details! Number of logs: {}".format(num_workers))
+        print("Fail to load all scenarios, see log for more details! Number of failed scenarios: {}".format(logs))
+    return result, logs
 
 
-def _loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, result_save_dir, steps_to_run):
-    print("================ Begin Scenario Loading Verification for {} ================ \n".format(result_save_dir))
-    assert os.path.exists(result_save_dir) and os.path.isdir(
-        result_save_dir), "Argument result_save_dir must be an existing dir"
+def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run):
+    print("================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
+        start_scenario_index, num_scenario + start_scenario_index))
     success = True
     env = ScenarioEnv(
         {
@@ -52,29 +63,34 @@ def _loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, re
             "data_directory": dataset_path,
         }
     )
-    logging.disable(logging.WARNING)
+    logging.disable(logging.INFO)
     error_files = []
     try:
-        for i in tqdm.tqdm(range(num_scenario),
-                           desc="Scenarios: {}-{}".format(start_scenario_index, start_scenario_index + num_scenario)):
-            env.reset(force_seed=i)
-            for i in range(steps_to_run):
-                o, r, d, i = env.step([0, 0])
+        for scenario_index in tqdm.tqdm(range(start_scenario_index, start_scenario_index + num_scenario),
+                                        desc="Scenarios: {}-{}".format(start_scenario_index,
+                                                                       start_scenario_index + num_scenario)):
+            env.reset(force_seed=scenario_index)
+            for _ in range(steps_to_run):
+                o, r, d, info = env.step([0, 0])
                 if d:
-                    assert i["arrive_dest"], "Can not arrive destination"
+                    assert info["arrive_dest"], "Can not arrive destination"
     except Exception as e:
-        file_name = env.engine.data_manager.summary_lookup[i]
+        file_name = env.engine.data_manager.summary_lookup[scenario_index]
         file_path = os.path.join(dataset_path, env.engine.data_manager.mapping[file_name], file_name)
-        error_file = {"seed": i, "file_path": file_path, "error": e}
+        error_file = {"scenario_index": scenario_index, "file_path": file_path, "error": str(e)}
         error_files.append(error_file)
-        logger.warning("\n Scenario Error, seed: {}, file_path: {}.\n Error message: {}".format(i, file_path, e))
+        logger.warning("\n Scenario Error, "
+                       "scenario_index: {}, file_path: {}.\n Error message: {}".format(scenario_index, file_path,
+                                                                                       str(e)))
         success = False
     finally:
         env.close()
-    if result_save_dir is not None:
-        file_name = "error_scenarios_{}_{}_{}.json".format(os.path.basename(dataset_path),
-                                                           start_scenario_index,
-                                                           start_scenario_index + num_scenario)
-        with open(os.path.join(result_save_dir, file_name), "w+") as f:
-            json.dump(error_files, f)
     return success, error_files
+
+
+def loading_wrapper(arglist, dataset_path, steps_to_run):
+    assert len(arglist) == 2, "Too much arguments!"
+    return loading_into_metadrive(arglist[0],
+                                  arglist[1],
+                                  dataset_path=dataset_path,
+                                  steps_to_run=steps_to_run)
