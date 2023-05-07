@@ -67,7 +67,7 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
+        convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
 ):
     """
     Convert a batch of scenarios.
@@ -94,9 +94,14 @@ def write_to_directory(
         else:
             raise ValueError("Directory already exists! Abort")
 
-    summary_file = "dataset_summary.pkl"
+    summary_file = SD.DATASET.SUMMARY_FILE
+    mapping_file = SD.DATASET.MAPPING_FILE
 
-    metadata_recorder = {}
+    summary_file_path = os.path.join(output_path, summary_file)
+    mapping_file_path = os.path.join(output_path, mapping_file)
+
+    summary = {}
+    mapping = {}
     for scenario in tqdm.tqdm(scenarios):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
@@ -115,7 +120,10 @@ def write_to_directory(
 
         # count some objects occurrence
         sd_scenario[SD.METADATA][SD.SUMMARY.NUMBER_SUMMARY] = SD.get_number_summary(sd_scenario)
-        metadata_recorder[export_file_name] = copy.deepcopy(sd_scenario[SD.METADATA])
+
+        # update summary/mapping dicy
+        summary[export_file_name] = copy.deepcopy(sd_scenario[SD.METADATA])
+        mapping[export_file_name] = ""  # in the same dir
 
         # sanity check
         sd_scenario = sd_scenario.to_dict()
@@ -127,10 +135,11 @@ def write_to_directory(
             pickle.dump(sd_scenario, f)
 
     # store summary file, which is human-readable
-    summary_file = os.path.join(output_path, summary_file)
-    with open(summary_file, "wb") as file:
-        pickle.dump(dict_recursive_remove_array_and_set(metadata_recorder), file)
-    print("Summary is saved at: {}".format(summary_file))
+    with open(summary_file_path, "wb") as file:
+        pickle.dump(dict_recursive_remove_array_and_set(summary), file)
+    with open(mapping_file_path, "wb") as file:
+        pickle.dump(mapping, file)
+    print("Dataset Summary and Mapping are saved at: {}".format(summary_file_path))
 
     # rename and save
     if delay_remove is not None:
