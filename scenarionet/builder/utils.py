@@ -52,7 +52,7 @@ def combine_multiple_dataset(output_path, *dataset_paths,
     :param try_generate_missing_file: If dataset_summary.pkl and mapping.pkl are missing, whether to try generating them
     :param dataset_paths: Path of each dataset
     :param filters: a set of filters to choose which scenario to be selected and added into this combined dataset
-    :return:
+    :return: summary, mapping
     """
     filters = filters or []
     output_abs_path = osp.abspath(output_path)

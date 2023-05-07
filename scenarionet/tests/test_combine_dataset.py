@@ -8,7 +8,7 @@ from scenarionet.verifier.utils import verify_loading_into_metadrive
 
 def test_combine_multiple_dataset():
     dataset_name = "nuscenes"
-    original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "_test_dataset", dataset_name)
+    original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
 
     output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "combine")
@@ -22,7 +22,7 @@ def test_combine_multiple_dataset():
         for scenario_file in sorted_scenarios:
             read_scenario(os.path.join(dataset_path, mapping[scenario_file], scenario_file))
         success, result = verify_loading_into_metadrive(dataset_path,
-                                                        result_save_dir="_test_dataset",
+                                                        result_save_dir="test_dataset",
                                                         steps_to_run=300)
         assert success
 
