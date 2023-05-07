@@ -10,6 +10,7 @@ from metadrive.scenario.utils import get_number_of_scenarios
 
 
 def verify_loading_into_metadrive(dataset_path, result_save_dir=None, steps_to_run=0):
+    print("================ Begin Scenario Loading oVerification ================ \n")
     scenario_num = get_number_of_scenarios(dataset_path)
     if result_save_dir is not None:
         assert os.path.exists(result_save_dir) and os.path.isdir(
