@@ -106,7 +106,7 @@ def write_to_directory(
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]
-        export_file_name = "sd_{}_{}.pkl".format(dataset_name + "_" + dataset_version, scenario_id)
+        export_file_name = SD.get_export_file_name(dataset_name, dataset_version, scenario_id)
 
         # add agents summary
         summary_dict = {}

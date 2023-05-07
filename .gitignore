@@ -10,3 +10,4 @@
 /dist/
 /documentation/build/
 dataset/*
+**/combine/

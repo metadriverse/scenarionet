@@ -3,10 +3,20 @@ import logging
 import os
 import os.path as osp
 import pickle
+import shutil
 
+import metadrive.scenario.utils as sd_utils
 from metadrive.scenario.scenario_description import ScenarioDescription
 
 logger = logging.getLogger(__name__)
+
+
+def read_dataset_summary(dataset_path):
+    return sd_utils.read_dataset_summary(dataset_path)
+
+
+def read_scenario(pkl_file_path):
+    return sd_utils.read_scenario_data(pkl_file_path)
 
 
 def try_generating_summary(file_folder):
@@ -14,10 +24,10 @@ def try_generating_summary(file_folder):
     files = os.listdir(file_folder)
     summary = {}
     for file in files:
-        file = file.replace(".pkl", "")
-        with open(osp.join(file_folder, file), "rb+") as f:
-            scenario = pickle.load(f)
-        summary[file] = copy.deepcopy(scenario[ScenarioDescription.METADATA])
+        if file != ScenarioDescription.DATASET.SUMMARY_FILE and file != ScenarioDescription.DATASET.MAPPING_FILE:
+            with open(osp.join(file_folder, file), "rb+") as f:
+                scenario = pickle.load(f)
+            summary[file] = copy.deepcopy(scenario[ScenarioDescription.METADATA])
     return summary
 
 
@@ -30,7 +40,7 @@ def try_generating_mapping(file_folder):
     return mapping
 
 
-def combine_multiple_dataset(output_path, force_overwrite=False, try_generate_missing_file=True, *dataset_paths):
+def combine_multiple_dataset(output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
     :param output_path: The path to store the output dataset
@@ -40,8 +50,12 @@ def combine_multiple_dataset(output_path, force_overwrite=False, try_generate_mi
     :return:
     """
     output_abs_path = osp.abspath(output_path)
-    if os.path.exists(output_abs_path) and not force_overwrite:
-        raise FileExistsError("Output path already exists!")
+    if os.path.exists(output_abs_path):
+        if not force_overwrite:
+            raise FileExistsError("Output path already exists!")
+        else:
+            shutil.rmtree(output_abs_path)
+    os.mkdir(output_abs_path)
 
     summaries = {}
     mappings = {}
@@ -71,7 +85,7 @@ def combine_multiple_dataset(output_path, force_overwrite=False, try_generate_mi
 
         if not osp.exists(osp.join(abs_dir_path, ScenarioDescription.DATASET.MAPPING_FILE)):
             if try_generate_missing_file:
-                mapping = try_generating_mapping(abs_dir_path)
+                mapping = {k: "" for k in summary}
             else:
                 raise FileNotFoundError("Can not find mapping file for dataset: {}".format(abs_dir_path))
         else:
