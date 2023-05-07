@@ -146,3 +146,5 @@ def write_to_directory(
         assert delay_remove == save_path
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
+
+    return summary, mapping
