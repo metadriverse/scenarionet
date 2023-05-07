@@ -2,11 +2,19 @@ import os
 
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
+from metadrive.scenario.utils import get_number_of_scenarios
 
 from scenarionet import SCENARIONET_DATASET_PATH
+from scenarionet.builder.utils import combine_multiple_dataset
 
 if __name__ == '__main__':
-    dataset_path = os.path.join(SCENARIONET_DATASET_PATH, "nuscenes_no_mapping_test")
+    dataset_paths = [os.path.join(SCENARIONET_DATASET_PATH, "nuscenes")]
+    dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "nuplan"))
+    dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "waymo"))
+    dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"))
+
+    combine_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
+    combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
 
     env = ScenarioEnv(
         {
@@ -16,7 +24,7 @@ if __name__ == '__main__':
             "show_interface": True,
             "show_logo": False,
             "show_fps": False,
-            "num_scenarios": 10,
+            "num_scenarios": get_number_of_scenarios(combine_path),
             "horizon": 1000,
             "no_static_vehicles": True,
             "vehicle_config": dict(
@@ -26,7 +34,7 @@ if __name__ == '__main__':
                 lane_line_detector=dict(num_lasers=12, distance=50),
                 side_detector=dict(num_lasers=160, distance=50)
             ),
-            "data_directory": dataset_path,
+            "data_directory": combine_path,
         }
     )
     success = []

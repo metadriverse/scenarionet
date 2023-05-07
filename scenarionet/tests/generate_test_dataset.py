@@ -9,9 +9,9 @@ from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_
 from scenarionet.converter.utils import write_to_directory
 
 if __name__ == "__main__":
-    # raise ValueError("Avoid generating ata")
+    raise ValueError("Avoid overwriting existing ata")
     dataset_name = "nuscenes"
-    output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "test", "test_dataset", dataset_name)
+    output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
     version = 'v1.0-mini'
     force_overwrite = True
 
