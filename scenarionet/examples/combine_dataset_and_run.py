@@ -8,10 +8,10 @@ from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.builder.utils import combine_multiple_dataset
 
 if __name__ == '__main__':
-    dataset_paths = [os.path.join(SCENARIONET_DATASET_PATH, "nuscenes")]
-    dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "nuplan"))
-    dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "waymo"))
-    dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "pg"))
+    dataset_paths = [os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
+                     os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
+                     os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
+                     os.path.join(SCENARIONET_DATASET_PATH, "pg")]
 
     combine_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
     combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
@@ -38,9 +38,9 @@ if __name__ == '__main__':
         }
     )
     success = []
-    env.reset(force_seed=0)
+    env.reset(force_seed=2)
     while True:
-        env.reset(force_seed=env.current_seed + 1)
+        env.reset(force_seed=2)
         for t in range(10000):
             o, r, d, info = env.step([0, 0])
             assert env.observation_space.contains(o)
@@ -53,6 +53,7 @@ if __name__ == '__main__':
                 }
             )
 
-            if d and info["arrive_dest"]:
-                print("seed:{}, success".format(env.engine.global_random_seed))
+            if d:
+                if info["arrive_dest"]:
+                    print("seed:{}, success".format(env.engine.global_random_seed))
                 break

@@ -70,10 +70,12 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
                                         desc="Scenarios: {}-{}".format(start_scenario_index,
                                                                        start_scenario_index + num_scenario)):
             env.reset(force_seed=scenario_index)
+            arrive = False
             for _ in range(steps_to_run):
                 o, r, d, info = env.step([0, 0])
-                if d:
-                    assert info["arrive_dest"], "Can not arrive destination"
+                if d and info["arrive_dest"]:
+                    arrive = True
+            assert arrive, "Can not arrive destination"
     except Exception as e:
         file_name = env.engine.data_manager.summary_lookup[scenario_index]
         file_path = os.path.join(dataset_path, env.engine.data_manager.mapping[file_name], file_name)
