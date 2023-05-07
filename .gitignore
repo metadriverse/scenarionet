@@ -11,3 +11,4 @@
 /documentation/build/
 dataset/*
 **/combine/
+**.json
