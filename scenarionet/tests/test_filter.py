@@ -15,7 +15,7 @@ def test_filter_dataset():
 
     output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "combine")
 
-    # test 1
+    # ========================= test 1 =========================
     # nuscenes data has no light
     # light_condition = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
     sdc_driving_condition = ScenarioFilter.make(ScenarioFilter.sdc_moving_dist,
@@ -36,11 +36,22 @@ def test_filter_dataset():
                 break
         assert in_
 
-    # test 2
+    # ========================= test 2 =========================
+
     num_condition = ScenarioFilter.make(ScenarioFilter.object_number,
-                                        number_threshold=6,
+                                        number_threshold=50,
                                         object_type=MetaDriveType.PEDESTRIAN,
                                         condition="greater")
+
+    answer = ['sd_nuscenes_v1.0-mini_scene-0061.pkl', 'sd_nuscenes_v1.0-mini_scene-1094.pkl']
+    summary, mapping = combine_multiple_dataset(output_path,
+                                                *dataset_paths,
+                                                force_overwrite=True,
+                                                try_generate_missing_file=True,
+                                                filters=[num_condition])
+    assert len(answer) == len(summary)
+    for a in answer:
+        assert a in summary
 
 
 if __name__ == '__main__':
