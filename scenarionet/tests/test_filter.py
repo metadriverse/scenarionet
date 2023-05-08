@@ -23,7 +23,7 @@ def test_filter_dataset():
     summary, mapping = combine_multiple_dataset(
         output_path,
         *dataset_paths,
-        force_overwrite=True,
+        exist_ok=True,
         try_generate_missing_file=True,
         filters=[sdc_driving_condition]
     )
@@ -40,7 +40,7 @@ def test_filter_dataset():
     summary, mapping = combine_multiple_dataset(
         output_path,
         *dataset_paths,
-        force_overwrite=True,
+        exist_ok=True,
         try_generate_missing_file=True,
         filters=[sdc_driving_condition]
     )
@@ -54,7 +54,7 @@ def test_filter_dataset():
 
     answer = ['sd_nuscenes_v1.0-mini_scene-0061.pkl', 'sd_nuscenes_v1.0-mini_scene-1094.pkl']
     summary, mapping = combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True, filters=[num_condition]
+        output_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, filters=[num_condition]
     )
     assert len(answer) == len(summary)
     for a in answer:
@@ -63,7 +63,7 @@ def test_filter_dataset():
     num_condition = ScenarioFilter.make(ScenarioFilter.object_number, number_threshold=50, condition="greater")
 
     summary, mapping = combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True, filters=[num_condition]
+        output_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, filters=[num_condition]
     )
     assert len(summary) > 0
 

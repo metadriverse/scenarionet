@@ -14,7 +14,7 @@ def _test_combine_dataset():
     ]
 
     combine_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
+    combine_multiple_dataset(combine_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True)
     # os.makedirs("verify_results", exist_ok=True)
     # verify_loading_into_metadrive(combine_path, "verify_results")
     # assert success

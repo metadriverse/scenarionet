@@ -78,16 +78,18 @@ def write_to_directory(
                 "Directory {} already exists! Abort. "
                 "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
             )
+        else:
+            shutil.rmtree(output_path)
 
     basename = os.path.basename(output_path)
-    dir = os.path.dirname(output_path)
+    # dir = os.path.dirname(output_path)
     for i in range(num_workers):
-        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
-        if os.path.exists(output_path):
+        subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
+        if os.path.exists(subdir):
             if not force_overwrite:
                 raise ValueError(
                     "Directory {} already exists! Abort. "
-                    "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
+                    "\n Try setting force_overwrite=True or adding --overwrite".format(subdir)
                 )
     # get arguments for workers
     num_files = len(scenarios)
@@ -104,9 +106,9 @@ def write_to_directory(
             end_idx = num_files
         else:
             end_idx = (i + 1) * num_files_each_worker
-        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
-        output_pathes.append(output_path)
-        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, output_path])
+        subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
+        output_pathes.append(subdir)
+        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, subdir])
 
     # prefill arguments
     func = partial(
@@ -120,9 +122,7 @@ def write_to_directory(
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
         all_result = list(p.imap(func, argument_list))
-    combine_multiple_dataset(
-        save_path, *output_pathes, force_overwrite=force_overwrite, try_generate_missing_file=False
-    )
+    combine_multiple_dataset(save_path, *output_pathes, exist_ok=True, try_generate_missing_file=False)
     return all_result
 
 

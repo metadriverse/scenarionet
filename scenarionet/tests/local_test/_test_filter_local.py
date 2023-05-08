@@ -26,7 +26,7 @@ def test_filter_dataset():
     summary, mapping = combine_multiple_dataset(
         output_path,
         *dataset_paths,
-        force_overwrite=True,
+        exist_ok=True,
         try_generate_missing_file=True,
         filters=[sdc_driving_condition]
     )
@@ -39,7 +39,7 @@ def test_filter_dataset():
     )
 
     summary, mapping = combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True, filters=[num_condition]
+        output_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, filters=[num_condition]
     )
     assert len(summary) > 0
 
@@ -48,7 +48,7 @@ def test_filter_dataset():
     traffic_light = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
 
     summary, mapping = combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True, filters=[traffic_light]
+        output_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, filters=[traffic_light]
     )
     assert len(summary) > 0
 

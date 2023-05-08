@@ -25,13 +25,15 @@ def try_generating_summary(file_folder):
     return summary
 
 
-def combine_multiple_dataset(
-    output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True, filters: List[Callable] = None
-):
+def combine_multiple_dataset(output_path,
+                             *dataset_paths,
+                             exist_ok=False,
+                             try_generate_missing_file=True,
+                             filters: List[Callable] = None):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
     :param output_path: The path to store the output dataset
-    :param force_overwrite: If True, overwrite the output_path even if it exists
+    :param exist_ok: If True, though the output_path already exist, still write into it
     :param try_generate_missing_file: If dataset_summary.pkl and mapping.pkl are missing, whether to try generating them
     :param dataset_paths: Path of each dataset
     :param filters: a set of filters to choose which scenario to be selected and added into this combined dataset
@@ -39,12 +41,12 @@ def combine_multiple_dataset(
     """
     filters = filters or []
     output_abs_path = osp.abspath(output_path)
-    if os.path.exists(output_abs_path):
-        if not force_overwrite:
-            raise FileExistsError("Output path already exists!")
-        else:
-            shutil.rmtree(output_abs_path)
-    os.makedirs(output_abs_path, exist_ok=False)
+    # if os.path.exists(output_abs_path):
+    #     if not force_overwrite:
+    #         raise FileExistsError("Output path already exists!")
+    #     else:
+    #         shutil.rmtree(output_abs_path)
+    os.makedirs(output_abs_path, exist_ok=exist_ok)
 
     summaries = {}
     mappings = {}
