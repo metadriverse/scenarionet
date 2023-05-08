@@ -13,6 +13,7 @@ import numpy as np
 import tqdm
 from metadrive.scenario import ScenarioDescription as SD
 
+from scenarionet.builder.utils import combine_multiple_dataset
 from scenarionet.common_utils import save_summary_anda_mapping
 
 logger = logging.getLogger(__file__)
@@ -68,6 +69,12 @@ def write_to_directory(convert_func,
                        num_workers=8,
                        **kwargs):
     # make sure dir not exist
+    save_path = copy.deepcopy(output_path)
+    if os.path.exists(output_path):
+        if not force_overwrite:
+            raise ValueError("Directory {} already exists! Abort. "
+                             "\n Try setting force_overwrite=True or adding --overwrite".format(output_path))
+
     basename = os.path.basename(output_path)
     dir = os.path.dirname(output_path)
     for i in range(num_workers):
@@ -84,6 +91,7 @@ def write_to_directory(convert_func,
         num_workers = 1
 
     argument_list = []
+    output_pathes = []
     num_files_each_worker = int(num_files // num_workers)
     for i in range(num_workers):
         if i == num_workers - 1:
@@ -91,6 +99,7 @@ def write_to_directory(convert_func,
         else:
             end_idx = (i + 1) * num_files_each_worker
         output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
+        output_pathes.append(output_path)
         argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, output_path])
 
     # prefill arguments
@@ -103,6 +112,8 @@ def write_to_directory(convert_func,
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
         all_result = list(p.imap(func, argument_list))
+    combine_multiple_dataset(save_path, *output_pathes, force_overwrite=force_overwrite,
+                             try_generate_missing_file=False)
     return all_result
 
 
