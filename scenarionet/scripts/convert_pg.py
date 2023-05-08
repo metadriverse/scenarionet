@@ -15,7 +15,7 @@ if __name__ == '__main__':
                         help="Dataset name, will be used to generate scenario files")
     parser.add_argument("--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
                         help="The path of the dataset")
-    parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, required=True, help="version")
+    parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION,  help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     args = parser.parse_args()
 

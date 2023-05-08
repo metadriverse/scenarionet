@@ -6,10 +6,12 @@ import math
 import os
 import pickle
 import shutil
-from scenarionet.common_utils import save_summary_anda_mapping
+
 import numpy as np
 import tqdm
 from metadrive.scenario import ScenarioDescription as SD
+
+from scenarionet.common_utils import save_summary_anda_mapping
 
 logger = logging.getLogger(__file__)
 
@@ -81,7 +83,8 @@ def write_to_directory(
         if force_overwrite:
             delay_remove = save_path
         else:
-            raise ValueError("Directory already exists! Abort")
+            raise ValueError("Directory already exists! Abort."
+                             "\n Try setting force_overwrite=True or using --overwrite")
 
     summary_file = SD.DATASET.SUMMARY_FILE
     mapping_file = SD.DATASET.MAPPING_FILE
