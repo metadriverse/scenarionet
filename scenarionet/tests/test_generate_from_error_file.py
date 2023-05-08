@@ -2,6 +2,8 @@ import copy
 import os
 import os.path
 
+from metadrive.scenario.scenario_description import ScenarioDescription as SD
+
 from scenarionet import SCENARIONET_PACKAGE_PATH
 from scenarionet.builder.utils import combine_multiple_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
@@ -44,15 +46,17 @@ def test_combine_multiple_dataset():
     assert recursive_equal(read_fail_summary, fail_summary)
 
     # assert pass+fail = origin
-    all_summaries = copy.deep(read_pass_summary)
+    all_summaries = copy.deepcopy(read_pass_summary)
     all_summaries.update(fail_summary)
     assert recursive_equal(all_summaries, summary)
 
     # test read
     for scenario in read_pass_summary:
-        read_scenario(pass_dataset, read_pass_mapping, scenario)
-    for scenario in read_pass_summary:
-        read_scenario(fail_dataset, read_fail_mapping, scenario)
+        sd = read_scenario(pass_dataset, read_pass_mapping, scenario)
+        SD.sanity_check(sd)
+    for scenario in read_fail_summary:
+        sd = read_scenario(fail_dataset, read_fail_mapping, scenario)
+        SD.sanity_check(sd)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import json
+import shutil
 import logging
 import os
 from typing import List
@@ -64,10 +65,13 @@ class ErrorFile:
         """
         # TODO Add test!
         new_dataset_path = os.path.abspath(new_dataset_path)
-        if os.path.exists(new_dataset_path) and not force_overwrite:
-            raise ValueError("Directory: {} already exists! "
+        if os.path.exists(new_dataset_path):
+            if force_overwrite:
+                shutil.rmtree(new_dataset_path)
+            else:
+                raise ValueError("Directory: {} already exists! "
                              "Set force_overwrite=True to overwrite".format(new_dataset_path))
-        os.makedirs(new_dataset_path, exist_ok=True)
+        os.makedirs(new_dataset_path, exist_ok=False)
 
         with open(error_file_path, "r+") as f:
             error_file = json.load(f)

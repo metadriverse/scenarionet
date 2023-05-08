@@ -45,7 +45,7 @@ def combine_multiple_dataset(
             raise FileExistsError("Output path already exists!")
         else:
             shutil.rmtree(output_abs_path)
-    os.mkdir(output_abs_path)
+    os.makedirs(output_abs_path, exist_ok=False)
 
     summaries = {}
     mappings = {}

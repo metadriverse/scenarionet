@@ -1,18 +1,28 @@
+# from metadrive.policy.expert_policy import ExpertPolicy
+import argparse
 import os.path
 
 import metadrive
+from metadrive.policy.idm_policy import IDMPolicy
 
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.pg.utils import get_pg_scenarios, convert_pg_scenario
 from scenarionet.converter.utils import write_to_directory
-from metadrive.policy.idm_policy import IDMPolicy
-# from metadrive.policy.expert_policy import ExpertPolicy
 
 if __name__ == '__main__':
-    dataset_name = "pg"
-    output_path = os.path.join(SCENARIONET_DATASET_PATH, dataset_name)
-    version = metadrive.constants.DATA_VERSION
-    force_overwrite = True
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset_name", "-n", default="pg",
+                        help="Dataset name, will be used to generate scenario files")
+    parser.add_argument("--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
+                        help="The path of the dataset")
+    parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, required=True, help="version")
+    parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
+    args = parser.parse_args()
+
+    force_overwrite = args.overwrite
+    dataset_name = args.dataset_name
+    output_path = args.dataset_path
+    version = args.version
 
     scenario_indices, env = get_pg_scenarios(30, IDMPolicy)
 
