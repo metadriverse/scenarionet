@@ -28,7 +28,7 @@ if __name__ == '__main__':
     output_path = args.dataset_path
     version = args.version
 
-    scenario_indices, envs = get_pg_scenarios(args.num_scenarios, IDMPolicy, args.num_workers)
+    scenario_indices, envs = get_pg_scenarios(args.num_scenarios, IDMPolicy, num_workers=args.num_workers)
 
     write_to_directory(
         convert_func=convert_pg_scenario,
