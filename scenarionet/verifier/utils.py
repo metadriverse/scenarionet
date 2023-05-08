@@ -24,7 +24,8 @@ def set_random_drop(drop):
 
 
 def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=1000, num_workers=8):
-    assert os.path.exists(result_save_dir) and os.path.isdir(result_save_dir), "result_save_dir must be an existing dir"
+    assert os.path.isdir(result_save_dir), "result_save_dir must be a dir, get {}".format(result_save_dir)
+    os.makedirs(result_save_dir, exist_ok=True)
     num_scenario = get_number_of_scenarios(dataset_path)
     if num_scenario < num_workers:
         # single process
