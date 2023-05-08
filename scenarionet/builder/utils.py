@@ -58,7 +58,6 @@ def combine_multiple_dataset(output_path,
         assert osp.exists(abs_dir_path), "Wrong dataset path. Can not find dataset at: {}".format(abs_dir_path)
         if not osp.exists(osp.join(abs_dir_path, ScenarioDescription.DATASET.SUMMARY_FILE)):
             if try_generate_missing_file:
-                # TODO add test for 1. number dataset 2. missing summary dataset 3. missing mapping dataset
                 summary = try_generating_summary(abs_dir_path)
             else:
                 raise FileNotFoundError("Can not find summary file for dataset: {}".format(abs_dir_path))
