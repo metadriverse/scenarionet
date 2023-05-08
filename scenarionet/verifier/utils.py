@@ -16,8 +16,12 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=10
         assert os.path.exists(result_save_dir
                               ) and os.path.isdir(result_save_dir), "Argument result_save_dir must be an existing dir"
     num_scenario = get_number_of_scenarios(dataset_path)
-    argument_list = []
+    if num_scenario < num_workers:
+        # single process
+        logger.info("Use one worker, as num_scenario < num_workers:")
+        num_workers = 1
 
+    argument_list = []
     func = partial(loading_wrapper, dataset_path=dataset_path, steps_to_run=steps_to_run)
 
     num_scenario_each_worker = int(num_scenario // num_workers)
@@ -41,18 +45,17 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=10
             json.dump(logs, f, indent=4)
 
     if result:
-        print("All scenarios can be loaded successfully!")
+        logger.info("All scenarios can be loaded successfully!")
     else:
-        print("Fail to load all scenarios, see log for more details! Number of failed scenarios: {}".format(len(logs)))
+        logger.info(
+            "Fail to load all scenarios, see log for more details! Number of failed scenarios: {}".format(len(logs)))
     return result, logs
 
 
 def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run):
-    print(
+    logger.info(
         "================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
-            start_scenario_index, num_scenario + start_scenario_index
-        )
-    )
+            start_scenario_index, num_scenario + start_scenario_index))
     success = True
     env = ScenarioEnv(
         {
