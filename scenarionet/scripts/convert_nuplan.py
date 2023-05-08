@@ -14,7 +14,7 @@ if __name__ == '__main__':
         "--dataset_path",
         "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
-        help="The path of the dataset"
+        help="directory, The path to place the data"
     )
     parser.add_argument("--version", "-v", default='v1.1', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")

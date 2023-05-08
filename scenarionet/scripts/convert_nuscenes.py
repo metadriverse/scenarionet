@@ -14,7 +14,7 @@ if __name__ == '__main__':
         "--dataset_path",
         "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
-        help="The path of the dataset"
+        help="directory, The path to place the data"
     )
     parser.add_argument(
         "--version",

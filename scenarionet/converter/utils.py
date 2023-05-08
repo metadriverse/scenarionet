@@ -80,9 +80,8 @@ def write_to_directory(
             )
 
     basename = os.path.basename(output_path)
-    dir = os.path.dirname(output_path)
     for i in range(num_workers):
-        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
+        output_path = os.path.join(output_path, "{}_{}".format(basename, str(i)))
         if os.path.exists(output_path):
             if not force_overwrite:
                 raise ValueError(
@@ -104,7 +103,7 @@ def write_to_directory(
             end_idx = num_files
         else:
             end_idx = (i + 1) * num_files_each_worker
-        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
+        output_path = os.path.join(output_path, "{}_{}".format(basename, str(i)))
         output_pathes.append(output_path)
         argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, output_path])
 

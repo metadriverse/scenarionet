@@ -14,7 +14,7 @@ if __name__ == '__main__':
         "--dataset_name", "-n", default="waymo", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument(
-        "--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "waymo"), help="The path of the dataset"
+        "--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "waymo"), help="directory, The path to place the data"
     )
     parser.add_argument("--version", "-v", default='v1.2', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
