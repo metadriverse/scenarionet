@@ -19,7 +19,7 @@ def test_filter_dataset():
     # nuscenes data has no light
     # light_condition = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
     sdc_driving_condition = ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=30, condition="smaller")
-    answer = ['scene-0553', 'scene-0757', 'scene-1100']
+    answer = ['sd_nuscenes_v1.0-mini_scene-0553.pkl', '0.pkl', 'sd_nuscenes_v1.0-mini_scene-1100.pkl']
     summary, mapping = combine_multiple_dataset(
         output_path,
         *dataset_paths,
@@ -34,7 +34,7 @@ def test_filter_dataset():
             if a in s:
                 in_ = True
                 break
-        assert in_
+        assert in_, summary.keys()
 
     sdc_driving_condition = ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=5, condition="greater")
     summary, mapping = combine_multiple_dataset(

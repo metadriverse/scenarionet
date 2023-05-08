@@ -2,7 +2,7 @@ import logging
 import multiprocessing
 import os
 
-from metadrive.scenario.scenario_description import ScenarioDescription as SD
+import numpy as np
 
 from scenarionet.verifier.error import ErrorDescription as ED
 from scenarionet.verifier.error import ErrorFile as EF
@@ -13,6 +13,14 @@ from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 from metadrive.scenario.utils import get_number_of_scenarios
 from functools import partial
+
+# this global variable is for generating broken scenarios for testing
+RANDOM_DROP = False
+
+
+def set_random_drop(drop):
+    global RANDOM_DROP
+    RANDOM_DROP = drop
 
 
 def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=1000, num_workers=8):
@@ -56,6 +64,7 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=10
 
 
 def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run, metadrive_config=None):
+    global RANDOM_DROP
     logger.info(
         "================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
             start_scenario_index, num_scenario + start_scenario_index))
@@ -77,6 +86,8 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
         try:
             env.reset(force_seed=scenario_index)
             arrive = False
+            if RANDOM_DROP and np.random.rand() < 0.5:
+                raise ValueError("Random Drop")
             for _ in range(steps_to_run):
                 o, r, d, info = env.step([0, 0])
                 if d and info["arrive_dest"]:
