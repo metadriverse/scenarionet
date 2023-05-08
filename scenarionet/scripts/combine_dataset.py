@@ -1,13 +1,5 @@
-"""
-This script aims to convert nuscenes scenarios to ScenarioDescription, so that we can load any nuscenes scenarios into
-MetaDrive.
-"""
 import argparse
-import os.path
 
-from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
-from scenarionet.converter.utils import write_to_directory
 from scenarionet.builder.utils import combine_multiple_dataset
 
 if __name__ == '__main__':

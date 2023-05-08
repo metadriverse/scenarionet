@@ -1,4 +1,3 @@
-# from metadrive.policy.expert_policy import ExpertPolicy
 import argparse
 import os.path
 

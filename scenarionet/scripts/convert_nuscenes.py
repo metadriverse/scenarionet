@@ -1,7 +1,3 @@
-"""
-This script aims to convert nuscenes scenarios to ScenarioDescription, so that we can load any nuscenes scenarios into
-MetaDrive.
-"""
 import argparse
 import os.path
 

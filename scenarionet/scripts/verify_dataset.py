@@ -1,7 +1,3 @@
-"""
-This script aims to convert nuscenes scenarios to ScenarioDescription, so that we can load any nuscenes scenarios into
-MetaDrive.
-"""
 import argparse
 
 from scenarionet.verifier.utils import verify_loading_into_metadrive, set_random_drop

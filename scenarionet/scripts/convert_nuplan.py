@@ -1,7 +1,3 @@
-"""
-This script aims to convert nuplan scenarios to ScenarioDescription, so that we can load any nuplan scenarios into
-MetaDrive.
-"""
 import argparse
 import os
 
