@@ -395,7 +395,6 @@ def convert_waymo_scenario(scenario, version):
     md_scenario[SD.METADATA][SD.SDC_ID] = str(sdc_id)
     md_scenario[SD.METADATA]["dataset"] = "waymo"
     md_scenario[SD.METADATA]["scenario_id"] = scenario.scenario_id[:id_end]
-    # TODO LQY Can we infer it?
     md_scenario[SD.METADATA]["source_file"] = scenario.scenario_id[id_end + 1:]
     md_scenario[SD.METADATA]["track_length"] = track_length
 

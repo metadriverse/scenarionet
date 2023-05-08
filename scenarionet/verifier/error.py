@@ -60,7 +60,6 @@ class ErrorFile:
         :param broken_scenario: generate broken scenarios. You can generate such a broken scenarios for debugging
         :return: dataset summary, dataset mapping
         """
-        # TODO Add test!
         new_dataset_path = os.path.abspath(new_dataset_path)
         if os.path.exists(new_dataset_path):
             if force_overwrite:
