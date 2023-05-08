@@ -90,15 +90,15 @@ def write_to_directory(convert_func,
             end_idx = num_files
         else:
             end_idx = (i + 1) * num_files_each_worker
-        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs])
+        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
+        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, output_path])
 
     # prefill arguments
     func = partial(writing_to_directory_wrapper,
-                   convert_func,
-                   output_path,
-                   dataset_version,
-                   dataset_name,
-                   force_overwrite)
+                   convert_func=convert_func,
+                   dataset_version=dataset_version,
+                   dataset_name=dataset_name,
+                   force_overwrite=force_overwrite)
 
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
@@ -108,20 +108,25 @@ def write_to_directory(convert_func,
 
 def writing_to_directory_wrapper(args,
                                  convert_func,
-                                 output_path,
                                  dataset_version,
                                  dataset_name,
                                  force_overwrite=False):
     return write_to_directory_single_worker(convert_func=convert_func,
                                             scenarios=args[0],
-                                            output_path=output_path,
+                                            output_path=args[3],
                                             dataset_version=dataset_version,
                                             dataset_name=dataset_name,
                                             force_overwrite=force_overwrite,
+                                            worker_index=args[2],
                                             **args[1])
 
 
-def write_to_directory_single_worker(convert_func, scenarios, output_path, dataset_version, dataset_name,
+def write_to_directory_single_worker(convert_func,
+                                     scenarios,
+                                     output_path,
+                                     dataset_version,
+                                     dataset_name,
+                                     worker_index=0,
                                      force_overwrite=False, **kwargs):
     """
     Convert a batch of scenarios.
@@ -157,7 +162,7 @@ def write_to_directory_single_worker(convert_func, scenarios, output_path, datas
 
     summary = {}
     mapping = {}
-    for scenario in tqdm.tqdm(scenarios):
+    for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]

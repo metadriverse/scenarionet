@@ -448,7 +448,10 @@ def get_waymo_scenarios(waymo_data_directory, num_workers=8):
 
     # get result
     for r in all_result:
+        if len(r) == 0:
+            logger.warning("0 scenarios found")
         ret += r
+    logger.info("\n Find {} waymo scenarios from {} files".format(len(ret), num_files))
     return ret
 
 
