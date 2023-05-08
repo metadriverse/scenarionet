@@ -40,7 +40,7 @@ jobs:
           pip install pytest-cov
           pip install ray
           
-          git clone git@github.com:metadriverse/metadrive.git
+          git clone https://github.com/metadriverse/metadrive.git
           cd metadrive
           pip install -e .
           cd ../
