@@ -3,7 +3,7 @@ import os.path
 
 from metadrive.type import MetaDriveType
 
-from scenarionet import SCENARIONET_DATASET_PATH
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH
 from scenarionet.builder.filters import ScenarioFilter
 from scenarionet.builder.utils import combine_multiple_dataset
 
@@ -17,7 +17,7 @@ def test_filter_dataset():
     dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "waymo"))
     dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "pg"))
 
-    output_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
+    output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
 
     # ========================= test 1 =========================
     # nuscenes data has no light

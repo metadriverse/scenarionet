@@ -1,6 +1,6 @@
 import os
 
-from scenarionet import SCENARIONET_DATASET_PATH
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH
 from scenarionet.builder.utils import combine_multiple_dataset
 from scenarionet.verifier.utils import verify_loading_into_metadrive
 
@@ -13,7 +13,7 @@ def _test_combine_dataset():
         os.path.join(SCENARIONET_DATASET_PATH, "pg")
     ]
 
-    combine_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
+    combine_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
     combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
     # os.makedirs("verify_results", exist_ok=True)
     # verify_loading_into_metadrive(combine_path, "verify_results")

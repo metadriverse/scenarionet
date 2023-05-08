@@ -18,3 +18,4 @@ dataset/*
 **/failed_scenarios/
 **/passed_scenarios/
 **/waymo_origin
+/dataset/

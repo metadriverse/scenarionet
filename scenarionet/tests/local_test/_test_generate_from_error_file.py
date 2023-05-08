@@ -24,7 +24,7 @@ def test_generate_from_error():
         os.path.join(SCENARIONET_DATASET_PATH, "pg")
     ]
 
-    dataset_path = os.path.join(SCENARIONET_DATASET_PATH, "combined_dataset")
+    dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
     combine_multiple_dataset(dataset_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
 
     summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
