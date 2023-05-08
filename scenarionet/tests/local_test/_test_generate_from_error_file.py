@@ -14,7 +14,7 @@ from scenarionet.verifier.utils import set_random_drop
 from scenarionet.verifier.utils import verify_loading_into_metadrive
 
 
-def test_combine_multiple_dataset():
+def test_generate_from_error():
     set_random_drop(True)
 
     dataset_paths = [
@@ -67,4 +67,4 @@ def test_combine_multiple_dataset():
 
 
 if __name__ == '__main__':
-    test_combine_multiple_dataset()
+    test_generate_from_error()

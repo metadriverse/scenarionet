@@ -12,7 +12,7 @@ from scenarionet.verifier.error import ErrorFile
 from scenarionet.verifier.utils import verify_loading_into_metadrive, set_random_drop
 
 
-def test_combine_multiple_dataset():
+def test_generate_from_error():
     set_random_drop(True)
     dataset_name = "nuscenes"
     original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
@@ -60,4 +60,4 @@ def test_combine_multiple_dataset():
 
 
 if __name__ == '__main__':
-    test_combine_multiple_dataset()
+    test_generate_from_error()
