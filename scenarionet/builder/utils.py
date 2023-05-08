@@ -25,20 +25,11 @@ def try_generating_summary(file_folder):
     files = os.listdir(file_folder)
     summary = {}
     for file in files:
-        if file != ScenarioDescription.DATASET.SUMMARY_FILE and file != ScenarioDescription.DATASET.MAPPING_FILE:
+        if ScenarioDescription.is_scenario_file(file):
             with open(osp.join(file_folder, file), "rb+") as f:
                 scenario = pickle.load(f)
             summary[file] = copy.deepcopy(scenario[ScenarioDescription.METADATA])
     return summary
-
-
-def try_generating_mapping(file_folder):
-    # Create a fake one
-    files = os.listdir(file_folder)
-    mapping = {}
-    for file in files:
-        mapping[file] = ""
-    return mapping
 
 
 def combine_multiple_dataset(
