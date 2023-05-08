@@ -13,7 +13,7 @@ def test_filter_dataset():
     original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
 
-    output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "combine")
+    output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
 
     # ========================= test 1 =========================
     # nuscenes data has no light

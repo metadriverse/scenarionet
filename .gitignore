@@ -12,3 +12,7 @@
 dataset/*
 **/combine/
 **.json
+
+**/tmp/**
+**/failed_scenarios/
+**/passed_senarios/

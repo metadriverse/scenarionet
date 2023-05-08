@@ -1,3 +1,4 @@
+import os.path
 import pickle
 
 import numpy as np
@@ -77,5 +78,12 @@ def read_dataset_summary(dataset_path):
     return sd_utils.read_dataset_summary(dataset_path)
 
 
-def read_scenario(pkl_file_path):
-    return sd_utils.read_scenario_data(pkl_file_path)
+def read_scenario(dataset_path, mapping, scenario_file_name):
+    """
+    read a scenario
+    :param dataset_path: the location where dataset_summary.pkl is
+    :param mapping: a dict recording the relative position from dataset_path to real scenario file
+    :param scenario_file_name: scenario filename
+    :return: ScenarioDescription
+    """
+    return sd_utils.read_scenario_data(os.path.join(dataset_path, mapping[scenario_file_name], scenario_file_name))

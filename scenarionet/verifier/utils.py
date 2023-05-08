@@ -85,7 +85,7 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
         try:
             env.reset(force_seed=scenario_index)
             arrive = False
-            if RANDOM_DROP and np.random.rand() < 0.8:
+            if RANDOM_DROP and np.random.rand() < 0.5:
                 raise ValueError("Random Drop")
             for _ in range(steps_to_run):
                 o, r, d, info = env.step([0, 0])
