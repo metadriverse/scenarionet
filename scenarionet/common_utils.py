@@ -71,8 +71,10 @@ def save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, map
         pickle.dump(dict_recursive_remove_array_and_set(summary), file)
     with open(mapping_file_path, "wb") as file:
         pickle.dump(mapping, file)
-    print("\n ================ Dataset Summary and Mapping are saved at: {} "
-          "================ \n".format(summary_file_path))
+    print(
+        "\n ================ Dataset Summary and Mapping are saved at: {} "
+        "================ \n".format(summary_file_path)
+    )
 
 
 def read_dataset_summary(dataset_path):

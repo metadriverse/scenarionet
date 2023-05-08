@@ -59,7 +59,8 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=10
         path = EF.dump(result_save_dir, errors, dataset_path)
         logger.info(
             "Fail to load all scenarios. Number of failed scenarios: {}. "
-            "See: {} more details! ".format(len(errors), path))
+            "See: {} more details! ".format(len(errors), path)
+        )
     return success, errors
 
 
@@ -67,17 +68,21 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
     global RANDOM_DROP
     logger.info(
         "================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
-            start_scenario_index, num_scenario + start_scenario_index))
+            start_scenario_index, num_scenario + start_scenario_index
+        )
+    )
     success = True
     metadrive_config = metadrive_config or {}
-    metadrive_config.update({
-        "agent_policy": ReplayEgoCarPolicy,
-        "num_scenarios": num_scenario,
-        "horizon": 1000,
-        "start_scenario_index": start_scenario_index,
-        "no_static_vehicles": False,
-        "data_directory": dataset_path,
-    })
+    metadrive_config.update(
+        {
+            "agent_policy": ReplayEgoCarPolicy,
+            "num_scenarios": num_scenario,
+            "horizon": 1000,
+            "start_scenario_index": start_scenario_index,
+            "no_static_vehicles": False,
+            "data_directory": dataset_path,
+        }
+    )
     env = ScenarioEnv(metadrive_config)
     logging.disable(logging.INFO)
     error_msgs = []

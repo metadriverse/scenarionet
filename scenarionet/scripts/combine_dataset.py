@@ -9,7 +9,6 @@ if __name__ == '__main__':
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     args = parser.parse_args()
     if len(args.from_datasets) != 0:
-        combine_multiple_dataset(args.to,
-                                 *args.from_datasets,
-                                 force_overwrite=args.overwrite,
-                                 try_generate_missing_file=True)
+        combine_multiple_dataset(
+            args.to, *args.from_datasets, force_overwrite=args.overwrite, try_generate_missing_file=True
+        )

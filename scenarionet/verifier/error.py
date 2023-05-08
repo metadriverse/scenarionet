@@ -24,10 +24,7 @@ class ErrorDescription:
             "\n Scenario Error, "
             "scenario_index: {}, file_path: {}.\n Error message: {}".format(scenario_index, file_path, str(error))
         )
-        return {cls.INDEX: scenario_index,
-                cls.PATH: file_path,
-                cls.FILE_NAME: file_name,
-                cls.ERROR: str(error)}
+        return {cls.INDEX: scenario_index, cls.PATH: file_path, cls.FILE_NAME: file_name, cls.ERROR: str(error)}
 
 
 class ErrorFile:
@@ -69,8 +66,10 @@ class ErrorFile:
             if force_overwrite:
                 shutil.rmtree(new_dataset_path)
             else:
-                raise ValueError("Directory: {} already exists! "
-                             "Set force_overwrite=True to overwrite".format(new_dataset_path))
+                raise ValueError(
+                    "Directory: {} already exists! "
+                    "Set force_overwrite=True to overwrite".format(new_dataset_path)
+                )
         os.makedirs(new_dataset_path, exist_ok=False)
 
         with open(error_file_path, "r+") as f:

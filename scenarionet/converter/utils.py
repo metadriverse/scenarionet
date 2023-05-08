@@ -60,20 +60,24 @@ def contains_explicit_return(f):
     return any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(f))))
 
 
-def write_to_directory(convert_func,
-                       scenarios,
-                       output_path,
-                       dataset_version,
-                       dataset_name,
-                       force_overwrite=False,
-                       num_workers=8,
-                       **kwargs):
+def write_to_directory(
+    convert_func,
+    scenarios,
+    output_path,
+    dataset_version,
+    dataset_name,
+    force_overwrite=False,
+    num_workers=8,
+    **kwargs
+):
     # make sure dir not exist
     save_path = copy.deepcopy(output_path)
     if os.path.exists(output_path):
         if not force_overwrite:
-            raise ValueError("Directory {} already exists! Abort. "
-                             "\n Try setting force_overwrite=True or adding --overwrite".format(output_path))
+            raise ValueError(
+                "Directory {} already exists! Abort. "
+                "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
+            )
 
     basename = os.path.basename(output_path)
     dir = os.path.dirname(output_path)
@@ -81,8 +85,10 @@ def write_to_directory(convert_func,
         output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
         if os.path.exists(output_path):
             if not force_overwrite:
-                raise ValueError("Directory {} already exists! Abort. "
-                                 "\n Try setting force_overwrite=True or adding --overwrite".format(output_path))
+                raise ValueError(
+                    "Directory {} already exists! Abort. "
+                    "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
+                )
     # get arguments for workers
     num_files = len(scenarios)
     if num_files < num_workers:
@@ -103,42 +109,46 @@ def write_to_directory(convert_func,
         argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, output_path])
 
     # prefill arguments
-    func = partial(writing_to_directory_wrapper,
-                   convert_func=convert_func,
-                   dataset_version=dataset_version,
-                   dataset_name=dataset_name,
-                   force_overwrite=force_overwrite)
+    func = partial(
+        writing_to_directory_wrapper,
+        convert_func=convert_func,
+        dataset_version=dataset_version,
+        dataset_name=dataset_name,
+        force_overwrite=force_overwrite
+    )
 
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
         all_result = list(p.imap(func, argument_list))
-    combine_multiple_dataset(save_path, *output_pathes, force_overwrite=force_overwrite,
-                             try_generate_missing_file=False)
+    combine_multiple_dataset(
+        save_path, *output_pathes, force_overwrite=force_overwrite, try_generate_missing_file=False
+    )
     return all_result
 
 
-def writing_to_directory_wrapper(args,
-                                 convert_func,
-                                 dataset_version,
-                                 dataset_name,
-                                 force_overwrite=False):
-    return write_to_directory_single_worker(convert_func=convert_func,
-                                            scenarios=args[0],
-                                            output_path=args[3],
-                                            dataset_version=dataset_version,
-                                            dataset_name=dataset_name,
-                                            force_overwrite=force_overwrite,
-                                            worker_index=args[2],
-                                            **args[1])
+def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, force_overwrite=False):
+    return write_to_directory_single_worker(
+        convert_func=convert_func,
+        scenarios=args[0],
+        output_path=args[3],
+        dataset_version=dataset_version,
+        dataset_name=dataset_name,
+        force_overwrite=force_overwrite,
+        worker_index=args[2],
+        **args[1]
+    )
 
 
-def write_to_directory_single_worker(convert_func,
-                                     scenarios,
-                                     output_path,
-                                     dataset_version,
-                                     dataset_name,
-                                     worker_index=0,
-                                     force_overwrite=False, **kwargs):
+def write_to_directory_single_worker(
+    convert_func,
+    scenarios,
+    output_path,
+    dataset_version,
+    dataset_name,
+    worker_index=0,
+    force_overwrite=False,
+    **kwargs
+):
     """
     Convert a batch of scenarios.
     """
@@ -162,8 +172,10 @@ def write_to_directory_single_worker(convert_func,
         if force_overwrite:
             delay_remove = save_path
         else:
-            raise ValueError("Directory already exists! Abort."
-                             "\n Try setting force_overwrite=True or using --overwrite")
+            raise ValueError(
+                "Directory already exists! Abort."
+                "\n Try setting force_overwrite=True or using --overwrite"
+            )
 
     summary_file = SD.DATASET.SUMMARY_FILE
     mapping_file = SD.DATASET.MAPPING_FILE

@@ -39,6 +39,12 @@ jobs:
           pip install pytest
           pip install pytest-cov
           pip install ray
+          
+          git clone git@github.com:metadriverse/metadrive.git
+          cd metadrive
+          pip install -e .
+          cd ../
+          
           cd scenarionet/
           pytest --cov=./ --cov-config=.coveragerc --cov-report=xml -sv tests
 

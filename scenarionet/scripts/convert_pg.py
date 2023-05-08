@@ -10,11 +10,13 @@ from scenarionet.converter.utils import write_to_directory
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", "-n", default="pg",
-                        help="Dataset name, will be used to generate scenario files")
-    parser.add_argument("--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
-                        help="The path of the dataset")
-    parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION,  help="version")
+    parser.add_argument(
+        "--dataset_name", "-n", default="pg", help="Dataset name, will be used to generate scenario files"
+    )
+    parser.add_argument(
+        "--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"), help="The path of the dataset"
+    )
+    parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()

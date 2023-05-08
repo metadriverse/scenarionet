@@ -26,8 +26,7 @@ def try_generating_summary(file_folder):
 
 
 def combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True,
-        filters: List[Callable] = None
+    output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True, filters: List[Callable] = None
 ):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
