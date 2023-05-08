@@ -17,6 +17,7 @@ if __name__ == '__main__':
                         help="The path of the dataset")
     parser.add_argument("--version", "-v", default='v1.1', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
+    parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()
 
     force_overwrite = args.overwrite
@@ -36,4 +37,5 @@ if __name__ == '__main__':
         dataset_version=version,
         dataset_name=dataset_name,
         force_overwrite=force_overwrite,
+        num_workers=args.num_workers
     )
