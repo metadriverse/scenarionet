@@ -19,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
+    parser.add_argument("--num_scenarios", type=int, default=30, help="how many scenarios to generate (default: 30)")
     args = parser.parse_args()
 
     force_overwrite = args.overwrite
@@ -26,7 +27,7 @@ if __name__ == '__main__':
     output_path = args.dataset_path
     version = args.version
 
-    scenario_indices, env = get_pg_scenarios(30, IDMPolicy)
+    scenario_indices, env = get_pg_scenarios(args.num_scenarios, IDMPolicy)
 
     write_to_directory(
         convert_func=convert_pg_scenario,

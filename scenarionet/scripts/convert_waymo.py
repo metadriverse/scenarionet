@@ -19,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument("--version", "-v", default='v1.2', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
+    parser.add_argument("--raw_data_path", default="../waymo_origin", help="The directory stores all waymo tfrecord")
     args = parser.parse_args()
 
     force_overwrite = args.overwrite
@@ -26,7 +27,7 @@ if __name__ == '__main__':
     output_path = args.dataset_path
     version = args.version
 
-    waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, "../waymo_origin")
+    waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
     scenarios = get_waymo_scenarios(waymo_data_directory)
 
     write_to_directory(
