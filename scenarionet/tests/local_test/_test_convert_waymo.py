@@ -32,5 +32,4 @@ if __name__ == '__main__':
         dataset_version=version,
         dataset_name=dataset_name,
         force_overwrite=force_overwrite,
-        num_workers=8
-    )
+        num_workers=8)
