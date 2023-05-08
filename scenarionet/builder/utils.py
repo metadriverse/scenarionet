@@ -25,11 +25,11 @@ def try_generating_summary(file_folder):
     return summary
 
 
-def combine_multiple_dataset(output_path,
-                             *dataset_paths,
-                             exist_ok=False,
-                             try_generate_missing_file=True,
-                             filters: List[Callable] = None):
+def combine_dataset(output_path,
+                    *dataset_paths,
+                    exist_ok=False,
+                    try_generate_missing_file=True,
+                    filters: List[Callable] = None):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
     :param output_path: The path to store the output dataset

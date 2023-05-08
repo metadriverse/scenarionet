@@ -13,7 +13,7 @@ import numpy as np
 import tqdm
 from metadrive.scenario import ScenarioDescription as SD
 
-from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import save_summary_anda_mapping
 
 logger = logging.getLogger(__file__)
@@ -122,7 +122,7 @@ def write_to_directory(
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
         all_result = list(p.imap(func, argument_list))
-    combine_multiple_dataset(save_path, *output_pathes, exist_ok=True, try_generate_missing_file=False)
+    combine_dataset(save_path, *output_pathes, exist_ok=True, try_generate_missing_file=False)
     return all_result
 
 

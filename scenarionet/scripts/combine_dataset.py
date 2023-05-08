@@ -1,7 +1,7 @@
 import argparse
 
 from scenarionet.builder.filters import ScenarioFilter
-from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet.builder.utils import combine_dataset
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     filters = [ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=20, condition="greater")]
 
     if len(args.from_datasets) != 0:
-        combine_multiple_dataset(
+        combine_dataset(
             args.to,
             *args.from_datasets,
             exist_ok=args.exist_ok,
