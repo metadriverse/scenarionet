@@ -31,7 +31,7 @@ def test_generate_from_error():
     for scenario_file in sorted_scenarios:
         read_scenario(dataset_path, mapping, scenario_file)
     success, logs = verify_loading_into_metadrive(
-        dataset_path, result_save_dir="../test_dataset", steps_to_run=1000, num_workers=8)
+        dataset_path, result_save_dir="../test_dataset", steps_to_run=1000, num_workers=16)
     set_random_drop(False)
     # get error file
     file_name = ErrorFile.get_error_file_name(dataset_path)
