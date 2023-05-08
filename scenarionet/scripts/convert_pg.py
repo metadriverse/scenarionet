@@ -2,7 +2,7 @@ import argparse
 import os.path
 
 import metadrive
-from metadrive.policy.idm_policy import IDMPolicy
+
 
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.pg.utils import get_pg_scenarios, convert_pg_scenario
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     output_path = args.dataset_path
     version = args.version
 
-    scenario_indices, envs = get_pg_scenarios(args.num_scenarios, IDMPolicy, num_workers=args.num_workers)
+    scenario_indices = get_pg_scenarios(args.num_scenarios)
 
     write_to_directory(
         convert_func=convert_pg_scenario,
@@ -38,5 +38,4 @@ if __name__ == '__main__':
         dataset_name=dataset_name,
         force_overwrite=force_overwrite,
         num_workers=args.num_workers,
-        env=envs
     )

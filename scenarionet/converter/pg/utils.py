@@ -19,18 +19,5 @@ def convert_pg_scenario(scenario_index, version, env):
     return scenario
 
 
-def get_pg_scenarios(num_scenarios, policy, num_workers=1, start_seed=0):
-    def _make_env():
-        env = MetaDriveEnv(
-            dict(
-                start_seed=start_seed,
-                num_scenarios=num_scenarios,
-                traffic_density=0.2,
-                agent_policy=policy,
-                crash_vehicle_done=False,
-                map=2
-            )
-        )
-        return env
-
-    return [i for i in range(num_scenarios)], [_make_env() for _ in range(num_workers)]
+def get_pg_scenarios(num_scenarios):
+    return [i for i in range(num_scenarios)]

@@ -11,10 +11,14 @@ from functools import partial
 
 import numpy as np
 import tqdm
+from
+from metadrive.envs.metadrive_env import MetaDriveEnv
+from metadrive.policy.idm_policy import IDMPolicy
 from metadrive.scenario import ScenarioDescription as SD
 
 from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import save_summary_anda_mapping
+from scenarionet.converter.pg.utils import convert_pg_scenario
 
 logger = logging.getLogger(__file__)
 
@@ -191,6 +195,21 @@ def write_to_directory_single_worker(
 
     summary = {}
     mapping = {}
+
+    # for pg scenario only
+    if convert_func is convert_pg_scenario:
+        env = MetaDriveEnv(
+            dict(
+                start_seed=scenarios[0],
+                num_scenarios=len(scenarios),
+                traffic_density=0.2,
+                agent_policy=IDMPolicy,
+                crash_vehicle_done=False,
+                map=2
+            )
+        )
+        kwargs["env"] = env
+
     for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
