@@ -81,7 +81,11 @@ def combine_multiple_dataset(
         else:
             with open(osp.join(abs_dir_path, ScenarioDescription.DATASET.MAPPING_FILE), "rb+") as f:
                 mapping = pickle.load(f)
-        new_mapping = {k: os.path.relpath(abs_dir_path, output_abs_path) for k, v in mapping.items()}
+        new_mapping = {}
+        for file, rel_path in mapping.items():
+            # mapping to real file path
+            new_mapping[file] = os.path.relpath(osp.join(abs_dir_path, rel_path), output_abs_path)
+
         mappings.update(new_mapping)
 
     # apply filter stage
@@ -98,5 +102,3 @@ def combine_multiple_dataset(
     save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings
-
-

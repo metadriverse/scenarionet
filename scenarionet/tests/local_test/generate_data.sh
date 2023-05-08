@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-nohup python _test_convert_nuplan.py > nuplan.log 2>&1 &
-nohup python _test_convert_nuscenes.py > nuscenes.log 2>&1 &
-nohup python _test_convert_pg.py > pg.log 2>&1 &
-nohup python _test_convert_waymo.py > waymo.log 2>&1 &
+nohup python ../../scripts/convert_nuplan.py --overwrite > nuplan.log 2>&1 &
+nohup python ../../scripts/convert_nuscenes.py --overwrite > nuscenes.log 2>&1 &
+nohup python ../../scripts/convert_pg.py --overwrite  > pg.log 2>&1 &
+nohup python ../../scripts/convert_waymo.py --overwrite > waymo.log 2>&1 &
