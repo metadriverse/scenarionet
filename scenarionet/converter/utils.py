@@ -61,14 +61,14 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-        convert_func,
-        scenarios,
-        output_path,
-        dataset_version,
-        dataset_name,
-        force_overwrite=False,
-        num_workers=8,
-        **kwargs
+    convert_func,
+    scenarios,
+    output_path,
+    dataset_version,
+    dataset_name,
+    force_overwrite=False,
+    num_workers=8,
+    **kwargs
 ):
     # make sure dir not exist
     save_path = copy.deepcopy(output_path)
@@ -141,14 +141,14 @@ def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_na
 
 
 def write_to_directory_single_worker(
-        convert_func,
-        scenarios,
-        output_path,
-        dataset_version,
-        dataset_name,
-        worker_index=0,
-        force_overwrite=False,
-        **kwargs
+    convert_func,
+    scenarios,
+    output_path,
+    dataset_version,
+    dataset_name,
+    worker_index=0,
+    force_overwrite=False,
+    **kwargs
 ):
     """
     Convert a batch of scenarios.

@@ -19,9 +19,12 @@ if __name__ == '__main__':
     parser.add_argument("--version", "-v", default='v1.1', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
-    parser.add_argument("--raw_data_path", type=str,
-                        default=os.path.join(os.getenv("NUPLAN_DATA_ROOT"), "nuplan-v1.1/splits/mini"),
-                        help="the place store .db files")
+    parser.add_argument(
+        "--raw_data_path",
+        type=str,
+        default=os.path.join(os.getenv("NUPLAN_DATA_ROOT"), "nuplan-v1.1/splits/mini"),
+        help="the place store .db files"
+    )
     parser.add_argument("--test", action="store_true", help="for test use only. convert one log")
     args = parser.parse_args()
 

@@ -20,4 +20,5 @@ if __name__ == '__main__':
             exist_ok=args.exist_ok,
             force_overwrite=args.overwrite,
             try_generate_missing_file=True,
-            filters=filters)
+            filters=filters
+        )
