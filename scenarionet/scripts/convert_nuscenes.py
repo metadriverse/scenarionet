@@ -32,7 +32,7 @@ if __name__ == '__main__':
     version = args.version
 
     dataroot = '/home/shady/data/nuscenes'
-    scenarios, nusc = get_nuscenes_scenarios(dataroot, version)
+    scenarios, nuscs = get_nuscenes_scenarios(dataroot, version, args.num_workers)
 
     write_to_directory(
         convert_func=convert_nuscenes_scenario,
@@ -41,6 +41,6 @@ if __name__ == '__main__':
         dataset_version=version,
         dataset_name=dataset_name,
         force_overwrite=force_overwrite,
-        nuscenes=nusc,
-        num_workers=args.num_workers
+        num_workers=args.num_workers,
+        *nuscs
     )

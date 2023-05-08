@@ -68,9 +68,10 @@ def write_to_directory(
     dataset_name,
     force_overwrite=False,
     num_workers=8,
-    **kwargs
+    *args
 ):
     # make sure dir not exist
+    assert len(args) == num_workers, "args should has the same len as num_workers"
     save_path = copy.deepcopy(output_path)
     if os.path.exists(output_path):
         if not force_overwrite:
@@ -109,7 +110,7 @@ def write_to_directory(
             end_idx = (i + 1) * num_files_each_worker
         subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
         output_pathes.append(subdir)
-        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, subdir])
+        argument_list.append([scenarios[i * num_files_each_worker:end_idx], args[i], i, subdir])
 
     # prefill arguments
     func = partial(

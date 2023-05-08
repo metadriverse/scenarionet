@@ -15,7 +15,7 @@ if __name__ == "__main__":
     force_overwrite = True
 
     dataroot = '/home/shady/data/nuscenes'
-    scenarios, nusc = get_nuscenes_scenarios(dataroot, version)
+    scenarios, nuscs = get_nuscenes_scenarios(dataroot, version, 2)
 
     for i in range(5):
         write_to_directory(
@@ -25,5 +25,6 @@ if __name__ == "__main__":
             dataset_version=version,
             dataset_name=dataset_name,
             force_overwrite=force_overwrite,
-            nuscenes=nusc
+            num_workers=2,
+            *nuscs
         )

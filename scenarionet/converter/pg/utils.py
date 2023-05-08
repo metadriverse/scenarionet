@@ -1,5 +1,6 @@
-from metadrive.envs.metadrive_env import MetaDriveEnv
 import logging
+
+from metadrive.envs.metadrive_env import MetaDriveEnv
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
 
@@ -18,15 +19,18 @@ def convert_pg_scenario(scenario_index, version, env):
     return scenario
 
 
-def get_pg_scenarios(num_scenarios, policy, start_seed=0):
-    env = MetaDriveEnv(
-        dict(
-            start_seed=start_seed,
-            num_scenarios=num_scenarios,
-            traffic_density=0.2,
-            agent_policy=policy,
-            crash_vehicle_done=False,
-            map=2
+def get_pg_scenarios(num_scenarios, policy, start_seed=0, num_workers=1):
+    def _make_env():
+        env = MetaDriveEnv(
+            dict(
+                start_seed=start_seed,
+                num_scenarios=num_scenarios,
+                traffic_density=0.2,
+                agent_policy=policy,
+                crash_vehicle_done=False,
+                map=2
+            )
         )
-    )
-    return [i for i in range(num_scenarios)], env
+        return env
+
+    return [i for i in range(num_scenarios)], [_make_env() for _ in range(num_workers)]

@@ -14,7 +14,8 @@ if __name__ == '__main__':
         "--dataset_name", "-n", default="pg", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument(
-        "--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"), help="directory, The path to place the data"
+        "--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
+        help="directory, The path to place the data"
     )
     parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
@@ -27,7 +28,7 @@ if __name__ == '__main__':
     output_path = args.dataset_path
     version = args.version
 
-    scenario_indices, env = get_pg_scenarios(args.num_scenarios, IDMPolicy)
+    scenario_indices, envs = get_pg_scenarios(args.num_scenarios, IDMPolicy, args.num_workers)
 
     write_to_directory(
         convert_func=convert_pg_scenario,
@@ -36,6 +37,6 @@ if __name__ == '__main__':
         dataset_version=version,
         dataset_name=dataset_name,
         force_overwrite=force_overwrite,
-        env=env,
-        num_workers=args.num_workers
+        num_workers=args.num_workers,
+        *envs
     )
