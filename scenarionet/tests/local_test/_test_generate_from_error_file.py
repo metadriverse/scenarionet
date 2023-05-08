@@ -37,7 +37,7 @@ def test_generate_from_error():
     file_name = ErrorFile.get_error_file_name(dataset_path)
     error_file_path = os.path.join("../test_dataset", file_name)
     # regenerate
-    pass_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "passed_senarios")
+    pass_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "passed_scenarios")
     fail_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "failed_scenarios")
     pass_summary, pass_mapping = ErrorFile.generate_dataset(error_file_path, pass_dataset, force_overwrite=True,
                                                             broken_scenario=False)

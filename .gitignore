@@ -16,5 +16,5 @@ dataset/*
 **.log
 **/tmp/**
 **/failed_scenarios/
-**/passed_senarios/
+**/passed_scenarios/
 **/waymo_origin
