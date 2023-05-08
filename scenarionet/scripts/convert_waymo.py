@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from scenarionet import SCENARIONET_DATASET_PATH
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
 from scenarionet.converter.utils import write_to_directory
 from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios
 
@@ -19,7 +19,8 @@ if __name__ == '__main__':
     parser.add_argument("--version", "-v", default='v1.2', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
-    parser.add_argument("--raw_data_path", default="../waymo_origin", help="The directory stores all waymo tfrecord")
+    parser.add_argument("--raw_data_path", default=os.path.join(SCENARIONET_REPO_PATH, "waymo_origin"),
+                        help="The directory stores all waymo tfrecord")
     args = parser.parse_args()
 
     force_overwrite = args.overwrite
