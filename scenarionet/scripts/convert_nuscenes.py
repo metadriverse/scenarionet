@@ -42,5 +42,5 @@ if __name__ == '__main__':
         dataset_name=dataset_name,
         force_overwrite=force_overwrite,
         num_workers=args.num_workers,
-        *nuscs
+        nuscenes=nuscs,
     )

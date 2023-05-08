@@ -61,17 +61,21 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func,
-    scenarios,
-    output_path,
-    dataset_version,
-    dataset_name,
-    force_overwrite=False,
-    num_workers=8,
-    *args
+        convert_func,
+        scenarios,
+        output_path,
+        dataset_version,
+        dataset_name,
+        force_overwrite=False,
+        num_workers=8,
+        **kwargs
 ):
     # make sure dir not exist
-    assert len(args) == num_workers, "args should has the same len as num_workers"
+    kwargs_for_workers = [{} for _ in range(num_workers)]
+    for key, value in kwargs.items():
+        for i in range(num_workers):
+            kwargs_for_workers[i][key] = value[i]
+
     save_path = copy.deepcopy(output_path)
     if os.path.exists(output_path):
         if not force_overwrite:
@@ -110,7 +114,7 @@ def write_to_directory(
             end_idx = (i + 1) * num_files_each_worker
         subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
         output_pathes.append(subdir)
-        argument_list.append([scenarios[i * num_files_each_worker:end_idx], args[i], i, subdir])
+        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs_for_workers[i], i, subdir])
 
     # prefill arguments
     func = partial(
@@ -142,14 +146,14 @@ def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_na
 
 
 def write_to_directory_single_worker(
-    convert_func,
-    scenarios,
-    output_path,
-    dataset_version,
-    dataset_name,
-    worker_index=0,
-    force_overwrite=False,
-    **kwargs
+        convert_func,
+        scenarios,
+        output_path,
+        dataset_version,
+        dataset_name,
+        worker_index=0,
+        force_overwrite=False,
+        **kwargs
 ):
     """
     Convert a batch of scenarios.
