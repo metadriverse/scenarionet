@@ -6,7 +6,7 @@ import math
 import os
 import pickle
 import shutil
-
+from scenarionet.builder.utils import save_summary_anda_mapping
 import numpy as np
 import tqdm
 from metadrive.scenario import ScenarioDescription as SD
@@ -46,17 +46,6 @@ def compute_angular_velocity(initial_heading, final_heading, dt):
     return angular_vel
 
 
-def dict_recursive_remove_array_and_set(d):
-    if isinstance(d, np.ndarray):
-        return d.tolist()
-    if isinstance(d, set):
-        return tuple(d)
-    if isinstance(d, dict):
-        for k in d.keys():
-            d[k] = dict_recursive_remove_array_and_set(d[k])
-    return d
-
-
 def mph_to_kmh(speed_in_mph: float):
     speed_in_kmh = speed_in_mph * 1.609344
     return speed_in_kmh
@@ -67,7 +56,7 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
+        convert_func, scenarios, output_path, dataset_version, dataset_name, force_overwrite=False, **kwargs
 ):
     """
     Convert a batch of scenarios.
@@ -134,12 +123,8 @@ def write_to_directory(
         with open(p, "wb") as f:
             pickle.dump(sd_scenario, f)
 
-    # store summary file, which is human-readable
-    with open(summary_file_path, "wb") as file:
-        pickle.dump(dict_recursive_remove_array_and_set(summary), file)
-    with open(mapping_file_path, "wb") as file:
-        pickle.dump(mapping, file)
-    print("Dataset Summary and Mapping are saved at: {}".format(summary_file_path))
+    # store summary file
+    save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping)
 
     # rename and save
     if delay_remove is not None:

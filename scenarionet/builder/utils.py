@@ -7,6 +7,7 @@ import shutil
 from typing import Callable, List
 
 import metadrive.scenario.utils as sd_utils
+import numpy as np
 from metadrive.scenario.scenario_description import ScenarioDescription
 
 logger = logging.getLogger(__name__)
@@ -33,7 +34,8 @@ def try_generating_summary(file_folder):
 
 
 def combine_multiple_dataset(
-    output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True, filters: List[Callable] = None
+        output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True,
+        filters: List[Callable] = None
 ):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
@@ -99,10 +101,27 @@ def combine_multiple_dataset(
         summaries.pop(file)
         mappings.pop(file)
 
-    with open(osp.join(output_abs_path, ScenarioDescription.DATASET.SUMMARY_FILE), "wb+") as f:
-        pickle.dump(summaries, f)
-
-    with open(osp.join(output_abs_path, ScenarioDescription.DATASET.MAPPING_FILE), "wb+") as f:
-        pickle.dump(mappings, f)
+    summary_file = osp.join(output_abs_path, ScenarioDescription.DATASET.SUMMARY_FILE)
+    mapping_file = osp.join(output_abs_path, ScenarioDescription.DATASET.MAPPING_FILE)
+    save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings
+
+
+def dict_recursive_remove_array_and_set(d):
+    if isinstance(d, np.ndarray):
+        return d.tolist()
+    if isinstance(d, set):
+        return tuple(d)
+    if isinstance(d, dict):
+        for k in d.keys():
+            d[k] = dict_recursive_remove_array_and_set(d[k])
+    return d
+
+
+def save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping):
+    with open(summary_file_path, "wb") as file:
+        pickle.dump(dict_recursive_remove_array_and_set(summary), file)
+    with open(mapping_file_path, "wb") as file:
+        pickle.dump(mapping, file)
+    print("Dataset Summary and Mapping are saved at: {}".format(summary_file_path))
