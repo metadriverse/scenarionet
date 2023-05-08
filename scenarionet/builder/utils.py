@@ -6,19 +6,11 @@ import pickle
 import shutil
 from typing import Callable, List
 
-import metadrive.scenario.utils as sd_utils
-import numpy as np
 from metadrive.scenario.scenario_description import ScenarioDescription
 
+from scenarionet.common_utils import save_summary_anda_mapping
+
 logger = logging.getLogger(__name__)
-
-
-def read_dataset_summary(dataset_path):
-    return sd_utils.read_dataset_summary(dataset_path)
-
-
-def read_scenario(pkl_file_path):
-    return sd_utils.read_scenario_data(pkl_file_path)
 
 
 def try_generating_summary(file_folder):
@@ -108,20 +100,3 @@ def combine_multiple_dataset(
     return summaries, mappings
 
 
-def dict_recursive_remove_array_and_set(d):
-    if isinstance(d, np.ndarray):
-        return d.tolist()
-    if isinstance(d, set):
-        return tuple(d)
-    if isinstance(d, dict):
-        for k in d.keys():
-            d[k] = dict_recursive_remove_array_and_set(d[k])
-    return d
-
-
-def save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping):
-    with open(summary_file_path, "wb") as file:
-        pickle.dump(dict_recursive_remove_array_and_set(summary), file)
-    with open(mapping_file_path, "wb") as file:
-        pickle.dump(mapping, file)
-    print("Dataset Summary and Mapping are saved at: {}".format(summary_file_path))

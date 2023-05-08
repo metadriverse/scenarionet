@@ -5,8 +5,7 @@ from typing import List
 
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
-from scenarionet.builder.utils import read_dataset_summary
-from scenarionet.builder.utils import save_summary_anda_mapping
+from scenarionet.common_utils import save_summary_anda_mapping, read_dataset_summary
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +35,10 @@ class ErrorFile:
     ERRORS = "errors"
 
     @classmethod
+    def get_error_file_name(cls, dataset_path):
+        return "{}_{}.json".format(cls.PREFIX, os.path.basename(dataset_path))
+
+    @classmethod
     def dump(cls, save_dir, errors: List, dataset_path):
         """
         Save test result
@@ -43,9 +46,11 @@ class ErrorFile:
         :param errors: error list, containing a list of dict from ErrorDescription.make()
         :param dataset_path: dataset_path, the dir of dataset_summary.pkl
         """
-        file_name = "{}_{}.json".format(cls.PREFIX, os.path.basename(dataset_path))
-        with open(os.path.join(save_dir, file_name), "w+") as f:
+        file_name = cls.get_error_file_name(dataset_path)
+        path = os.path.join(save_dir, file_name)
+        with open(path, "w+") as f:
             json.dump({cls.DATASET: dataset_path, cls.ERRORS: errors}, f, indent=4)
+        return path
 
     @classmethod
     def generate_dataset(cls, error_file_path, new_dataset_path, force_overwrite=False, broken_scenario=False):

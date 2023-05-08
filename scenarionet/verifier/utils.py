@@ -46,21 +46,20 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, steps_to_run=10
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
         all_result = list(p.imap(func, argument_list))
-    result = all([i[0] for i in all_result])
+    success = all([i[0] for i in all_result])
     errors = []
     for _, error in all_result:
         errors += error
-
-    # save result
-    EF.dump(result_save_dir, errors, dataset_path)
-
     # logging
-    if result:
+    if success:
         logger.info("All scenarios can be loaded successfully!")
     else:
+        # save result
+        path = EF.dump(result_save_dir, errors, dataset_path)
         logger.info(
-            "Fail to load all scenarios, see log for more details! Number of failed scenarios: {}".format(len(errors)))
-    return result, errors
+            "Fail to load all scenarios. Number of failed scenarios: {}. "
+            "See: {} more details! ".format(len(errors), path))
+    return success, errors
 
 
 def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run, metadrive_config=None):
@@ -86,7 +85,7 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
         try:
             env.reset(force_seed=scenario_index)
             arrive = False
-            if RANDOM_DROP and np.random.rand() < 0.5:
+            if RANDOM_DROP and np.random.rand() < 0.8:
                 raise ValueError("Random Drop")
             for _ in range(steps_to_run):
                 o, r, d, info = env.step([0, 0])

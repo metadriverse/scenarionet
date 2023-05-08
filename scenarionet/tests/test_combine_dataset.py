@@ -2,7 +2,8 @@ import os
 import os.path
 
 from scenarionet import SCENARIONET_PACKAGE_PATH
-from scenarionet.builder.utils import combine_multiple_dataset, read_dataset_summary, read_scenario
+from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.verifier.utils import verify_loading_into_metadrive
 
 

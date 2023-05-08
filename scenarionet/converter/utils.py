@@ -6,7 +6,7 @@ import math
 import os
 import pickle
 import shutil
-from scenarionet.builder.utils import save_summary_anda_mapping
+from scenarionet.common_utils import save_summary_anda_mapping
 import numpy as np
 import tqdm
 from metadrive.scenario import ScenarioDescription as SD
