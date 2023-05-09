@@ -11,7 +11,6 @@ from functools import partial
 
 import numpy as np
 import tqdm
-from
 from metadrive.envs.metadrive_env import MetaDriveEnv
 from metadrive.policy.idm_policy import IDMPolicy
 from metadrive.scenario import ScenarioDescription as SD
