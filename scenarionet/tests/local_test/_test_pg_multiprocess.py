@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # load multi process ret
     summary, s_list, mapping = read_dataset_summary(dataset_path)
     to_compare = dict()
-    for k, file in enumerate(s_list):
+    for k, file in enumerate(s_list[:num_scenario]):
         to_compare[k] = read_scenario(dataset_path, mapping, file).to_dict()
 
     # generate single process ret
