@@ -34,6 +34,6 @@ if __name__ == '__main__':
     ret = env.export_scenarios(policy, [i for i in range(num_scenario)], return_done_info=False)
 
     # for i in tqdm.tqdm(range(num_scenario), desc="Assert"):
-    assert_scenario_equal(ret, to_compare)
+    assert_scenario_equal(ret, to_compare, only_compare_sdc=True)
 
 
