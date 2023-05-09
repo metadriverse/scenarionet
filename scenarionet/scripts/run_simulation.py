@@ -39,7 +39,7 @@ if __name__ == '__main__':
         }
     )
     for seed in range(num_scenario if args.scenario_index is not None else 1000000):
-        env.reset(force_seed=seed if args.scenario_index is not None else args.scenario_index)
+        env.reset(force_seed=seed if args.scenario_index is None else args.scenario_index)
         for t in range(10000):
             o, r, d, info = env.step([0, 0])
             if env.config["use_render"]:

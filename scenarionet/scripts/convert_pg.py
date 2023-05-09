@@ -20,7 +20,7 @@ if __name__ == '__main__':
     parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
-    parser.add_argument("--num_scenarios", type=int, default=30, help="how many scenarios to generate (default: 30)")
+    parser.add_argument("--num_scenarios", type=int, default=64, help="how many scenarios to generate (default: 30)")
     args = parser.parse_args()
 
     force_overwrite = args.overwrite
