@@ -3,7 +3,6 @@ import os.path
 
 import metadrive
 
-
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.pg.utils import get_pg_scenarios, convert_pg_scenario
 from scenarionet.converter.utils import write_to_directory
@@ -21,6 +20,7 @@ if __name__ == '__main__':
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     parser.add_argument("--num_scenarios", type=int, default=64, help="how many scenarios to generate (default: 30)")
+    parser.add_argument("--start_index", type=int, default=0, help="which index to start")
     args = parser.parse_args()
 
     force_overwrite = args.overwrite
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     output_path = args.dataset_path
     version = args.version
 
-    scenario_indices = get_pg_scenarios(args.num_scenarios)
+    scenario_indices = get_pg_scenarios(args.start_index, args.num_scenarios)
 
     write_to_directory(
         convert_func=convert_pg_scenario,

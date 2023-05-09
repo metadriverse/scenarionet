@@ -24,5 +24,5 @@ def convert_pg_scenario(scenario_index, version, env, reset_freq=100):
     return scenario
 
 
-def get_pg_scenarios(num_scenarios):
-    return [i for i in range(num_scenarios)]
+def get_pg_scenarios(start_index, num_scenarios):
+    return [i for i in range(start_index, start_index + num_scenarios)]
