@@ -17,7 +17,7 @@ if __name__ == '__main__':
     summary, s_list, mapping = read_dataset_summary(dataset_path)
     to_compare = dict()
     for k, file in enumerate(s_list):
-        to_compare[k] = read_scenario(dataset_path, mapping, file)
+        to_compare[k] = read_scenario(dataset_path, mapping, file).to_dict()
 
     # generate single process ret
     env = MetaDriveEnv(
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     policy = lambda x: [0, 1]  # placeholder
     ret = env.export_scenarios(policy, [i for i in range(num_scenario)], return_done_info=False)
 
-    for i in tqdm.tqdm(range(num_scenario), desc="Assert"):
-        assert_scenario_equal(ret[i], to_compare[i])
+    # for i in tqdm.tqdm(range(num_scenario), desc="Assert"):
+    assert_scenario_equal(ret, to_compare)
 
 
