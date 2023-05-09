@@ -204,6 +204,7 @@ def write_to_directory_single_worker(
                 traffic_density=0.2,
                 agent_policy=IDMPolicy,
                 crash_vehicle_done=False,
+                store_map=False,
                 map=2
             )
         )
