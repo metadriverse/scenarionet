@@ -195,7 +195,8 @@ def write_to_directory_single_worker(
         )
         kwargs["env"] = env
 
-    for k, scenario in tqdm.tqdm(enumerate(scenarios), desc="Worker Index: {}".format(worker_index)):
+    count = 0
+    for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]
@@ -227,8 +228,9 @@ def write_to_directory_single_worker(
         with open(p, "wb") as f:
             pickle.dump(sd_scenario, f)
 
-        if report_memory_freq is not None and (k) % report_memory_freq == 0:
-            logger.info("Current Memory: {}".format(process_memory()))
+        if report_memory_freq is not None and (count) % report_memory_freq == 0:
+            print("Current Memory: {}".format(process_memory()))
+        count += 1
 
     # store summary file
     save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping)
