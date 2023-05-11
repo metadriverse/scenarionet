@@ -1,4 +1,4 @@
-import pkg_resources # for suppress warning
+import pkg_resources  # for suppress warning
 import argparse
 import os
 from metadrive.envs.scenario_env import ScenarioEnv

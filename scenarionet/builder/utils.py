@@ -1,4 +1,4 @@
-import pkg_resources # for suppress warning
+import pkg_resources  # for suppress warning
 import copy
 import logging
 import os

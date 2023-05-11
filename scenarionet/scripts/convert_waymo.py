@@ -1,4 +1,4 @@
-import pkg_resources # for suppress warning
+import pkg_resources  # for suppress warning
 import argparse
 import logging
 import os
@@ -12,12 +12,11 @@ logger = logging.getLogger(__name__)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_name", "-n",
-        default="waymo",
-        help="Dataset name, will be used to generate scenario files"
+        "--dataset_name", "-n", default="waymo", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument(
-        "--dataset_path", "-d",
+        "--dataset_path",
+        "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
         help="A directory, the path to place the converted data"
     )

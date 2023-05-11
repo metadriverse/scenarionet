@@ -1,4 +1,4 @@
-import pkg_resources # for suppress warning
+import pkg_resources  # for suppress warning
 import argparse
 import os.path
 
@@ -14,7 +14,9 @@ if __name__ == '__main__':
         "--dataset_name", "-n", default="pg", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument(
-        "--dataset_path", "-d", default=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
+        "--dataset_path",
+        "-d",
+        default=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
         help="directory, The path to place the data"
     )
     parser.add_argument("--version", "-v", default=metadrive.constants.DATA_VERSION, help="version")

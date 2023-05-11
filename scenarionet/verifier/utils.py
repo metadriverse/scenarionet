@@ -28,8 +28,10 @@ def verify_loading_into_metadrive(dataset_path, result_save_dir, overwrite=False
     os.makedirs(result_save_dir, exist_ok=True)
     error_file_name = EF.get_error_file_name(dataset_path)
     if os.path.exists(os.path.join(result_save_dir, error_file_name)) and not overwrite:
-        raise FileExistsError("An error_file already exists in result_save_directory. "
-                              "Setting overwrite=True to cancel this alert")
+        raise FileExistsError(
+            "An error_file already exists in result_save_directory. "
+            "Setting overwrite=True to cancel this alert"
+        )
     num_scenario = get_number_of_scenarios(dataset_path)
     if num_scenario < num_workers:
         # single process

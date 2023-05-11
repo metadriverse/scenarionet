@@ -64,14 +64,7 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-        convert_func,
-        scenarios,
-        output_path,
-        dataset_version,
-        dataset_name,
-        overwrite=False,
-        num_workers=8,
-        **kwargs
+    convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
 ):
     # make sure dir not exist
     kwargs_for_workers = [{} for _ in range(num_workers)]
@@ -149,14 +142,7 @@ def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_na
 
 
 def write_to_directory_single_worker(
-        convert_func,
-        scenarios,
-        output_path,
-        dataset_version,
-        dataset_name,
-        worker_index=0,
-        overwrite=False,
-        **kwargs
+    convert_func, scenarios, output_path, dataset_version, dataset_name, worker_index=0, overwrite=False, **kwargs
 ):
     """
     Convert a batch of scenarios.
@@ -181,10 +167,7 @@ def write_to_directory_single_worker(
         if overwrite:
             delay_remove = save_path
         else:
-            raise ValueError(
-                "Directory already exists! Abort."
-                "\n Try setting overwrite=True or using --overwrite"
-            )
+            raise ValueError("Directory already exists! Abort." "\n Try setting overwrite=True or using --overwrite")
 
     summary_file = SD.DATASET.SUMMARY_FILE
     mapping_file = SD.DATASET.MAPPING_FILE

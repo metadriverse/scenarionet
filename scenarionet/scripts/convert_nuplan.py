@@ -1,4 +1,4 @@
-import pkg_resources # for suppress warning
+import pkg_resources  # for suppress warning
 import argparse
 import os
 from scenarionet import SCENARIONET_DATASET_PATH
