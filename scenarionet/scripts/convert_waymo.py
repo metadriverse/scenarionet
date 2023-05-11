@@ -1,3 +1,4 @@
+import pkg_resources # for suppress warning
 import argparse
 import logging
 import os
@@ -5,7 +6,7 @@ import os
 from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
 from scenarionet.converter.utils import write_to_directory
 from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios
-import pkg_resources # for suppress warning
+
 logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':

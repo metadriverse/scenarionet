@@ -21,8 +21,7 @@ def test_combine_multiple_dataset():
         for scenario_file in sorted_scenarios:
             read_scenario(dataset_path, mapping, scenario_file)
         success, result = verify_loading_into_metadrive(
-            dataset_path, result_save_dir=test_dataset_path, steps_to_run=1000, num_workers=4
-        )
+            dataset_path, result_save_dir=test_dataset_path, steps_to_run=1000, num_workers=4, overwrite=True)
         assert success
 
 

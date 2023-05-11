@@ -1,7 +1,7 @@
+import pkg_resources # for suppress warning
 import argparse
 
 from scenarionet.verifier.error import ErrorFile
-import pkg_resources # for suppress warning
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

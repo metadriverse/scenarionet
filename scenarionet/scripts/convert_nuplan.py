@@ -1,6 +1,6 @@
+import pkg_resources # for suppress warning
 import argparse
 import os
-import pkg_resources # for suppress warning
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.nuplan.utils import get_nuplan_scenarios, convert_nuplan_scenario
 from scenarionet.converter.utils import write_to_directory

@@ -1,5 +1,5 @@
-import argparse
 import pkg_resources # for suppress warning
+import argparse
 from scenarionet.builder.filters import ScenarioFilter
 from scenarionet.builder.utils import combine_dataset
 
