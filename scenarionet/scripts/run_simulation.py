@@ -1,6 +1,6 @@
 import argparse
 import os
-
+import pkg_resources # for suppress warning
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 from metadrive.scenario.utils import get_number_of_scenarios

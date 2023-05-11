@@ -6,6 +6,7 @@ import metadrive
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.pg.utils import get_pg_scenarios, convert_pg_scenario
 from scenarionet.converter.utils import write_to_directory
+import pkg_resources # for suppress warning
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

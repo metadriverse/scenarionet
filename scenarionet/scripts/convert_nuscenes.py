@@ -1,6 +1,6 @@
 import argparse
 import os.path
-
+import pkg_resources # for suppress warning
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
 from scenarionet.converter.utils import write_to_directory

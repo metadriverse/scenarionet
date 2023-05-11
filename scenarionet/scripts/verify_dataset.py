@@ -1,5 +1,5 @@
 import argparse
-
+import pkg_resources # for suppress warning
 from scenarionet.verifier.utils import verify_loading_into_metadrive, set_random_drop
 
 if __name__ == '__main__':
