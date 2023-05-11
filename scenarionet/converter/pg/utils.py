@@ -3,18 +3,17 @@ import logging
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
 
-def convert_pg_scenario(scenario_index, version, env, reset_freq=100):
+def convert_pg_scenario(scenario_index, version, env):
     """
     Simulate to collect PG Scenarios
     :param scenario_index: the index to export [env.start_seed, env.start_seed + num_scenarios_per_worker]
     :param version: place holder
     :param env: metadrive env instance
-    :param reset_freq: reset env per reset_freq times
     """
-
-    if (scenario_index - env.config["start_seed"]) % reset_freq == 0:
-        # for avoiding memory leak
-        env.close()
+    #
+    # if (scenario_index - env.config["start_seed"]) % reset_freq == 0:
+    #     # for avoiding memory leak
+    #     env.close()
 
     logging.disable(logging.INFO)
     policy = lambda x: [0, 1]  # placeholder

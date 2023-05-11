@@ -124,9 +124,8 @@ def write_to_directory(
 
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
-        all_result = list(p.imap(func, argument_list))
+        p.map(func, argument_list)
     combine_dataset(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
-    return all_result
 
 
 def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, overwrite=False):
@@ -240,8 +239,6 @@ def write_to_directory_single_worker(
         assert delay_remove == save_path
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
-
-    return summary, mapping
 
 
 def process_memory():
