@@ -5,7 +5,7 @@ import os.path
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
 from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet import SCENARIONET_PACKAGE_PATH
+from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
 from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.common_utils import recursive_equal
@@ -24,7 +24,7 @@ def test_generate_from_error():
         os.path.join(SCENARIONET_DATASET_PATH, "pg")
     ]
 
-    dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
+    dataset_path = os.path.join(TMP_PATH, "combine")
     combine_dataset(dataset_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
 
     summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
@@ -38,8 +38,8 @@ def test_generate_from_error():
     file_name = ErrorFile.get_error_file_name(dataset_path)
     error_file_path = os.path.join("../test_dataset", file_name)
     # regenerate
-    pass_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "passed_scenarios")
-    fail_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "failed_scenarios")
+    pass_dataset = os.path.join(TMP_PATH, "passed_scenarios")
+    fail_dataset = os.path.join(TMP_PATH, "failed_scenarios")
     pass_summary, pass_mapping = ErrorFile.generate_dataset(
         error_file_path, pass_dataset, overwrite=True, broken_scenario=False
     )

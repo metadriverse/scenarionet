@@ -2,7 +2,7 @@ import os
 
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
-from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH, TMP_PATH
 from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 
@@ -16,7 +16,7 @@ def _test_combine_dataset():
         os.path.join(SCENARIONET_DATASET_PATH, "pg")
     ]
 
-    combine_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
+    combine_path = os.path.join(TMP_PATH, "combine")
     combine_dataset(combine_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     summary, _, mapping = read_dataset_summary(combine_path)
     for scenario in summary:
