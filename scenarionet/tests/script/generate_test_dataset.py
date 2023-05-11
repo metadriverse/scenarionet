@@ -12,7 +12,7 @@ if __name__ == "__main__":
     dataset_name = "nuscenes"
     output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
     version = 'v1.0-mini'
-    force_overwrite = True
+    overwrite = True
 
     dataroot = '/home/shady/data/nuscenes'
     scenarios, nuscs = get_nuscenes_scenarios(dataroot, version, 2)
@@ -24,7 +24,7 @@ if __name__ == "__main__":
             output_path=output_path + "_{}".format(i),
             dataset_version=version,
             dataset_name=dataset_name,
-            force_overwrite=force_overwrite,
+            overwrite=overwrite,
             num_workers=2,
             nuscenes=nuscs
         )

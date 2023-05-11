@@ -27,7 +27,7 @@ def test_filter_dataset():
         output_path,
         *dataset_paths,
         exist_ok=True,
-        force_overwrite=True,
+        overwrite=True,
         try_generate_missing_file=True,
         filters=[sdc_driving_condition]
     )
@@ -43,7 +43,7 @@ def test_filter_dataset():
         output_path,
         *dataset_paths,
         exist_ok=True,
-        force_overwrite=True,
+        overwrite=True,
         try_generate_missing_file=True,
         filters=[num_condition]
     )
@@ -57,7 +57,7 @@ def test_filter_dataset():
         output_path,
         *dataset_paths,
         exist_ok=True,
-        force_overwrite=True,
+        overwrite=True,
         try_generate_missing_file=True,
         filters=[traffic_light]
     )

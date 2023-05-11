@@ -14,10 +14,10 @@ if __name__ == '__main__':
         "--dataset_path",
         "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
-        help="directory, The path to place the data"
+        help="A directory, the path to place the data"
     )
-    parser.add_argument("--version", "-v", default='v1.1', help="version")
-    parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
+    parser.add_argument("--version", "-v", default='v1.1', help="version of the raw data")
+    parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, whether to overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     parser.add_argument(
         "--raw_data_path",
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     parser.add_argument("--test", action="store_true", help="for test use only. convert one log")
     args = parser.parse_args()
 
-    force_overwrite = args.overwrite
+    overwrite = args.overwrite
     dataset_name = args.dataset_name
     output_path = args.dataset_path
     version = args.version
@@ -46,6 +46,6 @@ if __name__ == '__main__':
         output_path=output_path,
         dataset_version=version,
         dataset_name=dataset_name,
-        force_overwrite=force_overwrite,
+        overwrite=overwrite,
         num_workers=args.num_workers
     )

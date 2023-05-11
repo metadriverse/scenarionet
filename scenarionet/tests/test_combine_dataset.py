@@ -14,7 +14,7 @@ def test_combine_multiple_dataset():
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
 
     output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_dataset(output_path, *dataset_paths, exist_ok=True, force_overwrite=True, try_generate_missing_file=True)
+    combine_dataset(output_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     dataset_paths.append(output_path)
     for dataset_path in dataset_paths:
         summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)

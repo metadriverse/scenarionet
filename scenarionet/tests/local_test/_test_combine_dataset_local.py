@@ -17,7 +17,7 @@ def _test_combine_dataset():
     ]
 
     combine_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_dataset(combine_path, *dataset_paths, exist_ok=True, force_overwrite=True, try_generate_missing_file=True)
+    combine_dataset(combine_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     summary, _, mapping = read_dataset_summary(combine_path)
     for scenario in summary:
         sd = read_scenario(combine_path, mapping, scenario)

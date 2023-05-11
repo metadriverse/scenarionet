@@ -69,7 +69,7 @@ def write_to_directory(
         output_path,
         dataset_version,
         dataset_name,
-        force_overwrite=False,
+        overwrite=False,
         num_workers=8,
         **kwargs
 ):
@@ -81,10 +81,10 @@ def write_to_directory(
 
     save_path = copy.deepcopy(output_path)
     if os.path.exists(output_path):
-        if not force_overwrite:
+        if not overwrite:
             raise ValueError(
                 "Directory {} already exists! Abort. "
-                "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
+                "\n Try setting overwrite=True or adding --overwrite".format(output_path)
             )
         else:
             shutil.rmtree(output_path)
@@ -95,10 +95,10 @@ def write_to_directory(
     for i in range(num_workers):
         subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
         if os.path.exists(subdir):
-            if not force_overwrite:
+            if not overwrite:
                 raise ValueError(
                     "Directory {} already exists! Abort. "
-                    "\n Try setting force_overwrite=True or adding --overwrite".format(subdir)
+                    "\n Try setting overwrite=True or adding --overwrite".format(subdir)
                 )
     # get arguments for workers
     num_files = len(scenarios)
@@ -125,24 +125,24 @@ def write_to_directory(
         convert_func=convert_func,
         dataset_version=dataset_version,
         dataset_name=dataset_name,
-        force_overwrite=force_overwrite
+        overwrite=overwrite
     )
 
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
         all_result = list(p.imap(func, argument_list))
-    combine_dataset(save_path, *output_pathes, exist_ok=True, force_overwrite=False, try_generate_missing_file=False)
+    combine_dataset(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
     return all_result
 
 
-def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, force_overwrite=False):
+def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, overwrite=False):
     return write_to_directory_single_worker(
         convert_func=convert_func,
         scenarios=args[0],
         output_path=args[3],
         dataset_version=dataset_version,
         dataset_name=dataset_name,
-        force_overwrite=force_overwrite,
+        overwrite=overwrite,
         worker_index=args[2],
         **args[1]
     )
@@ -155,7 +155,7 @@ def write_to_directory_single_worker(
         dataset_version,
         dataset_name,
         worker_index=0,
-        force_overwrite=False,
+        overwrite=False,
         **kwargs
 ):
     """
@@ -178,12 +178,12 @@ def write_to_directory_single_worker(
     # make real save dir
     delay_remove = None
     if os.path.exists(save_path):
-        if force_overwrite:
+        if overwrite:
             delay_remove = save_path
         else:
             raise ValueError(
                 "Directory already exists! Abort."
-                "\n Try setting force_overwrite=True or using --overwrite"
+                "\n Try setting overwrite=True or using --overwrite"
             )
 
     summary_file = SD.DATASET.SUMMARY_FILE

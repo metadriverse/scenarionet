@@ -19,7 +19,7 @@ def test_generate_from_error():
     test_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset")
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
     dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_dataset(dataset_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, force_overwrite=True)
+    combine_dataset(dataset_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, overwrite=True)
 
     summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
     for scenario_file in sorted_scenarios:
@@ -35,10 +35,10 @@ def test_generate_from_error():
     pass_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "passed_senarios")
     fail_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "failed_scenarios")
     pass_summary, pass_mapping = ErrorFile.generate_dataset(
-        error_file_path, pass_dataset, force_overwrite=True, broken_scenario=False
+        error_file_path, pass_dataset, overwrite=True, broken_scenario=False
     )
     fail_summary, fail_mapping = ErrorFile.generate_dataset(
-        error_file_path, fail_dataset, force_overwrite=True, broken_scenario=True
+        error_file_path, fail_dataset, overwrite=True, broken_scenario=True
     )
 
     # assert
