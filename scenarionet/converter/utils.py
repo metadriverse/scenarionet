@@ -10,6 +10,7 @@ import shutil
 from functools import partial
 
 import numpy as np
+import psutil
 import tqdm
 from metadrive.envs.metadrive_env import MetaDriveEnv
 from metadrive.policy.idm_policy import IDMPolicy
@@ -64,7 +65,7 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
+        convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
 ):
     # make sure dir not exist
     kwargs_for_workers = [{} for _ in range(num_workers)]
@@ -142,7 +143,8 @@ def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_na
 
 
 def write_to_directory_single_worker(
-    convert_func, scenarios, output_path, dataset_version, dataset_name, worker_index=0, overwrite=False, **kwargs
+        convert_func, scenarios, output_path, dataset_version, dataset_name, worker_index=0, overwrite=False,
+        report_memory_freq=None, **kwargs
 ):
     """
     Convert a batch of scenarios.
@@ -193,7 +195,7 @@ def write_to_directory_single_worker(
         )
         kwargs["env"] = env
 
-    for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
+    for k, scenario in tqdm.tqdm(enumerate(scenarios), desc="Worker Index: {}".format(worker_index)):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]
@@ -225,6 +227,9 @@ def write_to_directory_single_worker(
         with open(p, "wb") as f:
             pickle.dump(sd_scenario, f)
 
+        if report_memory_freq is not None and (k) % report_memory_freq == 0:
+            logger.info("Current Memory: {}".format(process_memory()))
+
     # store summary file
     save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping)
 
@@ -235,3 +240,9 @@ def write_to_directory_single_worker(
     os.rename(output_path, save_path)
 
     return summary, mapping
+
+
+def process_memory():
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    return mem_info.rss / 1024 / 1024  # mb
