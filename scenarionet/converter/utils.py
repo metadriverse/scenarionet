@@ -124,7 +124,7 @@ def write_to_directory(
 
     # Run, workers and process result from worker
     with multiprocessing.Pool(num_workers) as p:
-        p.map(func, argument_list)
+        p.imap(func, argument_list)
     combine_dataset(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
 
 
