@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-bash ../../scripts/convert_pg_large.sh 64 4 ../tmp/pg_large 8 true
+bash ../../scripts/convert_pg_large.sh ../tmp/pg_large 64 4 8 true

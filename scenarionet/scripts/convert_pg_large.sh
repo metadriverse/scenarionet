@@ -1,17 +1,17 @@
 #!/bin/bash
 # Author: GPT-4
-# Usage: ./script_name.sh 5000 10 /path/to/datasets 8 true
+# Usage: ./script_name.sh /path/to/datasets 10 5000 8 true
 
 # check if five arguments are passed
 if [ $# -ne 5 ]; then
-    echo "Usage: $0 <num_scenarios_sub_dataset> <num_sub_dataset> <dataset_path> <num_workers> <overwrite>"
+    echo "Usage: $0 <dataset_path> <num_sub_dataset> <num_scenarios_sub_dataset> <num_workers> <overwrite>"
     exit 1
 fi
 
 # get the number of scenarios, datasets, dataset path, number of workers, and overwrite from command line arguments
-num_scenarios_sub_dataset=$1
+dataset_path=$1
 num_sub_dataset=$2
-dataset_path=$3
+num_scenarios_sub_dataset=$3
 num_workers=$4
 overwrite=$5
 
