@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: GPT-4
 
 # check if four arguments are passed
 if [ $# -ne 4 ]; then
