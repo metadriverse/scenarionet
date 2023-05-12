@@ -19,9 +19,9 @@ overwrite=$5
 start_index=0
 
 # run the conversion script in a loop
-for i in $(seq 0 $((num_sub_datasets-1)))
+for i in $(seq 1 $num_sub_dataset)
 do
-  sub_dataset_path="${dataset_path}/pg_$i"
+  sub_dataset_path="${dataset_path}/pg_$((i-1))"
   if [ "$overwrite" = true ]; then
     python -m scenarionet.scripts.convert_pg -n pg -d $sub_dataset_path --start_index=$start_index --num_workers=$num_workers --num_scenarios=$num_scenarios_sub_dataset --overwrite
   else
