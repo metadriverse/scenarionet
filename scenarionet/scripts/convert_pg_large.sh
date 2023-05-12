@@ -12,12 +12,15 @@ num_sub_datasets=$2
 dataset_path=$3
 num_workers=$4
 
+# initialize start_index
+start_index=0
+
 # run the conversion script in a loop
 for i in $(seq 0 $((num_sub_datasets-1)))
 do
-  start_index=$(($num_scenarios * $i))
   sub_dataset_path="${dataset_path}/pg_$i"
   python -m scenarionet.scripts.convert_pg -n pg -d $sub_dataset_path --start_index=$start_index --num_workers=$num_workers --num_scenarios_each_sub_dataset=$num_scenarios
+  start_index=$((start_index + num_scenarios))
 done
 
 # combine the datasets
