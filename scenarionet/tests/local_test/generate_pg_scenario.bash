@@ -1,3 +1,5 @@
+# stop using this stupid script after finishing memory leak
+
 python -m scenarionet.scripts.convert_pg -n pg -d pg_0 --start_index=0 --num_workers=20 --num_scenarios=5000
 python -m scenarionet.scripts.convert_pg -n pg -d pg_1 --start_index=5000 --num_workers=20 --num_scenarios=5000
 python -m scenarionet.scripts.convert_pg -n pg -d pg_2 --start_index=10000 --num_workers=20 --num_scenarios=5000
