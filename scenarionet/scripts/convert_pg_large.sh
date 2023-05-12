@@ -31,4 +31,9 @@ do
 done
 
 # combine the datasets
-python -m scenarionet.scripts.combine_dataset --dataset_path $dataset_path --from_datasets $(for i in $(seq 0 $((num_sub_dataset-1))); do echo -n "${dataset_path}/pg_$i "; done)
+if [ "$overwrite" = true ]; then
+    python -m scenarionet.scripts.combine_dataset --dataset_path $dataset_path --from_datasets $(for i in $(seq 0 $((num_sub_dataset-1))); do echo -n "${dataset_path}/pg_$i "; done) --overwrite
+  else
+    python -m scenarionet.scripts.combine_dataset --dataset_path $dataset_path --from_datasets $(for i in $(seq 0 $((num_sub_dataset-1))); do echo -n "${dataset_path}/pg_$i "; done)
+  fi
+
