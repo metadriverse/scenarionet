@@ -1,6 +1,6 @@
 import pkg_resources  # for suppress warning
 import argparse
-from scenarionet.verifier.utils import verify_loading_into_metadrive, set_random_drop
+from scenarionet.verifier.utils import verify_simulation, set_random_drop
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -18,6 +18,6 @@ if __name__ == '__main__':
     parser.add_argument("--random_drop", action="store_true", help="Randomly make some scenarios fail. for test only!")
     args = parser.parse_args()
     set_random_drop(args.random_drop)
-    verify_loading_into_metadrive(
+    verify_simulation(
         args.dataset_path, args.result_save_dir, overwrite=args.overwrite, num_workers=args.num_workers
     )

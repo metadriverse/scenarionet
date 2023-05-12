@@ -23,7 +23,7 @@ def set_random_drop(drop):
     RANDOM_DROP = drop
 
 
-def verify_loading_into_metadrive(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
+def verify_simulation(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
     assert os.path.isdir(result_save_dir), "result_save_dir must be a dir, get {}".format(result_save_dir)
     os.makedirs(result_save_dir, exist_ok=True)
     error_file_name = EF.get_error_file_name(dataset_path)
