@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: GPT-4
-# Usage: ./script_name.sh 5000 10 /path/to/datasets 20 true
+# Usage: ./script_name.sh 5000 10 /path/to/datasets 8 true
 
 # check if five arguments are passed
 if [ $# -ne 5 ]; then
@@ -31,4 +31,4 @@ do
 done
 
 # combine the datasets
-python -m scenarionet.scripts.combine_dataset dataset_path $dataset_path --from_datasets $(for i in $(seq 0 $((num_sub_dataset-1))); do echo -n "${dataset_path}/pg_$i "; done)
+python -m scenarionet.scripts.combine_dataset --dataset_path $dataset_path --from_datasets $(for i in $(seq 0 $((num_sub_dataset-1))); do echo -n "${dataset_path}/pg_$i "; done)
