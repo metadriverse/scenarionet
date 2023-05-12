@@ -5,9 +5,9 @@ from scenarionet.verifier.utils import verify_dataset, set_random_drop
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_path", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
+        "--dataset_path", "-d", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
     )
-    parser.add_argument("--result_save_dir", required=True, help="Where to save the error file")
+    parser.add_argument("--result_save_dir", default="", help="Where to save the error file")
     parser.add_argument(
         "--overwrite",
         action="store_true",
