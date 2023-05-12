@@ -3,13 +3,14 @@ import multiprocessing
 import os
 
 import numpy as np
-
+from scenarionet.common_utils import read_scenario, read_dataset_summary
 from scenarionet.verifier.error import ErrorDescription as ED
 from scenarionet.verifier.error import ErrorFile as EF
 
 logger = logging.getLogger(__name__)
 import tqdm
 from metadrive.envs.scenario_env import ScenarioEnv
+from metadrive.scenario.scenario_description import ScenarioDescription as SD
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 from metadrive.scenario.utils import get_number_of_scenarios
 from functools import partial
@@ -23,7 +24,7 @@ def set_random_drop(drop):
     RANDOM_DROP = drop
 
 
-def verify_simulation(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
+def verify_dataset(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
     assert os.path.isdir(result_save_dir), "result_save_dir must be a dir, get {}".format(result_save_dir)
     os.makedirs(result_save_dir, exist_ok=True)
     error_file_name = EF.get_error_file_name(dataset_path)
@@ -78,42 +79,61 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
         )
     )
     success = True
-    metadrive_config = metadrive_config or {}
-    metadrive_config.update(
-        {
-            "agent_policy": ReplayEgoCarPolicy,
-            "num_scenarios": num_scenario,
-            "horizon": 1000,
-            "start_scenario_index": start_scenario_index,
-            "no_static_vehicles": False,
-            "data_directory": dataset_path,
-        }
-    )
-    env = ScenarioEnv(metadrive_config)
-    logging.disable(logging.INFO)
     error_msgs = []
-    desc = "Scenarios: {}-{}".format(start_scenario_index, start_scenario_index + num_scenario)
-    for scenario_index in tqdm.tqdm(range(start_scenario_index, start_scenario_index + num_scenario), desc=desc):
-        try:
-            env.reset(force_seed=scenario_index)
-            arrive = False
-            if RANDOM_DROP and np.random.rand() < 0.5:
-                raise ValueError("Random Drop")
-            for _ in range(steps_to_run):
-                o, r, d, info = env.step([0, 0])
-                if d and info["arrive_dest"]:
-                    arrive = True
-            assert arrive, "Can not arrive destination"
-        except Exception as e:
-            file_name = env.engine.data_manager.summary_lookup[scenario_index]
-            file_path = os.path.join(dataset_path, env.engine.data_manager.mapping[file_name], file_name)
-            error_msg = ED.make(scenario_index, file_path, file_name, str(e))
-            error_msgs.append(error_msg)
-            success = False
-            # proceed to next scenario
-            continue
 
-    env.close()
+    if steps_to_run ==0:
+        summary, scenarios, mapping = read_dataset_summary(dataset_path)
+        index_count=0
+        for file_name in tqdm.tqdm(scenarios):
+            try:
+                scenario = read_scenario(dataset_path, mapping, file_name)
+                SD.sanity_check(scenario)
+                if RANDOM_DROP and np.random.rand() < 0.5:
+                    raise ValueError("Random Drop")
+            except Exception as e:
+                file_path = os.path.join(dataset_path, mapping[file_name], file_name)
+                error_msg = ED.make(index_count, file_path, file_name, str(e))
+                error_msgs.append(error_msg)
+                success = False
+                # proceed to next scenario
+                continue
+            index_count += 1
+    else:
+        metadrive_config = metadrive_config or {}
+        metadrive_config.update(
+            {
+                "agent_policy": ReplayEgoCarPolicy,
+                "num_scenarios": num_scenario,
+                "horizon": 1000,
+                "start_scenario_index": start_scenario_index,
+                "no_static_vehicles": False,
+                "data_directory": dataset_path,
+            }
+        )
+        env = ScenarioEnv(metadrive_config)
+        logging.disable(logging.INFO)
+        desc = "Scenarios: {}-{}".format(start_scenario_index, start_scenario_index + num_scenario)
+        for scenario_index in tqdm.tqdm(range(start_scenario_index, start_scenario_index + num_scenario), desc=desc):
+            try:
+                env.reset(force_seed=scenario_index)
+                arrive = False
+                if RANDOM_DROP and np.random.rand() < 0.5:
+                    raise ValueError("Random Drop")
+                for _ in range(steps_to_run):
+                    o, r, d, info = env.step([0, 0])
+                    if d and info["arrive_dest"]:
+                        arrive = True
+                assert arrive, "Can not arrive destination"
+            except Exception as e:
+                file_name = env.engine.data_manager.summary_lookup[scenario_index]
+                file_path = os.path.join(dataset_path, env.engine.data_manager.mapping[file_name], file_name)
+                error_msg = ED.make(scenario_index, file_path, file_name, str(e))
+                error_msgs.append(error_msg)
+                success = False
+                # proceed to next scenario
+                continue
+
+        env.close()
     return success, error_msgs
 
 

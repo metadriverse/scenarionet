@@ -9,7 +9,7 @@ from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.common_utils import recursive_equal
 from scenarionet.verifier.error import ErrorFile
-from scenarionet.verifier.utils import verify_simulation, set_random_drop
+from scenarionet.verifier.utils import verify_dataset, set_random_drop
 
 
 def test_generate_from_error():
@@ -24,7 +24,7 @@ def test_generate_from_error():
     summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
     for scenario_file in sorted_scenarios:
         read_scenario(dataset_path, mapping, scenario_file)
-    success, logs = verify_simulation(
+    success, logs = verify_dataset(
         dataset_path, result_save_dir=test_dataset_path, steps_to_run=1000, num_workers=3, overwrite=True
     )
     set_random_drop(False)
