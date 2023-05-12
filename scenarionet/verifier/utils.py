@@ -3,6 +3,7 @@ import multiprocessing
 import os
 
 import numpy as np
+
 from scenarionet.common_utils import read_scenario, read_dataset_summary
 from scenarionet.verifier.error import ErrorDescription as ED
 from scenarionet.verifier.error import ErrorFile as EF
@@ -25,6 +26,7 @@ def set_random_drop(drop):
 
 
 def verify_dataset(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
+    global RANDOM_DROP
     assert os.path.isdir(result_save_dir), "result_save_dir must be a dir, get {}".format(result_save_dir)
     os.makedirs(result_save_dir, exist_ok=True)
     error_file_name = EF.get_error_file_name(dataset_path)
@@ -41,7 +43,7 @@ def verify_dataset(dataset_path, result_save_dir, overwrite=False, num_workers=8
 
     # prepare arguments
     argument_list = []
-    func = partial(loading_wrapper, dataset_path=dataset_path, steps_to_run=steps_to_run)
+    func = partial(loading_wrapper, dataset_path=dataset_path, steps_to_run=steps_to_run, random_drop=RANDOM_DROP)
 
     num_scenario_each_worker = int(num_scenario // num_workers)
     for i in range(num_workers):
@@ -71,8 +73,8 @@ def verify_dataset(dataset_path, result_save_dir, overwrite=False, num_workers=8
     return success, errors
 
 
-def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run, metadrive_config=None):
-    global RANDOM_DROP
+def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run, metadrive_config=None,
+                           random_drop=False):
     logger.info(
         "================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
             start_scenario_index, num_scenario + start_scenario_index
@@ -81,14 +83,15 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
     success = True
     error_msgs = []
 
-    if steps_to_run ==0:
+    if steps_to_run == 0:
         summary, scenarios, mapping = read_dataset_summary(dataset_path)
-        index_count=0
+        index_count = -1
         for file_name in tqdm.tqdm(scenarios):
+            index_count += 1
             try:
                 scenario = read_scenario(dataset_path, mapping, file_name)
                 SD.sanity_check(scenario)
-                if RANDOM_DROP and np.random.rand() < 0.5:
+                if random_drop and np.random.rand() < 0.5:
                     raise ValueError("Random Drop")
             except Exception as e:
                 file_path = os.path.join(dataset_path, mapping[file_name], file_name)
@@ -97,7 +100,6 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
                 success = False
                 # proceed to next scenario
                 continue
-            index_count += 1
     else:
         metadrive_config = metadrive_config or {}
         metadrive_config.update(
@@ -117,7 +119,7 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
             try:
                 env.reset(force_seed=scenario_index)
                 arrive = False
-                if RANDOM_DROP and np.random.rand() < 0.5:
+                if random_drop and np.random.rand() < 0.5:
                     raise ValueError("Random Drop")
                 for _ in range(steps_to_run):
                     o, r, d, info = env.step([0, 0])
@@ -137,6 +139,9 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
     return success, error_msgs
 
 
-def loading_wrapper(arglist, dataset_path, steps_to_run):
+def loading_wrapper(arglist, dataset_path, steps_to_run, random_drop):
     assert len(arglist) == 2, "Too much arguments!"
-    return loading_into_metadrive(arglist[0], arglist[1], dataset_path=dataset_path, steps_to_run=steps_to_run)
+    return loading_into_metadrive(arglist[0], arglist[1],
+                                  dataset_path=dataset_path,
+                                  steps_to_run=steps_to_run,
+                                  random_drop=random_drop)
