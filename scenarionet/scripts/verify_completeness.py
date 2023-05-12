@@ -7,7 +7,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--dataset_path", "-d", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
     )
-    parser.add_argument("--result_save_dir", default="", help="Where to save the error file")
+    parser.add_argument("--result_save_dir", default="./", help="Where to save the error file")
     parser.add_argument(
         "--overwrite",
         action="store_true",
