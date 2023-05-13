@@ -16,7 +16,6 @@ def test_generate_from_error():
     set_random_drop(True)
     dataset_name = "nuscenes"
     original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
-    test_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset")
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
     dataset_path = os.path.join(TMP_PATH, "combine")
     combine_dataset(dataset_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, overwrite=True)
@@ -25,12 +24,12 @@ def test_generate_from_error():
     for scenario_file in sorted_scenarios:
         read_scenario(dataset_path, mapping, scenario_file)
     success, logs = verify_dataset(
-        dataset_path, result_save_dir=test_dataset_path, steps_to_run=1000, num_workers=3, overwrite=True
+        dataset_path, result_save_dir=TMP_PATH, steps_to_run=1000, num_workers=3, overwrite=True
     )
     set_random_drop(False)
     # get error file
     file_name = ErrorFile.get_error_file_name(dataset_path)
-    error_file_path = os.path.join(test_dataset_path, file_name)
+    error_file_path = os.path.join(TMP_PATH, file_name)
     # regenerate
     pass_dataset = os.path.join(TMP_PATH, "passed_senarios")
     fail_dataset = os.path.join(TMP_PATH, "failed_scenarios")
