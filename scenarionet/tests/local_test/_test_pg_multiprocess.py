@@ -24,7 +24,7 @@ if __name__ == '__main__':
         dict(
             start_seed=start_seed,
             num_scenarios=num_scenario,
-            traffic_density=0.2,
+            traffic_density=0.15,
             agent_policy=IDMPolicy,
             crash_vehicle_done=False,
             map=2

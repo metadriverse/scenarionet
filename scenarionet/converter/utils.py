@@ -186,7 +186,7 @@ def write_to_directory_single_worker(
             dict(
                 start_seed=scenarios[0],
                 num_scenarios=len(scenarios),
-                traffic_density=0.2,
+                traffic_density=0.15,
                 agent_policy=IDMPolicy,
                 crash_vehicle_done=False,
                 store_map=False,

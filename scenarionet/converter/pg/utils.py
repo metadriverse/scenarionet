@@ -17,7 +17,11 @@ def convert_pg_scenario(scenario_index, version, env):
 
     logging.disable(logging.INFO)
     policy = lambda x: [0, 1]  # placeholder
-    scenarios, done_info = env.export_scenarios(policy, scenario_index=[scenario_index], to_dict=False)
+    scenarios, done_info = env.export_scenarios(policy,
+                                                scenario_index=[scenario_index],
+                                                max_episode_length=500,
+                                                suppress_warning=True,
+                                                to_dict=False)
     scenario = scenarios[scenario_index]
     assert scenario[SD.VERSION] == version, "Data version mismatch"
     return scenario
