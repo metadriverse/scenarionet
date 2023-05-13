@@ -12,14 +12,12 @@ if __name__ == '__main__':
         "--overwrite",
         action="store_true",
         help="If an error file already exists in result_save_dir, "
-             "whether to overwrite it"
+        "whether to overwrite it"
     )
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     parser.add_argument("--random_drop", action="store_true", help="Randomly make some scenarios fail. for test only!")
     args = parser.parse_args()
     set_random_drop(args.random_drop)
-    verify_dataset(args.dataset_path,
-                   args.result_save_dir,
-                   overwrite=args.overwrite,
-                   num_workers=args.num_workers,
-                   steps_to_run=0)
+    verify_dataset(
+        args.dataset_path, args.result_save_dir, overwrite=args.overwrite, num_workers=args.num_workers, steps_to_run=0
+    )

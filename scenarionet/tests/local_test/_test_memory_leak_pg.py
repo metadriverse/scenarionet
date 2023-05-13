@@ -18,7 +18,8 @@ def _test_pg_memory_leak():
         "pg",
         worker_index=0,
         report_memory_freq=10,
-        overwrite=True)
+        overwrite=True
+    )
 
 
 if __name__ == '__main__':

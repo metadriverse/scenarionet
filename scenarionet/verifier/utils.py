@@ -73,8 +73,9 @@ def verify_dataset(dataset_path, result_save_dir, overwrite=False, num_workers=8
     return success, errors
 
 
-def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, steps_to_run, metadrive_config=None,
-                           random_drop=False):
+def loading_into_metadrive(
+    start_scenario_index, num_scenario, dataset_path, steps_to_run, metadrive_config=None, random_drop=False
+):
     logger.info(
         "================ Begin Scenario Loading Verification for scenario {}-{} ================ \n".format(
             start_scenario_index, num_scenario + start_scenario_index
@@ -141,7 +142,6 @@ def loading_into_metadrive(start_scenario_index, num_scenario, dataset_path, ste
 
 def loading_wrapper(arglist, dataset_path, steps_to_run, random_drop):
     assert len(arglist) == 2, "Too much arguments!"
-    return loading_into_metadrive(arglist[0], arglist[1],
-                                  dataset_path=dataset_path,
-                                  steps_to_run=steps_to_run,
-                                  random_drop=random_drop)
+    return loading_into_metadrive(
+        arglist[0], arglist[1], dataset_path=dataset_path, steps_to_run=steps_to_run, random_drop=random_drop
+    )
