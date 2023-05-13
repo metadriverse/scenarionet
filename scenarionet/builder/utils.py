@@ -6,6 +6,7 @@ import os.path as osp
 import pickle
 import shutil
 from typing import Callable, List
+import tqdm
 
 from metadrive.scenario.scenario_description import ScenarioDescription
 
@@ -60,7 +61,7 @@ def combine_dataset(
     mappings = {}
 
     # collect
-    for dataset_path in dataset_paths:
+    for dataset_path in tqdm.tqdm(dataset_paths):
         abs_dir_path = osp.abspath(dataset_path)
         # summary
         assert osp.exists(abs_dir_path), "Wrong dataset path. Can not find dataset at: {}".format(abs_dir_path)
