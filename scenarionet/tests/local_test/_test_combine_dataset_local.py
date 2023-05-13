@@ -1,23 +1,28 @@
 import os
 
-from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH
-from scenarionet.builder.utils import combine_multiple_dataset
-from scenarionet.verifier.utils import verify_loading_into_metadrive
+from metadrive.scenario.scenario_description import ScenarioDescription as SD
+
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH, TMP_PATH
+from scenarionet.builder.utils import combine_dataset
+from scenarionet.common_utils import read_dataset_summary, read_scenario
 
 
 def _test_combine_dataset():
     dataset_paths = [
         os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
+        os.path.join(SCENARIONET_DATASET_PATH, "nuscenes", "nuscenes_0"),
         os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
         os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
         os.path.join(SCENARIONET_DATASET_PATH, "pg")
     ]
 
-    combine_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
-    # os.makedirs("verify_results", exist_ok=True)
-    # verify_loading_into_metadrive(combine_path, "verify_results")
-    # assert success
+    combine_path = os.path.join(TMP_PATH, "combine")
+    combine_dataset(combine_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
+    summary, _, mapping = read_dataset_summary(combine_path)
+    for scenario in summary:
+        sd = read_scenario(combine_path, mapping, scenario)
+        SD.sanity_check(sd)
+    print("Test pass")
 
 
 if __name__ == '__main__':

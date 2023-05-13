@@ -1,6 +1,6 @@
+import pkg_resources  # for suppress warning
 import argparse
 import os
-
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 from metadrive.scenario.utils import get_number_of_scenarios
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         }
     )
     for seed in range(num_scenario if args.scenario_index is not None else 1000000):
-        env.reset(force_seed=seed if args.scenario_index is not None else args.scenario_index)
+        env.reset(force_seed=seed if args.scenario_index is None else args.scenario_index)
         for t in range(10000):
             o, r, d, info = env.step([0, 0])
             if env.config["use_render"]:

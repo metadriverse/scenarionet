@@ -3,9 +3,9 @@ import os.path
 
 from metadrive.type import MetaDriveType
 
-from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH, TMP_PATH
 from scenarionet.builder.filters import ScenarioFilter
-from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet.builder.utils import combine_dataset
 
 
 def test_filter_dataset():
@@ -17,16 +17,17 @@ def test_filter_dataset():
     dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "waymo"))
     dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "pg"))
 
-    output_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
+    output_path = os.path.join(TMP_PATH, "combine")
 
     # ========================= test 1 =========================
     # nuscenes data has no light
     # light_condition = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
     sdc_driving_condition = ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=30, condition="greater")
-    summary, mapping = combine_multiple_dataset(
+    summary, mapping = combine_dataset(
         output_path,
         *dataset_paths,
-        force_overwrite=True,
+        exist_ok=True,
+        overwrite=True,
         try_generate_missing_file=True,
         filters=[sdc_driving_condition]
     )
@@ -38,8 +39,13 @@ def test_filter_dataset():
         ScenarioFilter.object_number, number_threshold=50, object_type=MetaDriveType.PEDESTRIAN, condition="greater"
     )
 
-    summary, mapping = combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True, filters=[num_condition]
+    summary, mapping = combine_dataset(
+        output_path,
+        *dataset_paths,
+        exist_ok=True,
+        overwrite=True,
+        try_generate_missing_file=True,
+        filters=[num_condition]
     )
     assert len(summary) > 0
 
@@ -47,8 +53,13 @@ def test_filter_dataset():
 
     traffic_light = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
 
-    summary, mapping = combine_multiple_dataset(
-        output_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True, filters=[traffic_light]
+    summary, mapping = combine_dataset(
+        output_path,
+        *dataset_paths,
+        exist_ok=True,
+        overwrite=True,
+        try_generate_missing_file=True,
+        filters=[traffic_light]
     )
     assert len(summary) > 0
 

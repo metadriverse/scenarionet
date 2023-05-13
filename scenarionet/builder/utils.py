@@ -1,3 +1,4 @@
+import pkg_resources  # for suppress warning
 import copy
 import logging
 import os
@@ -5,6 +6,7 @@ import os.path as osp
 import pickle
 import shutil
 from typing import Callable, List
+import tqdm
 
 from metadrive.scenario.scenario_description import ScenarioDescription
 
@@ -25,13 +27,19 @@ def try_generating_summary(file_folder):
     return summary
 
 
-def combine_multiple_dataset(
-    output_path, *dataset_paths, force_overwrite=False, try_generate_missing_file=True, filters: List[Callable] = None
+def combine_dataset(
+    output_path,
+    *dataset_paths,
+    exist_ok=False,
+    overwrite=False,
+    try_generate_missing_file=True,
+    filters: List[Callable] = None
 ):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
     :param output_path: The path to store the output dataset
-    :param force_overwrite: If True, overwrite the output_path even if it exists
+    :param exist_ok: If True, though the output_path already exist, still write into it
+    :param overwrite: If True, overwrite existing dataset_summary.pkl and mapping.pkl. Otherwise, raise error
     :param try_generate_missing_file: If dataset_summary.pkl and mapping.pkl are missing, whether to try generating them
     :param dataset_paths: Path of each dataset
     :param filters: a set of filters to choose which scenario to be selected and added into this combined dataset
@@ -39,24 +47,26 @@ def combine_multiple_dataset(
     """
     filters = filters or []
     output_abs_path = osp.abspath(output_path)
-    if os.path.exists(output_abs_path):
-        if not force_overwrite:
-            raise FileExistsError("Output path already exists!")
-        else:
-            shutil.rmtree(output_abs_path)
-    os.makedirs(output_abs_path, exist_ok=False)
+    os.makedirs(output_abs_path, exist_ok=exist_ok)
+    summary_file = osp.join(output_abs_path, ScenarioDescription.DATASET.SUMMARY_FILE)
+    mapping_file = osp.join(output_abs_path, ScenarioDescription.DATASET.MAPPING_FILE)
+    for file in [summary_file, mapping_file]:
+        if os.path.exists(file):
+            if overwrite:
+                os.remove(file)
+            else:
+                raise FileExistsError("{} already exists at: {}!".format(file, output_abs_path))
 
     summaries = {}
     mappings = {}
 
     # collect
-    for dataset_path in dataset_paths:
+    for dataset_path in tqdm.tqdm(dataset_paths):
         abs_dir_path = osp.abspath(dataset_path)
         # summary
         assert osp.exists(abs_dir_path), "Wrong dataset path. Can not find dataset at: {}".format(abs_dir_path)
         if not osp.exists(osp.join(abs_dir_path, ScenarioDescription.DATASET.SUMMARY_FILE)):
             if try_generate_missing_file:
-                # TODO add test for 1. number dataset 2. missing summary dataset 3. missing mapping dataset
                 summary = try_generating_summary(abs_dir_path)
             else:
                 raise FileNotFoundError("Can not find summary file for dataset: {}".format(abs_dir_path))
@@ -96,8 +106,6 @@ def combine_multiple_dataset(
         summaries.pop(file)
         mappings.pop(file)
 
-    summary_file = osp.join(output_abs_path, ScenarioDescription.DATASET.SUMMARY_FILE)
-    mapping_file = osp.join(output_abs_path, ScenarioDescription.DATASET.MAPPING_FILE)
     save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings

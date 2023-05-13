@@ -388,7 +388,11 @@ def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
     return result
 
 
-def get_nuscenes_scenarios(dataroot, version):
+def get_nuscenes_scenarios(dataroot, version, num_workers=2):
     nusc = NuScenes(version=version, dataroot=dataroot)
     scenarios = nusc.scene
-    return scenarios, nusc
+
+    def _get_nusc():
+        return NuScenes(version=version, dataroot=dataroot)
+
+    return scenarios, [_get_nusc() for _ in range(num_workers)]

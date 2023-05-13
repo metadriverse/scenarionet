@@ -10,11 +10,15 @@ import shutil
 from functools import partial
 
 import numpy as np
+import psutil
 import tqdm
+from metadrive.envs.metadrive_env import MetaDriveEnv
+from metadrive.policy.idm_policy import IDMPolicy
 from metadrive.scenario import ScenarioDescription as SD
 
-from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import save_summary_anda_mapping
+from scenarionet.converter.pg.utils import convert_pg_scenario
 
 logger = logging.getLogger(__file__)
 
@@ -61,33 +65,34 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func,
-    scenarios,
-    output_path,
-    dataset_version,
-    dataset_name,
-    force_overwrite=False,
-    num_workers=8,
-    **kwargs
+    convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
 ):
     # make sure dir not exist
+    kwargs_for_workers = [{} for _ in range(num_workers)]
+    for key, value in kwargs.items():
+        for i in range(num_workers):
+            kwargs_for_workers[i][key] = value[i]
+
     save_path = copy.deepcopy(output_path)
     if os.path.exists(output_path):
-        if not force_overwrite:
+        if not overwrite:
             raise ValueError(
                 "Directory {} already exists! Abort. "
-                "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
+                "\n Try setting overwrite=True or adding --overwrite".format(output_path)
             )
+        else:
+            shutil.rmtree(output_path)
+    os.makedirs(save_path, exist_ok=False)
 
     basename = os.path.basename(output_path)
-    dir = os.path.dirname(output_path)
+    # dir = os.path.dirname(output_path)
     for i in range(num_workers):
-        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
-        if os.path.exists(output_path):
-            if not force_overwrite:
+        subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
+        if os.path.exists(subdir):
+            if not overwrite:
                 raise ValueError(
                     "Directory {} already exists! Abort. "
-                    "\n Try setting force_overwrite=True or adding --overwrite".format(output_path)
+                    "\n Try setting overwrite=True or adding --overwrite".format(subdir)
                 )
     # get arguments for workers
     num_files = len(scenarios)
@@ -104,9 +109,9 @@ def write_to_directory(
             end_idx = num_files
         else:
             end_idx = (i + 1) * num_files_each_worker
-        output_path = os.path.join(dir, "{}_{}".format(basename, str(i)))
-        output_pathes.append(output_path)
-        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs, i, output_path])
+        subdir = os.path.join(output_path, "{}_{}".format(basename, str(i)))
+        output_pathes.append(subdir)
+        argument_list.append([scenarios[i * num_files_each_worker:end_idx], kwargs_for_workers[i], i, subdir])
 
     # prefill arguments
     func = partial(
@@ -114,26 +119,24 @@ def write_to_directory(
         convert_func=convert_func,
         dataset_version=dataset_version,
         dataset_name=dataset_name,
-        force_overwrite=force_overwrite
+        overwrite=overwrite
     )
 
     # Run, workers and process result from worker
-    with multiprocessing.Pool(num_workers) as p:
-        all_result = list(p.imap(func, argument_list))
-    combine_multiple_dataset(
-        save_path, *output_pathes, force_overwrite=force_overwrite, try_generate_missing_file=False
-    )
-    return all_result
+    with multiprocessing.Pool(num_workers, maxtasksperchild=10) as p:
+        ret = list(p.imap(func, argument_list))
+        # call ret to block the process
+    combine_dataset(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
 
 
-def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, force_overwrite=False):
+def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, overwrite=False):
     return write_to_directory_single_worker(
         convert_func=convert_func,
         scenarios=args[0],
         output_path=args[3],
         dataset_version=dataset_version,
         dataset_name=dataset_name,
-        force_overwrite=force_overwrite,
+        overwrite=overwrite,
         worker_index=args[2],
         **args[1]
     )
@@ -146,7 +149,8 @@ def write_to_directory_single_worker(
     dataset_version,
     dataset_name,
     worker_index=0,
-    force_overwrite=False,
+    overwrite=False,
+    report_memory_freq=None,
     **kwargs
 ):
     """
@@ -169,13 +173,10 @@ def write_to_directory_single_worker(
     # make real save dir
     delay_remove = None
     if os.path.exists(save_path):
-        if force_overwrite:
+        if overwrite:
             delay_remove = save_path
         else:
-            raise ValueError(
-                "Directory already exists! Abort."
-                "\n Try setting force_overwrite=True or using --overwrite"
-            )
+            raise ValueError("Directory already exists! Abort." "\n Try setting overwrite=True or using --overwrite")
 
     summary_file = SD.DATASET.SUMMARY_FILE
     mapping_file = SD.DATASET.MAPPING_FILE
@@ -185,6 +186,23 @@ def write_to_directory_single_worker(
 
     summary = {}
     mapping = {}
+
+    # for pg scenario only
+    if convert_func is convert_pg_scenario:
+        env = MetaDriveEnv(
+            dict(
+                start_seed=scenarios[0],
+                num_scenarios=len(scenarios),
+                traffic_density=0.15,
+                agent_policy=IDMPolicy,
+                crash_vehicle_done=False,
+                store_map=False,
+                map=2
+            )
+        )
+        kwargs["env"] = env
+
+    count = 0
     for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
@@ -217,6 +235,10 @@ def write_to_directory_single_worker(
         with open(p, "wb") as f:
             pickle.dump(sd_scenario, f)
 
+        if report_memory_freq is not None and (count) % report_memory_freq == 0:
+            print("Current Memory: {}".format(process_memory()))
+        count += 1
+
     # store summary file
     save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping)
 
@@ -226,4 +248,8 @@ def write_to_directory_single_worker(
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
 
-    return summary, mapping
+
+def process_memory():
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    return mem_info.rss / 1024 / 1024  # mb

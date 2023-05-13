@@ -4,8 +4,8 @@ from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 from metadrive.scenario.utils import get_number_of_scenarios
 
-from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH
-from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH, TMP_PATH
+from scenarionet.builder.utils import combine_dataset
 
 if __name__ == '__main__':
     dataset_paths = [os.path.join(SCENARIONET_DATASET_PATH, "nuscenes")]
@@ -13,8 +13,8 @@ if __name__ == '__main__':
     dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "waymo"))
     dataset_paths.append(os.path.join(SCENARIONET_DATASET_PATH, "pg"))
 
-    combine_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_multiple_dataset(combine_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
+    combine_path = os.path.join(TMP_PATH, "combine")
+    combine_dataset(combine_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
 
     env = ScenarioEnv(
         {

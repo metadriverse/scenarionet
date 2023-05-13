@@ -4,41 +4,40 @@ import os.path
 
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
-from scenarionet import SCENARIONET_PACKAGE_PATH
-from scenarionet.builder.utils import combine_multiple_dataset
+from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
+from scenarionet.builder.utils import combine_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.common_utils import recursive_equal
 from scenarionet.verifier.error import ErrorFile
-from scenarionet.verifier.utils import verify_loading_into_metadrive, set_random_drop
+from scenarionet.verifier.utils import verify_dataset, set_random_drop
 
 
 def test_generate_from_error():
     set_random_drop(True)
     dataset_name = "nuscenes"
     original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
-    test_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset")
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
-    dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "combine")
-    combine_multiple_dataset(dataset_path, *dataset_paths, force_overwrite=True, try_generate_missing_file=True)
+    dataset_path = os.path.join(TMP_PATH, "combine")
+    combine_dataset(dataset_path, *dataset_paths, exist_ok=True, try_generate_missing_file=True, overwrite=True)
 
     summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
     for scenario_file in sorted_scenarios:
         read_scenario(dataset_path, mapping, scenario_file)
-    success, logs = verify_loading_into_metadrive(
-        dataset_path, result_save_dir=test_dataset_path, steps_to_run=1000, num_workers=3
+    success, logs = verify_dataset(
+        dataset_path, result_save_dir=TMP_PATH, steps_to_run=1000, num_workers=3, overwrite=True
     )
     set_random_drop(False)
     # get error file
     file_name = ErrorFile.get_error_file_name(dataset_path)
-    error_file_path = os.path.join(test_dataset_path, file_name)
+    error_file_path = os.path.join(TMP_PATH, file_name)
     # regenerate
-    pass_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "passed_senarios")
-    fail_dataset = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "tmp", "failed_scenarios")
+    pass_dataset = os.path.join(TMP_PATH, "passed_senarios")
+    fail_dataset = os.path.join(TMP_PATH, "failed_scenarios")
     pass_summary, pass_mapping = ErrorFile.generate_dataset(
-        error_file_path, pass_dataset, force_overwrite=True, broken_scenario=False
+        error_file_path, pass_dataset, overwrite=True, broken_scenario=False
     )
     fail_summary, fail_mapping = ErrorFile.generate_dataset(
-        error_file_path, fail_dataset, force_overwrite=True, broken_scenario=True
+        error_file_path, fail_dataset, overwrite=True, broken_scenario=True
     )
 
     # assert
