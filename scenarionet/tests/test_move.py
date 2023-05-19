@@ -21,7 +21,7 @@ def test_move_database():
         to = os.path.join(TMP_PATH, str(k))
         move_database(from_path, to)
         moved_path.append(to)
-        # assert not os.path.exists(path)
+        assert os.path.exists(from_path)
     merge_database(output_path, *moved_path, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     # verify
     summary, sorted_scenarios, mapping = read_dataset_summary(output_path)
