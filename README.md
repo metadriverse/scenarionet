@@ -28,7 +28,7 @@ python -m scenarionet.convert_waymo -d waymo --raw_data_path /path/to/tfrecords 
 store them at directory ./nuplan
 
 ```
-python -m scenarionet.convert_nuplan -d nuplan -raw_data_path /path/to/dir/containing/.db files --num_workers=16
+python -m scenarionet.convert_nuplan -d nuplan -raw_data_path /path/to/.db files --num_workers=16
 ```
 
 **nuScenes**: as nuScenes split can be read by specifying version like v1.0-mini and v1.0-training, the following script
@@ -47,7 +47,7 @@ python -m scenarionet.scripts.convert_pg -d pg --num_workers=16 --num_scenarios=
 ### Merge & move
 For merging two or more database, use
 ```
-python -m scenarionet.merge_database -d /destination/path --from_databases /database/path1 /database/path2 ... 
+python -m scenarionet.merge_database -d /destination/path --from_databases /database1 /2 ... 
 ```
 As a database contains a path mapping, one should move database folder with the following script instead of ```cp```
 command
@@ -60,17 +60,18 @@ The following scripts will check whether all scenarios exist or can be loaded in
 The missing or broken scenarios will be recorded and stored into the error file. Otherwise, no error file will be 
 generated. 
 With teh error file, one can build a new database excluding or including the broken or missing scenarios.
+
 **Existence check**
 ```
-python -m scenarionet.verify_completeness -d /database/to/check --result_save_dir /where/to/save/test/result
+python -m scenarionet.verify_completeness -d /database/to/check --result_save_dir /error/file/path
 ```
 **Runnable check**
 ```
-python -m scenarionet.verify_simulation -d /database/to/check --result_save_dir /where/to/save/test/result
+python -m scenarionet.verify_simulation -d /database/to/check --result_save_dir /error/file/path
 ```
 **Generating new database**
 ```
-python -m scenarionet.generate_from_error_file -d /where/to/create/the/new/database --file /error/file/path --broken
+python -m scenarionet.generate_from_error_file -d /new/database/path --file /error/file/path --broken
 ```
 
 ### visualization
