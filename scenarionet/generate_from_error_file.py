@@ -5,8 +5,8 @@ from scenarionet.verifier.error import ErrorFile
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--file", "-f", required=True, help="The path of the error file, should be xyz.json")
     parser.add_argument("--dataset_path", "-d", required=True, help="The path of the newly generated dataset")
+    parser.add_argument("--file", "-f", required=True, help="The path of the error file, should be xyz.json")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, overwrite it")
     parser.add_argument(
         "--broken",

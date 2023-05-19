@@ -7,6 +7,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dataset_path",
+        "-d",
         required=True,
         help="The name of the new combined dataset. "
         "It will create a new directory to store dataset_summary.pkl and dataset_mapping.pkl. "

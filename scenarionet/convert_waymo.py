@@ -12,13 +12,13 @@ logger = logging.getLogger(__name__)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_name", "-n", default="waymo", help="Dataset name, will be used to generate scenario files"
-    )
-    parser.add_argument(
         "--dataset_path",
         "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "waymo"),
         help="A directory, the path to place the converted data"
+    )
+    parser.add_argument(
+        "--dataset_name", "-n", default="waymo", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument("--version", "-v", default='v1.2', help="version")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, whether to overwrite it")

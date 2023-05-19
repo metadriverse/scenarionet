@@ -8,13 +8,13 @@ from scenarionet.converter.utils import write_to_directory
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_name", "-n", default="nuplan", help="Dataset name, will be used to generate scenario files"
-    )
-    parser.add_argument(
         "--dataset_path",
         "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "nuplan"),
         help="A directory, the path to place the data"
+    )
+    parser.add_argument(
+        "--dataset_name", "-n", default="nuplan", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument("--version", "-v", default='v1.1', help="version of the raw data")
     parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, whether to overwrite it")
