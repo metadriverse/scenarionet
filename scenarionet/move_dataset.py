@@ -1,10 +1,14 @@
 import argparse
-import os
 
-from scenarionet.builder.utils import merge_dataset
+from scenarionet.builder.utils import move_dataset
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--from',
+        required=True,
+        help="Which dataset to move."
+    )
     parser.add_argument(
         "--to",
         required=True,
@@ -12,11 +16,6 @@ if __name__ == '__main__':
              "It will create a new directory to store dataset_summary.pkl and dataset_mapping.pkl. "
              "If exists_ok=True, those two .pkl files will be stored in an existing directory and turn "
              "that directory into a dataset."
-    )
-    parser.add_argument(
-        '--from',
-        required=True,
-        help="Which dataset to move."
     )
     parser.add_argument(
         "--exist_ok",
@@ -32,14 +31,9 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     from_path = args.__getattr__("from")
-    if not os.path.exists(from_path):
-        raise FileNotFoundError("Can not find dataset: {}".format(from_path))
-    assert not os.path.samefile(from_path, args.to), "to_directory is the same as from_directory. Abort!"
-
-    merge_dataset(
-        args.to,
+    move_dataset(
         from_path,
+        args.to,
         exist_ok=args.exist_ok,
         overwrite=args.overwrite,
-        try_generate_missing_file=True,
     )

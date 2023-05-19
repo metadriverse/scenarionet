@@ -28,12 +28,12 @@ def try_generating_summary(file_folder):
 
 
 def merge_dataset(
-    output_path,
-    *dataset_paths,
-    exist_ok=False,
-    overwrite=False,
-    try_generate_missing_file=True,
-    filters: List[Callable] = None
+        output_path,
+        *dataset_paths,
+        exist_ok=False,
+        overwrite=False,
+        try_generate_missing_file=True,
+        filters: List[Callable] = None
 ):
     """
     Combine multiple datasets. Each dataset should have a dataset_summary.pkl
@@ -109,3 +109,22 @@ def merge_dataset(
     save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings
+
+
+def move_dataset(
+        from_path,
+        to_path,
+        exist_ok=False,
+        overwrite=False,
+):
+    if not os.path.exists(from_path):
+        raise FileNotFoundError("Can not find dataset: {}".format(from_path))
+    assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
+    merge_dataset(
+        to_path,
+        from_path,
+        exist_ok=exist_ok,
+        overwrite=overwrite,
+        try_generate_missing_file=True,
+    )
+    shutil.rmtree(from_path)
