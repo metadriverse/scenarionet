@@ -1,12 +1,15 @@
 import os
 import os.path
 
+import pytest
+
 from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
 from scenarionet.builder.utils import move_dataset, merge_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.verifier.utils import verify_dataset
 
 
+@pytest.mark.order("first")
 def test_move_dataset():
     dataset_name = "nuscenes"
     original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
