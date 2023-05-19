@@ -20,13 +20,13 @@ def test_verify_completeness():
         read_scenario(dataset_path, mapping, scenario_file)
     set_random_drop(True)
     success, result = verify_database(
-        dataset_path, result_save_dir=TMP_PATH, steps_to_run=0, num_workers=4, overwrite=True
+        dataset_path, error_file_path=TMP_PATH, steps_to_run=0, num_workers=4, overwrite=True
     )
     assert not success
 
     set_random_drop(False)
     success, result = verify_database(
-        dataset_path, result_save_dir=TMP_PATH, steps_to_run=0, num_workers=4, overwrite=True
+        dataset_path, error_file_path=TMP_PATH, steps_to_run=0, num_workers=4, overwrite=True
     )
     assert success
 

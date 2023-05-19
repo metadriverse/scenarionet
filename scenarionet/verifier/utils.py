@@ -25,12 +25,12 @@ def set_random_drop(drop):
     RANDOM_DROP = drop
 
 
-def verify_database(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
+def verify_database(dataset_path, error_file_path, overwrite=False, num_workers=8, steps_to_run=1000):
     global RANDOM_DROP
-    assert os.path.isdir(result_save_dir), "result_save_dir must be a dir, get {}".format(result_save_dir)
-    os.makedirs(result_save_dir, exist_ok=True)
+    assert os.path.isdir(error_file_path), "error_file_path must be a dir, get {}".format(error_file_path)
+    os.makedirs(error_file_path, exist_ok=True)
     error_file_name = EF.get_error_file_name(dataset_path)
-    if os.path.exists(os.path.join(result_save_dir, error_file_name)) and not overwrite:
+    if os.path.exists(os.path.join(error_file_path, error_file_name)) and not overwrite:
         raise FileExistsError(
             "An error_file already exists in result_save_directory. "
             "Setting overwrite=True to cancel this alert"
@@ -65,7 +65,7 @@ def verify_database(dataset_path, result_save_dir, overwrite=False, num_workers=
         logger.info("All scenarios can be loaded successfully!")
     else:
         # save result
-        path = EF.dump(result_save_dir, errors, dataset_path)
+        path = EF.dump(error_file_path, errors, dataset_path)
         logger.info(
             "Fail to load all scenarios. Number of failed scenarios: {}. "
             "See: {} more details! ".format(len(errors), path)

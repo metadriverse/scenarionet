@@ -28,7 +28,7 @@ def test_move_database():
     for scenario_file in sorted_scenarios:
         read_scenario(output_path, mapping, scenario_file)
     success, result = verify_database(
-        output_path, result_save_dir=output_path, steps_to_run=0, num_workers=4, overwrite=True
+        output_path, error_file_path=output_path, steps_to_run=0, num_workers=4, overwrite=True
     )
     assert success
 
@@ -45,7 +45,7 @@ def test_move_database():
     for scenario_file in sorted_scenarios:
         read_scenario(output_path, mapping, scenario_file)
     success, result = verify_database(
-        output_path, result_save_dir=output_path, steps_to_run=0, num_workers=4, overwrite=True
+        output_path, error_file_path=output_path, steps_to_run=0, num_workers=4, overwrite=True
     )
     assert success
 
