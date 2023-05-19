@@ -19,5 +19,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     set_random_drop(args.random_drop)
     verify_database(
-        args.database_path, args.result_save_dir, overwrite=args.overwrite, num_workers=args.num_workers, steps_to_run=0
+        args.database_path,
+        args.result_save_dir,
+        overwrite=args.overwrite,
+        num_workers=args.num_workers,
+        steps_to_run=0
     )
