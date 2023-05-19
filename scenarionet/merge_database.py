@@ -1,12 +1,12 @@
 import pkg_resources  # for suppress warning
 import argparse
 from scenarionet.builder.filters import ScenarioFilter
-from scenarionet.builder.utils import merge_dataset
+from scenarionet.builder.utils import merge_database
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_path",
+        "--database_path",
         "-d",
         required=True,
         help="The name of the new combined dataset. "
@@ -44,8 +44,8 @@ if __name__ == '__main__':
     filters = [ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=target, condition="greater")]
 
     if len(args.from_datasets) != 0:
-        merge_dataset(
-            args.dataset_path,
+        merge_database(
+            args.database_path,
             *args.from_datasets,
             exist_ok=args.exist_ok,
             overwrite=args.overwrite,

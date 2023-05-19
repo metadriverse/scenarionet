@@ -1,11 +1,11 @@
 import pkg_resources  # for suppress warning
 import argparse
-from scenarionet.verifier.utils import verify_dataset, set_random_drop
+from scenarionet.verifier.utils import verify_database, set_random_drop
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_path", "-d", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
+        "--database_path", "-d", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
     )
     parser.add_argument("--result_save_dir", default="./", help="Where to save the error file")
     parser.add_argument(
@@ -18,4 +18,4 @@ if __name__ == '__main__':
     parser.add_argument("--random_drop", action="store_true", help="Randomly make some scenarios fail. for test only!")
     args = parser.parse_args()
     set_random_drop(args.random_drop)
-    verify_dataset(args.dataset_path, args.result_save_dir, overwrite=args.overwrite, num_workers=args.num_workers)
+    verify_database(args.database_path, args.result_save_dir, overwrite=args.overwrite, num_workers=args.num_workers)

@@ -1,6 +1,6 @@
 import argparse
 
-from scenarionet.builder.utils import move_dataset
+from scenarionet.builder.utils import move_database
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     from_path = args.__getattr__("from")
-    move_dataset(
+    move_database(
         from_path,
         args.to,
         exist_ok=args.exist_ok,

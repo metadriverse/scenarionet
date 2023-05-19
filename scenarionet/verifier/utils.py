@@ -25,7 +25,7 @@ def set_random_drop(drop):
     RANDOM_DROP = drop
 
 
-def verify_dataset(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
+def verify_database(dataset_path, result_save_dir, overwrite=False, num_workers=8, steps_to_run=1000):
     global RANDOM_DROP
     assert os.path.isdir(result_save_dir), "result_save_dir must be a dir, get {}".format(result_save_dir)
     os.makedirs(result_save_dir, exist_ok=True)

@@ -7,13 +7,13 @@ from metadrive.scenario.utils import get_number_of_scenarios
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_path", "-d", required=True, help="The path of the dataset")
+    parser.add_argument("--database_path", "-d", required=True, help="The path of the dataset")
     parser.add_argument("--render", action="store_true", help="Enable 3D rendering")
     parser.add_argument("--scenario_index", default=None, type=int, help="Specifying a scenario to run")
     args = parser.parse_args()
 
-    dataset_path = os.path.abspath(args.dataset_path)
-    num_scenario = get_number_of_scenarios(dataset_path)
+    database_path = os.path.abspath(args.database_path)
+    num_scenario = get_number_of_scenarios(database_path)
     if args.scenario_index is not None:
         assert args.scenario_index < num_scenario, \
             "The specified scenario index exceeds the scenario range: {}!".format(num_scenario)
@@ -35,7 +35,7 @@ if __name__ == '__main__':
                 lane_line_detector=dict(num_lasers=12, distance=50),
                 side_detector=dict(num_lasers=160, distance=50)
             ),
-            "data_directory": dataset_path,
+            "data_directory": database_path,
         }
     )
     for seed in range(num_scenario if args.scenario_index is not None else 1000000):

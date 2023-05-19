@@ -26,7 +26,7 @@ def try_generating_summary(file_folder):
     return summary
 
 
-def merge_dataset(
+def merge_database(
     output_path,
     *dataset_paths,
     exist_ok=False,
@@ -110,7 +110,7 @@ def merge_dataset(
     return summaries, mappings
 
 
-def move_dataset(
+def move_database(
     from_path,
     to_path,
     exist_ok=False,
@@ -121,7 +121,7 @@ def move_dataset(
     if os.path.exists(to_path):
         assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a dataset"
         assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
-    merge_dataset(
+    merge_database(
         to_path,
         from_path,
         exist_ok=exist_ok,
