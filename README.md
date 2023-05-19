@@ -13,7 +13,7 @@ pip install -e .
 ## Usage
 
 We provide some explanation and demo for all scripts here.
-You are encouraged to them on your own, add ```-h``` or ```--help``` argument to know more details about these scripts.
+**You are encouraged to try them on your own, add ```-h``` or ```--help``` argument to know more details about these scripts.**
 
 ### Convert
 
@@ -45,22 +45,38 @@ python -m scenarionet.scripts.convert_pg -d pg --num_workers=16 --num_scenarios=
 ```
 
 ### Merge & move
-
 For merging two or more database, use
-```python -m scenarionet.merge_database -d /destination/path --from_databases /database/path1 /database/path2 ... ```
+```
+python -m scenarionet.merge_database -d /destination/path --from_databases /database/path1 /database/path2 ... 
+```
 As a database contains a path mapping, one should move database folder with the following script instead of ```cp```
 command
-```python -m scenarionet.move_database --to /destination/path --from /source/path```
+```
+python -m scenarionet.move_database --to /destination/path --from /source/path
+```
 
 ### Verify
-
-```python -m scenarionet.verify_simulation```
-```python -m scenarionet.verify_completeness```
-```python -m scenarionet.verify_completeness```
-```python -m scenarionet.generate_from_error_file```
+The following scripts will check whether all scenarios exist or can be loaded into simulator.
+The missing or broken scenarios will be recorded and stored into the error file. Otherwise, no error file will be 
+generated. 
+With teh error file, one can build a new database excluding or including the broken or missing scenarios.
+**Existence check**
+```
+python -m scenarionet.verify_completeness -d /database/to/check --result_save_dir /where/to/save/test/result
+```
+**Runnable check**
+```
+python -m scenarionet.verify_simulation -d /database/to/check --result_save_dir /where/to/save/test/result
+```
+**Generating new database**
+```
+python -m scenarionet.generate_from_error_file -d /where/to/create/the/new/database --file /error/file/path --broken
+```
 
 ### visualization
 
 Visualizing the simulated scenario
-```python -m scenarionet.run_simulation```
+```
+python -m scenarionet.run_simulation -d /path/to/database --render --scenario_index
+```
 
