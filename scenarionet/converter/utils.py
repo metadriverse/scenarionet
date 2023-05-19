@@ -16,7 +16,7 @@ from metadrive.envs.metadrive_env import MetaDriveEnv
 from metadrive.policy.idm_policy import IDMPolicy
 from metadrive.scenario import ScenarioDescription as SD
 
-from scenarionet.builder.utils import combine_dataset
+from scenarionet.builder.utils import merge_database
 from scenarionet.common_utils import save_summary_anda_mapping
 from scenarionet.converter.pg.utils import convert_pg_scenario
 
@@ -126,7 +126,7 @@ def write_to_directory(
     with multiprocessing.Pool(num_workers, maxtasksperchild=10) as p:
         ret = list(p.imap(func, argument_list))
         # call ret to block the process
-    combine_dataset(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
+    merge_database(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
 
 
 def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, overwrite=False):

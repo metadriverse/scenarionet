@@ -5,7 +5,7 @@ from metadrive.type import MetaDriveType
 
 from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_PACKAGE_PATH, TMP_PATH
 from scenarionet.builder.filters import ScenarioFilter
-from scenarionet.builder.utils import combine_dataset
+from scenarionet.builder.utils import merge_database
 
 
 def test_filter_dataset():
@@ -23,7 +23,7 @@ def test_filter_dataset():
     # nuscenes data has no light
     # light_condition = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
     sdc_driving_condition = ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=30, condition="greater")
-    summary, mapping = combine_dataset(
+    summary, mapping = merge_database(
         output_path,
         *dataset_paths,
         exist_ok=True,
@@ -39,7 +39,7 @@ def test_filter_dataset():
         ScenarioFilter.object_number, number_threshold=50, object_type=MetaDriveType.PEDESTRIAN, condition="greater"
     )
 
-    summary, mapping = combine_dataset(
+    summary, mapping = merge_database(
         output_path,
         *dataset_paths,
         exist_ok=True,
@@ -53,7 +53,7 @@ def test_filter_dataset():
 
     traffic_light = ScenarioFilter.make(ScenarioFilter.has_traffic_light)
 
-    summary, mapping = combine_dataset(
+    summary, mapping = merge_database(
         output_path,
         *dataset_paths,
         exist_ok=True,

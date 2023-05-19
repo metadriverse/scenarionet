@@ -8,13 +8,13 @@ from scenarionet.converter.utils import write_to_directory
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset_name", "-n", default="nuscenes", help="Dataset name, will be used to generate scenario files"
-    )
-    parser.add_argument(
-        "--dataset_path",
+        "--database_path",
         "-d",
         default=os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"),
         help="directory, The path to place the data"
+    )
+    parser.add_argument(
+        "--dataset_name", "-n", default="nuscenes", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument(
         "--version",
@@ -22,13 +22,13 @@ if __name__ == '__main__':
         default='v1.0-mini',
         help="version of nuscenes data, scenario of this version will be converted "
     )
-    parser.add_argument("--overwrite", action="store_true", help="If the dataset_path exists, whether to overwrite it")
+    parser.add_argument("--overwrite", action="store_true", help="If the database_path exists, whether to overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()
 
     overwrite = args.overwrite
     dataset_name = args.dataset_name
-    output_path = args.dataset_path
+    output_path = args.database_path
     version = args.version
 
     dataroot = '/home/shady/data/nuscenes'

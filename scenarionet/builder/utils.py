@@ -1,4 +1,3 @@
-import pkg_resources  # for suppress warning
 import copy
 import logging
 import os
@@ -6,8 +5,8 @@ import os.path as osp
 import pickle
 import shutil
 from typing import Callable, List
-import tqdm
 
+import tqdm
 from metadrive.scenario.scenario_description import ScenarioDescription
 
 from scenarionet.common_utils import save_summary_anda_mapping
@@ -27,7 +26,7 @@ def try_generating_summary(file_folder):
     return summary
 
 
-def combine_dataset(
+def merge_database(
     output_path,
     *dataset_paths,
     exist_ok=False,
@@ -109,3 +108,27 @@ def combine_dataset(
     save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings
+
+
+def move_database(
+    from_path,
+    to_path,
+    exist_ok=False,
+    overwrite=False,
+):
+    if not os.path.exists(from_path):
+        raise FileNotFoundError("Can not find dataset: {}".format(from_path))
+    if os.path.exists(to_path):
+        assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a dataset"
+        assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
+    merge_database(
+        to_path,
+        from_path,
+        exist_ok=exist_ok,
+        overwrite=overwrite,
+        try_generate_missing_file=True,
+    )
+    files = os.listdir(from_path)
+    if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
+            files) == 2:
+        shutil.rmtree(from_path)
