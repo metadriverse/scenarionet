@@ -6,7 +6,7 @@ from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
-from scenarionet.builder.utils import combine_dataset
+from scenarionet.builder.utils import merge_dataset
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.common_utils import recursive_equal
 from scenarionet.verifier.error import ErrorFile
@@ -25,7 +25,7 @@ def test_generate_from_error():
     ]
 
     dataset_path = os.path.join(TMP_PATH, "combine")
-    combine_dataset(dataset_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
+    merge_dataset(dataset_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
 
     summary, sorted_scenarios, mapping = read_dataset_summary(dataset_path)
     for scenario_file in sorted_scenarios:

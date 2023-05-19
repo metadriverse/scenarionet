@@ -27,7 +27,7 @@ def try_generating_summary(file_folder):
     return summary
 
 
-def combine_dataset(
+def merge_dataset(
     output_path,
     *dataset_paths,
     exist_ok=False,
