@@ -14,11 +14,11 @@ def test_move_dataset():
     moved_path = []
     output_path = os.path.join(TMP_PATH, "move_combine")
     # move
-    for k, path in enumerate(dataset_paths):
+    for k, from_path in enumerate(dataset_paths):
         to = os.path.join(TMP_PATH, str(k))
-        move_dataset(path, to)
+        move_dataset(from_path, to)
         moved_path.append(to)
-        assert not os.path.exists(path)
+        # assert not os.path.exists(path)
     merge_dataset(output_path, *moved_path, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     # verify
     summary, sorted_scenarios, mapping = read_dataset_summary(output_path)
@@ -29,10 +29,14 @@ def test_move_dataset():
     )
     assert success
 
-    # move back
-    for k, path in enumerate(moved_path):
-        move_dataset(path, dataset_paths[k])
-    merge_dataset(output_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
+    # move 2
+    new_move_pathes = []
+    for k, from_path in enumerate(moved_path):
+        new_p = os.path.join(TMP_PATH, str(k) + str(k))
+        new_move_pathes.append(new_p)
+        move_dataset(from_path, new_p, exist_ok=True, overwrite=True)
+        assert not os.path.exists(from_path)
+    merge_dataset(output_path, *new_move_pathes, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     # verify
     summary, sorted_scenarios, mapping = read_dataset_summary(output_path)
     for scenario_file in sorted_scenarios:
