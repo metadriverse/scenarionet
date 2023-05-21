@@ -211,12 +211,8 @@ def write_to_directory_single_worker(
 
         # add agents summary
         summary_dict = {}
-        ego_car_id = sd_scenario[SD.METADATA][SD.SDC_ID]
-        summary_dict[ego_car_id] = SD.get_object_summary(
-            state_dict=sd_scenario.get_sdc_track()["state"], id=ego_car_id, type=sd_scenario.get_sdc_track()["type"]
-        )
         for track_id, track in sd_scenario[SD.TRACKS].items():
-            summary_dict[track_id] = SD.get_object_summary(state_dict=track["state"], id=track_id, type=track["type"])
+            summary_dict[track_id] = SD.get_object_summary(state_dict=track, id=track_id)
         sd_scenario[SD.METADATA][SD.SUMMARY.OBJECT_SUMMARY] = summary_dict
 
         # count some objects occurrence
