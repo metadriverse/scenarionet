@@ -247,7 +247,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
     return interpolate_tracks
 
 
-def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=250, points_distance=1):
+def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, points_distance=1):
     """
     Extract map features from nuscenes data. The objects in specified region will be returned. Sampling rate determines
     the distance between 2 points when extracting lane center line.
@@ -383,7 +383,7 @@ def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
 
     # map
     map_center = result[SD.TRACKS]["ego"]["state"]["position"][0]
-    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, 250)
+    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, 500)
 
     return result
 

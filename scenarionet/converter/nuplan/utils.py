@@ -175,7 +175,7 @@ def get_line_type(nuplan_type):
         raise ValueError("Unknown line tyep: {}".format(nuplan_type))
 
 
-def extract_map_features(map_api, center, radius=250):
+def extract_map_features(map_api, center, radius=500):
     ret = {}
     np.seterr(all='ignore')
     # Center is Important !
