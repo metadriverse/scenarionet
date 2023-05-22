@@ -75,6 +75,7 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["curriculum_level"] = float(episode.last_info_for()["curriculum_level"])
         episode.custom_metrics["scenario_index"] = float(episode.last_info_for()["scenario_index"])
         episode.custom_metrics["track_length"] = float(episode.last_info_for()["track_length"])
+        episode.custom_metrics["num_stored_maps"] = float(episode.last_info_for()["num_stored_maps"])
 
     def on_train_result(self, *, trainer, result: dict, **kwargs):
         result["success"] = np.nan
