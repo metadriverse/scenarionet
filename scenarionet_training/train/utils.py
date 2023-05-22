@@ -43,6 +43,7 @@ def train(
         wandb_team="drivingforce",
         wandb_log_config=True,
         init_kws=None,
+        save_dir=None,
         **kwargs
 ):
     init_kws = init_kws or dict()
@@ -143,7 +144,7 @@ def train(
         config=config,
         max_failures=max_failures if not test_mode else 0,
         reuse_actors=False,
-        local_dir="..",
+        local_dir=save_dir or ".",
         **kwargs
     )
 

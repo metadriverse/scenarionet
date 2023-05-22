@@ -3,7 +3,7 @@ import os.path
 from metadrive.envs.gymnasium_wrapper import GymnasiumEnvWrapper
 from metadrive.envs.scenario_env import ScenarioEnv
 
-from scenarionet import SCENARIONET_DATASET_PATH
+from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train.utils import train, get_train_parser
 
 if __name__ == '__main__':
@@ -57,6 +57,7 @@ if __name__ == '__main__':
     train(
         "PPO",
         exp_name=exp_name,
+        save_dir=os.path.join(SCENARIONET_REPO_PATH, "experiment"),
         keep_checkpoints_num=5,
         stop=stop,
         config=config,
