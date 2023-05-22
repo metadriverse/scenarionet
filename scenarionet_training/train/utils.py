@@ -124,18 +124,38 @@ def train(
     if wandb_project is not None:
         assert wandb_project is not None
         failed_wandb = False
-        from scenarionet_training.wandb.our_wandb_callbacks import OurWandbLoggerCallback
+        try:
+            from scenarionet_training.wandb.our_wandb_callbacks import OurWandbLoggerCallback
+        except Exception as e:
+            # print("Please install wandb: pip install wandb")
+            failed_wandb = True
 
-        kwargs["callbacks"] = [
-            OurWandbLoggerCallback(
-                exp_name=exp_name,
-                api_key_file=get_api_key_file(wandb_key_file),
-                project=wandb_project,
-                group=exp_name,
-                log_config=wandb_log_config,
-                entity=wandb_team
-            )
-        ]
+        if failed_wandb:
+            from ray.tune.logger import DEFAULT_LOGGERS
+            from scenarionet_training.wandb.our_wandb_callbacks_ray100 import OurWandbLogger
+            kwargs["loggers"] = DEFAULT_LOGGERS + (OurWandbLogger,)
+            config["logger_config"] = {
+                "wandb":
+                    {
+                        "group": exp_name,
+                        "exp_name": exp_name,
+                        "entity": wandb_team,
+                        "project": wandb_project,
+                        "api_key_file": get_api_key_file(wandb_key_file),
+                        "log_config": wandb_log_config,
+                    }
+            }
+        else:
+            kwargs["callbacks"] = [
+                OurWandbLoggerCallback(
+                    exp_name=exp_name,
+                    api_key_file=get_api_key_file(wandb_key_file),
+                    project=wandb_project,
+                    group=exp_name,
+                    log_config=wandb_log_config,
+                    entity=wandb_team
+                )
+            ]
 
     # start training
     analysis = tune.run(
