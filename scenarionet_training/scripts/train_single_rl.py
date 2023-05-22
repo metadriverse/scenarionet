@@ -1,7 +1,8 @@
-import pkg_resources  # for suppress warning
 import os.path
-from metadrive.envs.scenario_env import ScenarioEnv
+
 from metadrive.envs.gymnasium_wrapper import GymnasiumEnvWrapper
+from metadrive.envs.scenario_env import ScenarioEnv
+
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet_training.train.utils import train, get_train_parser
 
@@ -36,7 +37,7 @@ if __name__ == '__main__':
         evaluation_config=dict(env_config=dict(num_scenarios=10,
                                                sequential_seed=True,
                                                curriculum_level=1,
-                                               data_directory=os.path.join(SCENARIONET_DATASET_PATH, "nuscenes"))),
+                                               data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
         evaluation_num_workers=1,
         metrics_smoothing_episodes=10,
 
