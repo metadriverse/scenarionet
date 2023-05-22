@@ -7,7 +7,7 @@ import numpy as np
 from ray import tune
 from ray.tune import CLIReporter
 
-from scenarionet_training.wandb import WANDB_KEY_FILE
+from scenarionet_training.wandb_utils import WANDB_KEY_FILE
 
 root = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -125,14 +125,14 @@ def train(
         assert wandb_project is not None
         failed_wandb = False
         try:
-            from scenarionet_training.wandb.our_wandb_callbacks import OurWandbLoggerCallback
+            from scenarionet_training.wandb_utils.our_wandb_callbacks import OurWandbLoggerCallback
         except Exception as e:
             # print("Please install wandb: pip install wandb")
             failed_wandb = True
 
         if failed_wandb:
             from ray.tune.logger import DEFAULT_LOGGERS
-            from scenarionet_training.wandb.our_wandb_callbacks_ray100 import OurWandbLogger
+            from scenarionet_training.wandb_utils.our_wandb_callbacks_ray100 import OurWandbLogger
             kwargs["loggers"] = DEFAULT_LOGGERS + (OurWandbLogger,)
             config["logger_config"] = {
                 "wandb":
