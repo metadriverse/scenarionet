@@ -47,6 +47,7 @@ if __name__ == '__main__':
         metrics_smoothing_episodes=50,
 
         # ===== Training =====
+        model=dict(fcnet_hiddens=[512, 256, 128]),
         horizon=400,
         num_sgd_iter=20,
         lr=5e-5,
