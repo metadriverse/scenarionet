@@ -40,6 +40,8 @@ install_requires = [
     "shapely"
 ]
 
+train_requirement = ["ray[rllib]==2.4.0", "torch"]
+
 setup(
     name="scenarionet",
     python_requires='>=3.6, <3.12',  # do version check with assert
@@ -50,12 +52,9 @@ setup(
     author_email="quanyili0057@gmail.com, pzh@cs.ucla.edu",
     packages=packages,
     install_requires=install_requires,
-    # extras_require={
-    #     "cuda": cuda_requirement,
-    #     "nuplan": nuplan_requirement,
-    #     "waymo": waymo_requirement,
-    #     "all": nuplan_requirement + cuda_requirement
-    # },
+    extras_require={
+        "train": train_requirement,
+    },
     include_package_data=True,
     license="Apache 2.0",
     long_description=long_description,
