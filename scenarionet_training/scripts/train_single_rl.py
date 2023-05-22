@@ -63,7 +63,7 @@ if __name__ == '__main__':
         # num_seeds=args.num_seeds,
         num_seeds=5,
         test_mode=args.test,
-        # local_mode=True
-        wandb_key_file="~/wandb_api_key_file.txt",
+        # TODO remove this when we release our code
+        # wandb_key_file="~/wandb_api_key_file.txt",
         wandb_project="scenarionet",
     )

@@ -1,7 +1,7 @@
 import copy
 import os
 import pickle
-
+from scenarionet_training.wandb import WANDB_KEY_FILE
 import numpy as np
 from ray import tune
 from ray.tune import CLIReporter
@@ -13,7 +13,7 @@ def get_api_key_file(wandb_key_file):
     if wandb_key_file is not None:
         default_path = os.path.expanduser(wandb_key_file)
     else:
-        default_path = os.path.expanduser("~/wandb_api_key_file.txt")
+        default_path = WANDB_KEY_FILE
     if os.path.exists(default_path):
         print("We are using this wandb key file: ", default_path)
         return default_path
@@ -104,7 +104,7 @@ def train(
 
     # This functionality is not supported yet!
     metric_columns = CLIReporter.DEFAULT_COLUMNS.copy()
-    progress_reporter = CLIReporter(metric_columns)
+    progress_reporter = CLIReporter(metric_columns=metric_columns)
     progress_reporter.add_metric_column("success")
     progress_reporter.add_metric_column("crash")
     progress_reporter.add_metric_column("out")
@@ -120,38 +120,18 @@ def train(
     if wandb_project is not None:
         assert wandb_project is not None
         failed_wandb = False
-        try:
-            from scenarionet_training.wandb.our_wandb_callbacks import OurWandbLoggerCallback
-        except Exception as e:
-            # print("Please install wandb: pip install wandb")
-            failed_wandb = True
+        from scenarionet_training.wandb.our_wandb_callbacks import OurWandbLoggerCallback
 
-        if failed_wandb:
-            from ray.tune.logger import DEFAULT_LOGGERS
-            from scenarionet_training.wandb.our_wandb_callbacks_ray100 import OurWandbLogger
-            kwargs["loggers"] = DEFAULT_LOGGERS + (OurWandbLogger,)
-            config["logger_config"] = {
-                "wandb":
-                    {
-                        "group": exp_name,
-                        "exp_name": exp_name,
-                        "entity": wandb_team,
-                        "project": wandb_project,
-                        "api_key_file": get_api_key_file(wandb_key_file),
-                        "log_config": wandb_log_config,
-                    }
-            }
-        else:
-            kwargs["callbacks"] = [
-                OurWandbLoggerCallback(
-                    exp_name=exp_name,
-                    api_key_file=get_api_key_file(wandb_key_file),
-                    project=wandb_project,
-                    group=exp_name,
-                    log_config=wandb_log_config,
-                    entity=wandb_team
-                )
-            ]
+        kwargs["callbacks"] = [
+            OurWandbLoggerCallback(
+                exp_name=exp_name,
+                api_key_file=get_api_key_file(wandb_key_file),
+                project=wandb_project,
+                group=exp_name,
+                log_config=wandb_log_config,
+                entity=wandb_team
+            )
+        ]
 
     # start training
     analysis = tune.run(

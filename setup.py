@@ -40,7 +40,7 @@ install_requires = [
     "shapely"
 ]
 
-train_requirement = ["ray[rllib]==2.4.0", "torch"]
+train_requirement = ["ray[rllib]==2.4.0", "torch", "wandb"]
 
 setup(
     name="scenarionet",

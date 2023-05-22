@@ -21,18 +21,18 @@ Peng Zhenghao, 20210402
 """
 from ray import tune
 
-from drivingforce.train import train
+from scenarionet_training.train.utils import train
 
 if __name__ == "__main__":
     config = dict(env="CartPole-v0", num_workers=0, lr=tune.grid_search([1e-2, 1e-4]))
     train(
         "PPO",
-        exp_name="test_wandb_0424",
+        exp_name="test_wandb",
         stop=10000,
         config=config,
         custom_callback=False,
-        test_mode=True,
-        wandb_key_file="~/wandb_api_key_file.txt",
+        test_mode=False,
+        local_mode=False,
         wandb_project="TEST",
         wandb_team=None  # drivingforce is set to default. Use None to log to your personal domain!
     )
