@@ -74,6 +74,7 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["cost"] = float(sum(episode.user_data["cost"]))
         episode.custom_metrics["route_completion"] = episode._last_infos["agent0"]["route_completion"]
         episode.custom_metrics["curriculum_level"] = episode._last_infos["agent0"]["curriculum_level"]
+        episode.custom_metrics["curriculum_level"] = episode._last_infos["agent0"]["scenario_index"]
         episode.custom_metrics["track_length"] = episode._last_infos["agent0"]["track_length"]
 
     def on_train_result(self,
