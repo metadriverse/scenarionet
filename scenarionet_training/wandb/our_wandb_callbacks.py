@@ -4,6 +4,7 @@ from ray.air.integrations.wandb import WandbLoggerCallback, _clean_log, Queue
 class OurWandbLoggerCallback(WandbLoggerCallback):
     def __init__(self, exp_name, *args, **kwargs):
         super(OurWandbLoggerCallback, self).__init__(*args, **kwargs)
+        print("===== Successfully initialize WandbCallback! ===== ")
         self.exp_name = exp_name
 
     # def log_trial_start(self, trial: "Trial"):
