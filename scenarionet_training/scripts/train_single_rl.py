@@ -17,29 +17,34 @@ if __name__ == '__main__':
         env=env,
         env_config=dict(
             # scenario
-            num_scenarios=64,
+            start_scenario_index=0,
+            num_scenarios=45000,
             data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
             sequential_seed=True,
+
             # traffic & light
             reactive_traffic=False,
             no_static_vehicles=True,
             no_light=True,
+
             # curriculum training
             curriculum_level=1,
             episodes_to_evaluate_curriculum=10,
+
             # training
             horizon=400
         ),
 
         # ===== Evaluation =====
-        evaluation_interval=5,
-        evaluation_num_episodes=10,
-        evaluation_config=dict(env_config=dict(num_scenarios=10,
-                                               sequential_seed=True,
+        evaluation_interval=10,
+        evaluation_num_episodes=100,
+        evaluation_config=dict(env_config=dict(num_scenarios=5000,
+                                               start_scenario_index=45000,
+                                               sequential_seed=False,
                                                curriculum_level=1,
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
-        evaluation_num_workers=1,
-        metrics_smoothing_episodes=10,
+        evaluation_num_workers=2,
+        metrics_smoothing_episodes=50,
 
         # ===== Training =====
         horizon=400,
