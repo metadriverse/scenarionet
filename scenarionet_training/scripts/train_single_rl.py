@@ -1,5 +1,5 @@
 import os.path
-
+from ray.tune import grid_search
 from metadrive.envs.gymnasium_wrapper import GymnasiumEnvWrapper
 from metadrive.envs.scenario_env import ScenarioEnv
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
         env_config=dict(
             # scenario
             start_scenario_index=0,
-            num_scenarios=45000,
+            num_scenarios=8000,
             data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
             sequential_seed=True,
 
@@ -27,7 +27,7 @@ if __name__ == '__main__':
             no_light=True,
 
             # curriculum training
-            curriculum_level=45,
+            curriculum_level=8,
             episodes_to_evaluate_curriculum=100,
 
             # training
@@ -37,8 +37,8 @@ if __name__ == '__main__':
         # ===== Evaluation =====
         evaluation_interval=10,
         evaluation_num_episodes=100,
-        evaluation_config=dict(env_config=dict(num_scenarios=5000,
-                                               start_scenario_index=45000,
+        evaluation_config=dict(env_config=dict(start_scenario_index=8000,
+                                               num_scenarios=2000,
                                                sequential_seed=False,
                                                curriculum_level=1,
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         lr=5e-5,
         rollout_fragment_length="auto",
         sgd_minibatch_size=100,
-        train_batch_size=20000,
+        train_batch_size=40000,
         num_gpus=0.5 if args.num_gpus != 0 else 0,
         num_cpus_per_worker=0.5,
         num_cpus_for_driver=1,
