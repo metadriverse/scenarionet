@@ -32,7 +32,7 @@ if __name__ == '__main__':
             target_success_rate=0.8,
 
             # training
-            horizon=400
+            horizon=None
         ),
 
         # ===== Evaluation =====
