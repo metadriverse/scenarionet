@@ -51,8 +51,8 @@ class OurWandbLoggerCallback(WandbLoggerCallback):
             config=config,
         )
         wandb_init_kwargs.update(self.kwargs)
-
         self._start_logging_actor(trial, exclude_results, **wandb_init_kwargs)
+        print("===== Successfully start Wandb actor! ===== ")
 
     # def __del__(self):
     #     if self._trial_processes:
