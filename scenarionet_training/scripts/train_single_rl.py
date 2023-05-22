@@ -52,6 +52,7 @@ if __name__ == '__main__':
         num_cpus_per_worker=0.1,
         num_cpus_for_driver=0.2,
         num_workers=8,
+        framework="torch"
     )
 
     train(
