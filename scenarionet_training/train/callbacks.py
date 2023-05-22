@@ -3,7 +3,8 @@ from typing import Dict
 import numpy as np
 from ray.rllib.algorithms.callbacks import DefaultCallbacks
 from ray.rllib.env import BaseEnv
-from ray.rllib.evaluation import MultiAgentEpisode, RolloutWorker
+from ray.rllib.evaluation.episode_v2 import EpisodeV2
+from ray.rllib.evaluation import RolloutWorker
 from ray.rllib.policy import Policy
 
 
@@ -12,7 +13,7 @@ class CostCallbacks(DefaultCallbacks):
         episode.user_data["cost"] = []
 
     def on_episode_step(self, *, worker, base_env, episode, env_index, **kwargs):
-        info = episode.last_info_for()
+        info = episode._last_infos["agent0"]
         if info is not None:
             episode.user_data["cost"].append(info["cost"])
 
@@ -26,7 +27,7 @@ class CostCallbacks(DefaultCallbacks):
 
 class DrivingCallbacks(DefaultCallbacks):
     def on_episode_start(
-        self, *, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
+        self, *, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: EpisodeV2,
         env_index: int, **kwargs
     ):
         episode.user_data["velocity"] = []
@@ -36,9 +37,9 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.user_data["cost"] = []
 
     def on_episode_step(
-        self, *, worker: RolloutWorker, base_env: BaseEnv, episode: MultiAgentEpisode, env_index: int, **kwargs
+        self, *, worker: RolloutWorker, base_env: BaseEnv, episode: EpisodeV2, env_index: int, **kwargs
     ):
-        info = episode.last_info_for()
+        info = episode._last_infos["agent0"]
         if info is not None:
             episode.user_data["velocity"].append(info["velocity"])
             episode.user_data["steering"].append(info["steering"])
@@ -47,12 +48,12 @@ class DrivingCallbacks(DefaultCallbacks):
             episode.user_data["cost"].append(info["cost"])
 
     def on_episode_end(
-        self, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
+        self, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: EpisodeV2,
         **kwargs
     ):
-        arrive_dest = episode.last_info_for()["arrive_dest"]
-        crash = episode.last_info_for()["crash"]
-        out_of_road = episode.last_info_for()["out_of_road"]
+        arrive_dest = episode._last_infos["agent0"]["arrive_dest"]
+        crash = episode._last_infos["agent0"]["crash"]
+        out_of_road = episode._last_infos["agent0"]["out_of_road"]
         max_step_rate = not (arrive_dest or crash or out_of_road)
         episode.custom_metrics["success_rate"] = float(arrive_dest)
         episode.custom_metrics["crash_rate"] = float(crash)
@@ -71,9 +72,9 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["step_reward_mean"] = float(np.mean(episode.user_data["step_reward"]))
         episode.custom_metrics["step_reward_min"] = float(np.min(episode.user_data["step_reward"]))
         episode.custom_metrics["cost"] = float(sum(episode.user_data["cost"]))
-        episode.custom_metrics["route_completion"] = episode.last_info_for()["route_completion"]
-        episode.custom_metrics["curriculum_level"] = episode.last_info_for()["curriculum_level"]
-        episode.custom_metrics["track_length"] = episode.last_info_for()["track_length"]
+        episode.custom_metrics["route_completion"] = episode._last_infos["agent0"]["route_completion"]
+        episode.custom_metrics["curriculum_level"] = episode._last_infos["agent0"]["curriculum_level"]
+        episode.custom_metrics["track_length"] = episode._last_infos["agent0"]["track_length"]
 
     def on_train_result(self, *, trainer, result: dict, **kwargs):
         result["success"] = np.nan
