@@ -1,15 +1,13 @@
-from ray.air.integrations.wandb import WandbLoggerCallback, _clean_log, Queue
-from ray import logger
+from ray.tune.integration.wandb import WandbLoggerCallback, _clean_log, \
+    Queue, WandbLogger
 
 
 class OurWandbLoggerCallback(WandbLoggerCallback):
     def __init__(self, exp_name, *args, **kwargs):
         super(OurWandbLoggerCallback, self).__init__(*args, **kwargs)
-        print("===== Successfully initialize WandbCallback! ===== ")
         self.exp_name = exp_name
 
     def log_trial_start(self, trial: "Trial"):
-        logger.debug("===== Start initializing wandb! ===== ")
         config = trial.config.copy()
 
         config.pop("callbacks", None)  # Remove callbacks
@@ -31,13 +29,10 @@ class OurWandbLoggerCallback(WandbLoggerCallback):
         wandb_project = self.project
 
         # Grouping
-        wandb_group = self.group or trial.experiment_dir_name if trial else None
+        wandb_group = self.group or trial.trainable_name if trial else None
 
         # remove unpickleable items!
         config = _clean_log(config)
-        config = {
-            key: value for key, value in config.items() if key not in self.excludes
-        }
 
         assert trial_id is not None
         run_name = "{}_{}".format(self.exp_name, trial_id)
@@ -45,21 +40,28 @@ class OurWandbLoggerCallback(WandbLoggerCallback):
         wandb_init_kwargs = dict(
             id=trial_id,
             name=run_name,
-            resume=False,
+            resume=True,
             reinit=True,
             allow_val_change=True,
             group=wandb_group,
             project=wandb_project,
-            config=config,
+            config=config
         )
         wandb_init_kwargs.update(self.kwargs)
-        self._start_logging_actor(trial, exclude_results, **wandb_init_kwargs)
-        logger.debug("===== Successfully start Wandb actor! ===== ")
 
-    # def __del__(self):
-    #     if self._trial_processes:
-    #         for v in self._trial_processes.values():
-    #             if hasattr(v, "close"):
-    #                 v.close()
-    #         self._trial_processes.clear()
-    #         self._trial_processes = {}
+        self._trial_queues[trial] = Queue()
+        self._trial_processes[trial] = self._logger_process_cls(
+            queue=self._trial_queues[trial],
+            exclude=exclude_results,
+            to_config=self._config_results,
+            **wandb_init_kwargs
+        )
+        self._trial_processes[trial].start()
+
+    def __del__(self):
+        if self._trial_processes:
+            for v in self._trial_processes.values():
+                if hasattr(v, "close"):
+                    v.close()
+            self._trial_processes.clear()
+            self._trial_processes = {}

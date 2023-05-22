@@ -7,7 +7,7 @@ from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train.utils import train, get_train_parser, get_exp_name
 
 if __name__ == '__main__':
-    env = GymnasiumEnvWrapper.build(ScenarioEnv)
+    env = ScenarioEnv
     args = get_train_parser().parse_args()
     exp_name = get_exp_name(args)
     stop = int(100_000_000)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
         horizon=400,
         num_sgd_iter=20,
         lr=5e-5,
-        rollout_fragment_length="auto",
+        rollout_fragment_length=200,
         sgd_minibatch_size=100,
         train_batch_size=40000,
         num_gpus=0.5 if args.num_gpus != 0 else 0,
