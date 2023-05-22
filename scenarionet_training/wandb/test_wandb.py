@@ -34,5 +34,5 @@ if __name__ == "__main__":
         test_mode=False,
         local_mode=False,
         wandb_project="TEST",
-        wandb_team=None  # drivingforce is set to default. Use None to log to your personal domain!
+        wandb_team="drivingforce"  # drivingforce is set to default. Use None to log to your personal domain!
     )
