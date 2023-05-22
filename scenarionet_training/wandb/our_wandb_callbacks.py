@@ -1,4 +1,5 @@
 from ray.air.integrations.wandb import WandbLoggerCallback, _clean_log, Queue
+from ray import logger
 
 
 class OurWandbLoggerCallback(WandbLoggerCallback):
@@ -8,6 +9,7 @@ class OurWandbLoggerCallback(WandbLoggerCallback):
         self.exp_name = exp_name
 
     def log_trial_start(self, trial: "Trial"):
+        logger.debug("===== Start initializing wandb! ===== ")
         config = trial.config.copy()
 
         config.pop("callbacks", None)  # Remove callbacks
@@ -52,7 +54,7 @@ class OurWandbLoggerCallback(WandbLoggerCallback):
         )
         wandb_init_kwargs.update(self.kwargs)
         self._start_logging_actor(trial, exclude_results, **wandb_init_kwargs)
-        print("===== Successfully start Wandb actor! ===== ")
+        logger.debug("===== Successfully start Wandb actor! ===== ")
 
     # def __del__(self):
     #     if self._trial_processes:
