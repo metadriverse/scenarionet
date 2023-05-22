@@ -1,18 +1,19 @@
+import pkg_resources  # for suppress warning
 import os.path
-
-from ray import tune
 from metadrive.envs.scenario_env import ScenarioEnv
+from metadrive.envs.gymnasium_wrapper import GymnasiumEnvWrapper
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet_training.train.utils import train, get_train_parser
 
 if __name__ == '__main__':
+    env = GymnasiumEnvWrapper.build(ScenarioEnv)
     args = get_train_parser().parse_args()
 
     exp_name = args.exp_name or "TEST"
     stop = int(100_000_000)
 
     config = dict(
-        env=ScenarioEnv,
+        env=env,
         env_config=dict(
             # scenario
             num_scenarios=64,
@@ -20,14 +21,13 @@ if __name__ == '__main__':
             sequential_seed=True,
             # traffic & light
             reactive_traffic=False,
-            no_static_vehicle=True,
+            no_static_vehicles=True,
             no_light=True,
             # curriculum training
             curriculum_level=1,
             episodes_to_evaluate_curriculum=10,
             # training
-            horizon=500
-
+            horizon=400
         ),
 
         # ===== Evaluation =====
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         metrics_smoothing_episodes=10,
 
         # ===== Training =====
-        horizon=500,
+        horizon=400,
         num_sgd_iter=20,
         lr=5e-5,
         rollout_fragment_length=200,
@@ -63,6 +63,7 @@ if __name__ == '__main__':
         # num_seeds=args.num_seeds,
         num_seeds=5,
         test_mode=args.test,
+        # local_mode=True,
         # TODO remove this when we release our code
         # wandb_key_file="~/wandb_api_key_file.txt",
         wandb_project="scenarionet",
