@@ -21,3 +21,4 @@ dataset/*
 /dataset/
 /scenarionet_training/wandb/*.pkl
 **/TEST/
+**/experiment/
