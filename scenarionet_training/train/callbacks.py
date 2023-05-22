@@ -88,8 +88,12 @@ class DrivingCallbacks(DefaultCallbacks):
 
         if "success_rate_mean" in result["custom_metrics"]:
             result["success"] = result["custom_metrics"]["success_rate_mean"]
-            result["crash"] = result["custom_metrics"]["crash_rate_mean"]
+            # result["crash"] = result["custom_metrics"]["crash_rate_mean"]
             result["out"] = result["custom_metrics"]["out_of_road_rate_mean"]
             result["max_step"] = result["custom_metrics"]["max_step_rate_mean"]
-        if "cost_mean" in result["custom_metrics"]:
-            result["cost"] = result["custom_metrics"]["cost_mean"]
+        # if "cost_mean" in result["custom_metrics"]:
+        #     result["cost"] = result["custom_metrics"]["cost_mean"]
+
+        if "curriculum_level_mean" in result["custom_metrics"]:
+            result["cost"] = result["custom_metrics"]["curriculum_level_mean"]
+
