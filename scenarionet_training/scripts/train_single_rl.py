@@ -4,13 +4,12 @@ from metadrive.envs.gymnasium_wrapper import GymnasiumEnvWrapper
 from metadrive.envs.scenario_env import ScenarioEnv
 
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
-from scenarionet_training.train.utils import train, get_train_parser
+from scenarionet_training.train.utils import train, get_train_parser, get_exp_name
 
 if __name__ == '__main__':
     env = GymnasiumEnvWrapper.build(ScenarioEnv)
     args = get_train_parser().parse_args()
-
-    exp_name = args.exp_name or "TEST"
+    exp_name = get_exp_name(args)
     stop = int(100_000_000)
 
     config = dict(

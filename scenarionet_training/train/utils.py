@@ -1,10 +1,13 @@
 import copy
+import datetime
 import os
 import pickle
-from scenarionet_training.wandb import WANDB_KEY_FILE
+
 import numpy as np
 from ray import tune
 from ray.tune import CLIReporter
+
+from scenarionet_training.wandb import WANDB_KEY_FILE
 
 root = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -206,3 +209,15 @@ def setup_logger(debug=False):
         level=logging.DEBUG if debug else logging.WARNING,
         format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s'
     )
+
+
+def get_time_str():
+    return datetime.datetime.now().strftime("%y%m%d-%H%M%S")
+
+
+def get_exp_name(args):
+    if args.exp_name != "":
+        exp_name = args.exp_name + "_" + get_time_str()
+    else:
+        exp_name = "TEST"
+    return exp_name
