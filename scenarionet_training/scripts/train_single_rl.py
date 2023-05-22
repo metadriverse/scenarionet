@@ -28,8 +28,8 @@ if __name__ == '__main__':
             no_light=True,
 
             # curriculum training
-            curriculum_level=1,
-            episodes_to_evaluate_curriculum=10,
+            curriculum_level=45,
+            episodes_to_evaluate_curriculum=100,
 
             # training
             horizon=400
@@ -54,9 +54,9 @@ if __name__ == '__main__':
         rollout_fragment_length="auto",
         sgd_minibatch_size=100,
         train_batch_size=20000,
-        num_gpus=0.01 if args.num_gpus != 0 else 0,
-        num_cpus_per_worker=0.1,
-        num_cpus_for_driver=0.2,
+        num_gpus=0.5 if args.num_gpus != 0 else 0,
+        num_cpus_per_worker=0.5,
+        num_cpus_for_driver=1,
         num_workers=8,
         framework="torch"
     )
