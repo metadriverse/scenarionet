@@ -147,7 +147,7 @@ def train(
         config=config,
         max_failures=max_failures if not test_mode else 0,
         reuse_actors=False,
-        storage_path=save_dir or ".",
+        local_dir=save_dir or ".",
         **kwargs
     )
 
