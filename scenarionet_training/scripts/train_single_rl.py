@@ -50,7 +50,7 @@ if __name__ == '__main__':
         horizon=400,
         num_sgd_iter=20,
         lr=5e-5,
-        rollout_fragment_length=200,
+        rollout_fragment_length=500,
         sgd_minibatch_size=100,
         train_batch_size=40000,
         num_gpus=0.5 if args.num_gpus != 0 else 0,
