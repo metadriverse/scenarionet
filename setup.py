@@ -40,7 +40,13 @@ install_requires = [
     "shapely"
 ]
 
-train_requirement = ["ray==1.4.1", "torch", "wandb", "gymnasium", "tensorflow", "tensorflow_probability"]
+train_requirement = ["ray==1.0.0",
+                     # "torch",
+                     "wandb==0.12.1",
+                     "aiohttp==3.6.0"
+                     "gymnasium",
+                     "tensorflow",
+                     "tensorflow_probability"]
 
 setup(
     name="scenarionet",
