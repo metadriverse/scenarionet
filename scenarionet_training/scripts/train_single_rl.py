@@ -27,8 +27,9 @@ if __name__ == '__main__':
             no_light=True,
 
             # curriculum training
-            curriculum_level=8,
-            episodes_to_evaluate_curriculum=100,
+            curriculum_level=80,
+            episodes_to_evaluate_curriculum=50,
+            target_success_rate=0.8,
 
             # training
             horizon=400
@@ -40,7 +41,7 @@ if __name__ == '__main__':
         evaluation_config=dict(env_config=dict(start_scenario_index=8000,
                                                num_scenarios=2000,
                                                sequential_seed=False,
-                                               curriculum_level=1,
+                                               curriculum_level=1, # turn off
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
         evaluation_num_workers=2,
         metrics_smoothing_episodes=50,
