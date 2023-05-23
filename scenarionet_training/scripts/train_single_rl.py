@@ -18,18 +18,18 @@ if __name__ == '__main__':
         env_config=dict(
             # scenario
             start_scenario_index=0,
-            num_scenarios=8000,
+            num_scenarios=40000,
             data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
             sequential_seed=True,
+
+            # curriculum training
+            curriculum_level=100,
+            target_success_rate=0.85,
 
             # traffic & light
             reactive_traffic=False,
             no_static_vehicles=True,
             no_light=True,
-
-            # curriculum training
-            curriculum_level=40,
-            target_success_rate=0.85,
 
             # training
             horizon=None,
@@ -37,14 +37,14 @@ if __name__ == '__main__':
         ),
 
         # ===== Evaluation =====
-        evaluation_interval=10,
-        evaluation_num_episodes=2000,
-        evaluation_config=dict(env_config=dict(start_scenario_index=8000,
-                                               num_scenarios=2000,
+        evaluation_interval=20,
+        evaluation_num_episodes=5000,
+        evaluation_config=dict(env_config=dict(start_scenario_index=40000,
+                                               num_scenarios=5000,
                                                sequential_seed=True,
                                                curriculum_level=1,  # turn off
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
-        evaluation_num_workers=8,
+        evaluation_num_workers=10,
         metrics_smoothing_episodes=10,
 
         # ===== Training =====
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         lr=5e-5,
         rollout_fragment_length=500,
         sgd_minibatch_size=100,
-        train_batch_size=40000,
+        train_batch_size=60000,
         num_gpus=0.5 if args.num_gpus != 0 else 0,
         num_cpus_per_worker=0.4,
         num_cpus_for_driver=1,
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         config=config,
         num_gpus=args.num_gpus,
         # num_seeds=args.num_seeds,
-        num_seeds=5,
+        num_seeds=6,
         test_mode=args.test,
         # local_mode=True,
         # TODO remove this when we release our code
