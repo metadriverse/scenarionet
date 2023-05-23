@@ -37,7 +37,7 @@ if __name__ == '__main__':
         ),
 
         # ===== Evaluation =====
-        evaluation_interval=20,
+        evaluation_interval=10,
         evaluation_num_episodes=5000,
         evaluation_config=dict(env_config=dict(start_scenario_index=40000,
                                                num_scenarios=5000,
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         lr=5e-5,
         rollout_fragment_length=500,
         sgd_minibatch_size=100,
-        train_batch_size=60000,
+        train_batch_size=50000,
         num_gpus=0.5 if args.num_gpus != 0 else 0,
         num_cpus_per_worker=0.4,
         num_cpus_for_driver=1,
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         config=config,
         num_gpus=args.num_gpus,
         # num_seeds=args.num_seeds,
-        num_seeds=6,
+        num_seeds=5,
         test_mode=args.test,
         # local_mode=True,
         # TODO remove this when we release our code
