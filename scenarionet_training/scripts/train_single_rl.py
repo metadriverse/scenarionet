@@ -7,6 +7,7 @@ from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train.utils import train, get_train_parser, get_exp_name
 
 if __name__ == '__main__':
+    # PG data is generated with seeds 10,000 to 60,000
     env = ScenarioEnv
     args = get_train_parser().parse_args()
     exp_name = get_exp_name(args)

@@ -1,3 +1,4 @@
+import copy
 import json
 import os.path
 from collections import defaultdict
@@ -6,50 +7,23 @@ from metadrive.envs.scenario_env import ScenarioEnv
 
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet_training.train.multi_worker_PPO import MultiWorkerPPO
+from scenarionet_training.scripts.train_single_rl import config
 from scenarionet_training.train.utils import initialize_ray, get_time_str
 
 initialize_ray(test_mode=False, num_gpus=1)
 
 
+def get_eval_config():
+    eval_config = copy.deepcopy(config)
+    eval_config.pop("evaluation_interval")
+    eval_config.pop("evaluation_num_episodes")
+    eval_config.pop("evaluation_config")
+    eval_config.pop("evaluation_num_workers")
+    return eval_config
+
+
 def get_function(ckpt):
-    trainer = MultiWorkerPPO(config=dict(
-        env=ScenarioEnv,
-        env_config=dict(
-            # scenario
-            start_scenario_index=0,
-            num_scenarios=8000,
-            data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_2000"),
-            sequential_seed=True,
-
-            # traffic & light
-            reactive_traffic=False,
-            no_static_vehicles=True,
-            no_light=True,
-
-            # curriculum training
-            curriculum_level=40,
-            target_success_rate=0.85,
-
-            # training
-            horizon=None,
-            use_lateral_reward=True,
-        ),
-
-        # ===== Training =====
-        model=dict(fcnet_hiddens=[512, 256, 128]),
-        horizon=600,
-        num_sgd_iter=20,
-        lr=5e-5,
-        rollout_fragment_length=500,
-        sgd_minibatch_size=100,
-        train_batch_size=40000,
-        num_gpus=0.5,
-        num_cpus_per_worker=0.4,
-        num_cpus_for_driver=1,
-        num_workers=10,
-        framework="tf"
-    ))
-
+    trainer = MultiWorkerPPO(get_eval_config())
     trainer.restore(ckpt)
 
     def _f(obs):
@@ -65,29 +39,14 @@ if __name__ == '__main__':
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600
+    render = False
 
-    env = ScenarioEnv(dict(
-        use_render=False,
-        # max_lateral_dist=5,
-        # scenario
-        start_scenario_index=start_scenario_index,
-        num_scenarios=num_scenarios,
-        data_directory=scenario_data_path,
-        sequential_seed=True,
-
-        # traffic & light
-        reactive_traffic=False,
-        no_static_vehicles=True,
-        no_light=True,
-
-        # curriculum training
-        curriculum_level=1,
-        target_success_rate=1,
-
-        # training
-        horizon=None,
-        use_lateral_reward=True,
-    ), )
+    env_config = get_eval_config()["env_config"]
+    env_config.update(dict(start_scenario_index=start_scenario_index,
+                           num_scenarios=num_scenarios,
+                           data_directory=scenario_data_path,
+                           use_render=render))
+    env = ScenarioEnv(env_config)
 
     super_data = defaultdict(list)
     EPISODE_NUM = env.config["num_scenarios"]
