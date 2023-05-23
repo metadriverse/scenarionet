@@ -1,6 +1,6 @@
 import os.path
-from ray.tune import grid_search
-from metadrive.envs.gymnasium_wrapper import GymnasiumEnvWrapper
+from scenarionet_training.train.multi_worker_PPO import MultiWorkerPPO
+
 from metadrive.envs.scenario_env import ScenarioEnv
 
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
@@ -28,27 +28,28 @@ if __name__ == '__main__':
 
             # curriculum training
             curriculum_level=80,
-            episodes_to_evaluate_curriculum=50,
+            episodes_to_evaluate_curriculum=100,
             target_success_rate=0.8,
 
             # training
-            horizon=None
+            horizon=None,
+            use_lateral_reward=True,
         ),
 
         # ===== Evaluation =====
         evaluation_interval=10,
-        evaluation_num_episodes=100,
+        evaluation_num_episodes=1000,
         evaluation_config=dict(env_config=dict(start_scenario_index=8000,
                                                num_scenarios=2000,
                                                sequential_seed=False,
-                                               curriculum_level=1, # turn off
+                                               curriculum_level=1,  # turn off
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
-        evaluation_num_workers=2,
+        evaluation_num_workers=5,
         metrics_smoothing_episodes=50,
 
         # ===== Training =====
         model=dict(fcnet_hiddens=[512, 256, 128]),
-        horizon=400,
+        horizon=800,
         num_sgd_iter=20,
         lr=5e-5,
         rollout_fragment_length=500,
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     )
 
     train(
-        "PPO",
+        MultiWorkerPPO,
         exp_name=exp_name,
         save_dir=os.path.join(SCENARIONET_REPO_PATH, "experiment"),
         keep_checkpoints_num=5,

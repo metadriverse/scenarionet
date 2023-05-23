@@ -26,8 +26,8 @@ class CostCallbacks(DefaultCallbacks):
 
 class DrivingCallbacks(DefaultCallbacks):
     def on_episode_start(
-        self, *, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
-        env_index: int, **kwargs
+            self, *, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
+            env_index: int, **kwargs
     ):
         episode.user_data["velocity"] = []
         episode.user_data["steering"] = []
@@ -36,7 +36,7 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.user_data["cost"] = []
 
     def on_episode_step(
-        self, *, worker: RolloutWorker, base_env: BaseEnv, episode: MultiAgentEpisode, env_index: int, **kwargs
+            self, *, worker: RolloutWorker, base_env: BaseEnv, episode: MultiAgentEpisode, env_index: int, **kwargs
     ):
         info = episode.last_info_for()
         if info is not None:
@@ -47,8 +47,8 @@ class DrivingCallbacks(DefaultCallbacks):
             episode.user_data["cost"].append(info["cost"])
 
     def on_episode_end(
-        self, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
-        **kwargs
+            self, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
+            **kwargs
     ):
         arrive_dest = episode.last_info_for()["arrive_dest"]
         crash = episode.last_info_for()["crash"]
@@ -78,6 +78,9 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["num_stored_maps"] = int(episode.last_info_for()["num_stored_maps"])
         episode.custom_metrics["scenario_difficulty"] = float(episode.last_info_for()["scenario_difficulty"])
         episode.custom_metrics["data_coverage"] = float(episode.last_info_for()["data_coverage"])
+        episode.custom_metrics["curriculum_success"] = float(episode.last_info_for()["curriculum_success"])
+        episode.custom_metrics["curriculum_route_completion"] = float(
+            episode.last_info_for()["curriculum_route_completion"])
 
     def on_train_result(self, *, trainer, result: dict, **kwargs):
         result["success"] = np.nan
@@ -95,4 +98,3 @@ class DrivingCallbacks(DefaultCallbacks):
             result["max_step"] = result["custom_metrics"]["max_step_rate_mean"]
             result["level"] = result["custom_metrics"]["curriculum_level_mean"]
             result["coverage"] = result["custom_metrics"]["data_coverage_mean"]
-
