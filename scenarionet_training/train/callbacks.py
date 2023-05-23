@@ -83,6 +83,7 @@ class DrivingCallbacks(DefaultCallbacks):
         result["success"] = np.nan
         result["out"] = np.nan
         result["max_step"] = np.nan
+        result["level"] = np.nan
         result["length"] = result["episode_len_mean"]
         if "custom_metrics" not in result:
             return
