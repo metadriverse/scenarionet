@@ -83,7 +83,7 @@ class DrivingCallbacks(DefaultCallbacks):
         result["success"] = np.nan
         result["out"] = np.nan
         result["max_step"] = np.nan
-        result["level"] = np.nan
+        result["level"] = result["custom_metrics"]["curriculum_level_mean"]
         result["length"] = result["episode_len_mean"]
         if "custom_metrics" not in result:
             return
@@ -92,7 +92,4 @@ class DrivingCallbacks(DefaultCallbacks):
             result["success"] = result["custom_metrics"]["success_rate_mean"]
             result["out"] = result["custom_metrics"]["out_of_road_rate_mean"]
             result["max_step"] = result["custom_metrics"]["max_step_rate_mean"]
-
-        if "curriculum_level_mean" in result["custom_metrics"]:
-            result["level"] = result["custom_metrics"]["curriculum_level_mean"]
 
