@@ -33,6 +33,7 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.user_data["steering"] = []
         episode.user_data["step_reward"] = []
         episode.user_data["acceleration"] = []
+        episode.user_data["lateral_dist"] = []
         episode.user_data["cost"] = []
 
     def on_episode_step(
@@ -44,6 +45,7 @@ class DrivingCallbacks(DefaultCallbacks):
             episode.user_data["steering"].append(info["steering"])
             episode.user_data["step_reward"].append(info["step_reward"])
             episode.user_data["acceleration"].append(info["acceleration"])
+            episode.user_data["lateral_dist"].append(info["lateral_dist"])
             episode.user_data["cost"].append(info["cost"])
 
     def on_episode_end(
@@ -61,6 +63,11 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["velocity_max"] = float(np.max(episode.user_data["velocity"]))
         episode.custom_metrics["velocity_mean"] = float(np.mean(episode.user_data["velocity"]))
         episode.custom_metrics["velocity_min"] = float(np.min(episode.user_data["velocity"]))
+
+        episode.custom_metrics["lateral_dist_min"] = float(np.min(episode.user_data["lateral_dist"]))
+        episode.custom_metrics["lateral_dist_max"] = float(np.max(episode.user_data["lateral_dist"]))
+        episode.custom_metrics["lateral_dist_mean"] = float(np.mean(episode.user_data["lateral_dist"]))
+
         episode.custom_metrics["steering_max"] = float(np.max(episode.user_data["steering"]))
         episode.custom_metrics["steering_mean"] = float(np.mean(episode.user_data["steering"]))
         episode.custom_metrics["steering_min"] = float(np.min(episode.user_data["steering"]))
