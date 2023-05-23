@@ -110,13 +110,11 @@ def train(
     metric_columns = CLIReporter.DEFAULT_COLUMNS.copy()
     progress_reporter = CLIReporter(metric_columns=metric_columns)
     progress_reporter.add_metric_column("success")
-    progress_reporter.add_metric_column("crash")
+    progress_reporter.add_metric_column("coverage")
     progress_reporter.add_metric_column("out")
     progress_reporter.add_metric_column("max_step")
     progress_reporter.add_metric_column("length")
-    progress_reporter.add_metric_column("cost")
-    progress_reporter.add_metric_column("takeover")
-    progress_reporter.add_metric_column("route_completion")
+    progress_reporter.add_metric_column("level")
     kwargs["progress_reporter"] = progress_reporter
 
     if wandb_key_file is not None:

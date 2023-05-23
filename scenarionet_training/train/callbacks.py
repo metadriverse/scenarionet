@@ -72,10 +72,10 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["step_reward_min"] = float(np.min(episode.user_data["step_reward"]))
         episode.custom_metrics["cost"] = float(sum(episode.user_data["cost"]))
         episode.custom_metrics["route_completion"] = float(episode.last_info_for()["route_completion"])
-        episode.custom_metrics["curriculum_level"] = float(episode.last_info_for()["curriculum_level"])
-        episode.custom_metrics["scenario_index"] = float(episode.last_info_for()["scenario_index"])
+        episode.custom_metrics["curriculum_level"] = int(episode.last_info_for()["curriculum_level"])
+        episode.custom_metrics["scenario_index"] = int(episode.last_info_for()["scenario_index"])
         episode.custom_metrics["track_length"] = float(episode.last_info_for()["track_length"])
-        episode.custom_metrics["num_stored_maps"] = float(episode.last_info_for()["num_stored_maps"])
+        episode.custom_metrics["num_stored_maps"] = int(episode.last_info_for()["num_stored_maps"])
         episode.custom_metrics["scenario_difficulty"] = float(episode.last_info_for()["scenario_difficulty"])
         episode.custom_metrics["data_coverage"] = float(episode.last_info_for()["data_coverage"])
 
@@ -83,8 +83,9 @@ class DrivingCallbacks(DefaultCallbacks):
         result["success"] = np.nan
         result["out"] = np.nan
         result["max_step"] = np.nan
-        result["level"] = result["custom_metrics"]["curriculum_level_mean"]
+        result["level"] = np.nan
         result["length"] = result["episode_len_mean"]
+        result["coverage"] = np.nan
         if "custom_metrics" not in result:
             return
 
@@ -92,4 +93,6 @@ class DrivingCallbacks(DefaultCallbacks):
             result["success"] = result["custom_metrics"]["success_rate_mean"]
             result["out"] = result["custom_metrics"]["out_of_road_rate_mean"]
             result["max_step"] = result["custom_metrics"]["max_step_rate_mean"]
+            result["level"] = result["custom_metrics"]["curriculum_level_mean"]
+            result["coverage"] = result["custom_metrics"]["data_coverage_mean"]
 
