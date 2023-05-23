@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
         # ===== Training =====
         model=dict(fcnet_hiddens=[512, 256, 128]),
-        horizon=800,
+        horizon=600,
         num_sgd_iter=20,
         lr=5e-5,
         rollout_fragment_length=500,
