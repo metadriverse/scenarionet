@@ -1,5 +1,9 @@
+import json
 import os.path
+from collections import defaultdict
+
 from metadrive.envs.scenario_env import ScenarioEnv
+
 from scenarionet import SCENARIONET_DATASET_PATH
 from scenarionet_training.train.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train.utils import initialize_ray, get_time_str
@@ -56,17 +60,19 @@ def get_function(ckpt):
 
 
 if __name__ == '__main__':
-    from collections import defaultdict
-
-    super_data = defaultdict(list)
-    EPISODE_NUM = 50
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_210\\checkpoint-210"
+    scenario_data_path = os.path.join(SCENARIONET_DATASET_PATH, "pg_2000")
+    num_scenarios = 2000
+    start_scenario_index = 0
+    horizon = 600
 
     env = ScenarioEnv(dict(
         use_render=False,
+        # max_lateral_dist=5,
         # scenario
-        start_scenario_index=0,
-        num_scenarios=2000,
-        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_2000"),
+        start_scenario_index=start_scenario_index,
+        num_scenarios=num_scenarios,
+        data_directory=scenario_data_path,
         sequential_seed=True,
 
         # traffic & light
@@ -83,7 +89,9 @@ if __name__ == '__main__':
         use_lateral_reward=True,
     ), )
 
-    compute_actions = get_function("C:\\Users\\x1\\Desktop\\checkpoint_210\\checkpoint-210")
+    super_data = defaultdict(list)
+    EPISODE_NUM = env.config["num_scenarios"]
+    compute_actions = get_function(ckpt_path)
 
     o = env.reset()
     epi_num = 0
@@ -94,10 +102,17 @@ if __name__ == '__main__':
     ep_cost = 0
     ep_reward = 0
     success_flag = False
-    horizon = 600
     step = 0
+
+
+    def log_msg():
+        print("CKPT:{} | success_rate:{}, mean_episode_reward:{}, mean_episode_cost:{}".format(0,
+                                                                                               success_rate / epi_num,
+                                                                                               total_reward / epi_num,
+                                                                                               total_cost / epi_num))
+
+
     while True:
-        # action_to_send = compute_actions(w, [o], deterministic=False)[0]
         step += 1
         action_to_send = compute_actions(o)["default_policy"]
         o, r, d, info = env.step(action_to_send)
@@ -115,29 +130,23 @@ if __name__ == '__main__':
             else:
                 o = env.reset()
 
-            super_data[0].append({"reward": ep_reward, "success": success_flag, "cost": ep_cost})
+            super_data[0].append(
+                {"reward": ep_reward, "success": success_flag, "cost": ep_cost, "seed": env.current_seed})
 
             ep_cost = 0.0
             ep_reward = 0.0
             success_flag = False
             step = 0
 
-    print(
-        "CKPT:{} | success_rate:{}, mean_episode_reward:{}, mean_episode_cost:{}".format(0,
-                                                                                         success_rate / EPISODE_NUM,
-                                                                                         total_reward / EPISODE_NUM,
-                                                                                         total_cost / EPISODE_NUM))
+            if epi_num % 100 == 0:
+                log_msg()
 
+    log_msg()
     del compute_actions
-
     env.close()
-
-    import json
-
     try:
         with open("eval_ret_{}.json".format(get_time_str()), "w") as f:
             json.dump(super_data, f)
     except:
         pass
-
     print(super_data)
