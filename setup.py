@@ -43,7 +43,7 @@ install_requires = [
 train_requirement = ["ray==1.0.0",
                      # "torch",
                      "wandb==0.12.1",
-                     "aiohttp==3.6.0"
+                     "aiohttp==3.6.0",
                      "gymnasium",
                      "tensorflow",
                      "tensorflow_probability"]
