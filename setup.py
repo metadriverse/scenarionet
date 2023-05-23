@@ -40,7 +40,7 @@ install_requires = [
     "shapely"
 ]
 
-train_requirement = ["ray==1.0.0",
+train_requirement = ["ray[rllib]==1.0.0",
                      # "torch",
                      "wandb==0.12.1",
                      "aiohttp==3.6.0",
