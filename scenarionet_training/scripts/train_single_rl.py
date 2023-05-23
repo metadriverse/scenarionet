@@ -27,8 +27,8 @@ if __name__ == '__main__':
             no_light=True,
 
             # curriculum training
-            curriculum_level=80,
-            target_success_rate=0.8,
+            curriculum_level=40,
+            target_success_rate=0.85,
 
             # training
             horizon=None,
@@ -43,7 +43,7 @@ if __name__ == '__main__':
                                                sequential_seed=True,
                                                curriculum_level=1,  # turn off
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
-        evaluation_num_workers=10,
+        evaluation_num_workers=8,
         metrics_smoothing_episodes=10,
 
         # ===== Training =====
