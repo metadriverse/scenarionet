@@ -105,3 +105,4 @@ class DrivingCallbacks(DefaultCallbacks):
             result["max_step"] = result["custom_metrics"]["max_step_rate_mean"]
             result["level"] = result["custom_metrics"]["curriculum_level_mean"]
             result["coverage"] = result["custom_metrics"]["data_coverage_mean"]
+
