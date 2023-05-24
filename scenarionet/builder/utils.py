@@ -1,4 +1,5 @@
 import copy
+from metadrive.scenario.utils import read_dataset_summary
 import logging
 import os
 import os.path as osp
@@ -27,12 +28,12 @@ def try_generating_summary(file_folder):
 
 
 def merge_database(
-    output_path,
-    *dataset_paths,
-    exist_ok=False,
-    overwrite=False,
-    try_generate_missing_file=True,
-    filters: List[Callable] = None
+        output_path,
+        *dataset_paths,
+        exist_ok=False,
+        overwrite=False,
+        try_generate_missing_file=True,
+        filters: List[Callable] = None
 ):
     """
     Combine multiple datasets. Each database should have a dataset_summary.pkl
@@ -111,10 +112,10 @@ def merge_database(
 
 
 def move_database(
-    from_path,
-    to_path,
-    exist_ok=False,
-    overwrite=False,
+        from_path,
+        to_path,
+        exist_ok=False,
+        overwrite=False,
 ):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
@@ -132,3 +133,49 @@ def move_database(
     if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
             files) == 2:
         shutil.rmtree(from_path)
+
+
+def split_database(
+        from_path,
+        to_path,
+        start_index,
+        num_scenarios,
+        exist_ok=False,
+        overwrite=False,
+):
+    if not os.path.exists(from_path):
+        raise FileNotFoundError("Can not find database: {}".format(from_path))
+    if os.path.exists(to_path):
+        assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a database"
+        assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
+    overwrite = overwrite,
+    output_abs_path = osp.abspath(to_path)
+    os.makedirs(output_abs_path, exist_ok=exist_ok)
+    summary_file = osp.join(output_abs_path, ScenarioDescription.DATASET.SUMMARY_FILE)
+    mapping_file = osp.join(output_abs_path, ScenarioDescription.DATASET.MAPPING_FILE)
+    for file in [summary_file, mapping_file]:
+        if os.path.exists(file):
+            if overwrite:
+                os.remove(file)
+            else:
+                raise FileExistsError("{} already exists at: {}!".format(file, output_abs_path))
+
+    # collect
+    abs_dir_path = osp.abspath(from_path)
+    # summary
+    assert osp.exists(abs_dir_path), "Wrong database path. Can not find database at: {}".format(abs_dir_path)
+    summaries, lookup, mappings = read_dataset_summary(from_path)
+    assert start_index >= 0 and start_index + num_scenarios <= len(
+        lookup), "No enough scenarios in source dataset: total {}, start_index: {}, need: {}".format(len(lookup),
+                                                                                                     start_index,
+                                                                                                     num_scenarios)
+    selected = lookup[start_index: start_index + num_scenarios]
+    selected_summary = {}
+    selected_mapping = {}
+    for scenario in selected:
+        selected_summary[scenario] = summaries[scenario]
+        selected_mapping[scenario] = mappings[scenario]
+
+    save_summary_anda_mapping(summary_file, mapping_file, selected_summary, selected_mapping)
+
+    return summaries, mappings
