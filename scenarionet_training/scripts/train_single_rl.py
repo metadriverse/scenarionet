@@ -25,6 +25,7 @@ if __name__ == '__main__':
             # curriculum training
             curriculum_level=100,
             target_success_rate=0.85,
+            episodes_to_evaluate_curriculum=100,
 
             # traffic & light
             reactive_traffic=False,
@@ -37,7 +38,7 @@ if __name__ == '__main__':
         ),
 
         # ===== Evaluation =====
-        evaluation_interval=10,
+        evaluation_interval=15,
         evaluation_num_episodes=2000,
         # 2000 envs each time for efficiency TODO LQY, do eval on all scenarios after training!
         evaluation_config=dict(env_config=dict(start_scenario_index=40000,
@@ -55,7 +56,7 @@ if __name__ == '__main__':
         lr=5e-5,
         rollout_fragment_length=500,
         sgd_minibatch_size=100,
-        train_batch_size=50000,
+        train_batch_size=40000,
         num_gpus=0.5 if args.num_gpus != 0 else 0,
         num_cpus_per_worker=0.4,
         num_cpus_for_driver=1,
