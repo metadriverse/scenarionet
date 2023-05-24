@@ -1,3 +1,4 @@
+import pkg_resources  # for suppress warning
 import argparse
 import logging
 from scenarionet.common_utils import read_dataset_summary

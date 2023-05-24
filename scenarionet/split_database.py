@@ -1,7 +1,7 @@
 """
 This script is for extracting a subset of data from an existing database
 """
-
+import pkg_resources  # for suppress warning
 import argparse
 
 from scenarionet.builder.utils import split_database
