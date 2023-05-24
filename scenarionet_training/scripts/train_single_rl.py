@@ -51,9 +51,9 @@ config = dict(
     sgd_minibatch_size=100,
     train_batch_size=40000,
     num_gpus=0,
-    num_cpus_per_worker=0.4,
+    num_cpus_per_worker=0.3,
     num_cpus_for_driver=1,
-    num_workers=10,
+    num_workers=20,
     framework="tf"
 )
 
