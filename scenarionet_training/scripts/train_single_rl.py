@@ -18,7 +18,7 @@ config = dict(
         # curriculum training
         curriculum_level=100,
         target_success_rate=0.85,
-        episodes_to_evaluate_curriculum=100,
+        # episodes_to_evaluate_curriculum=400,  # default=num_scenarios/curriculum_level
 
         # traffic & light
         reactive_traffic=False,
@@ -53,7 +53,7 @@ config = dict(
     num_gpus=0,
     num_cpus_per_worker=0.3,
     num_cpus_for_driver=1,
-    num_workers=20,
+    num_workers=25,
     framework="tf"
 )
 
