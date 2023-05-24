@@ -41,7 +41,7 @@ if __name__ == '__main__':
         evaluation_num_episodes=2000,
         # 2000 envs each time for efficiency TODO LQY, do eval on all scenarios after training!
         evaluation_config=dict(env_config=dict(start_scenario_index=40000,
-                                               num_scenarios=5000,
+                                               num_scenarios=2000,
                                                sequential_seed=True,
                                                curriculum_level=1,  # turn off
                                                data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
