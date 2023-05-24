@@ -9,10 +9,10 @@ if __name__ == '__main__':
         "--database_path",
         "-d",
         required=True,
-        help="The name of the new combined dataset. "
+        help="The name of the new combined database. "
         "It will create a new directory to store dataset_summary.pkl and dataset_mapping.pkl. "
         "If exists_ok=True, those two .pkl files will be stored in an existing directory and turn "
-        "that directory into a dataset."
+        "that directory into a database."
     )
     parser.add_argument(
         '--from_datasets',
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         "--exist_ok",
         action="store_true",
         help="Still allow to write, if the dir exists already. "
-        "This write will only create two .pkl files and this directory will become a dataset."
+        "This write will only create two .pkl files and this directory will become a database."
     )
     parser.add_argument(
         "--overwrite",
@@ -53,4 +53,4 @@ if __name__ == '__main__':
             filters=filters
         )
     else:
-        raise ValueError("No source dataset are provided. Abort.")
+        raise ValueError("No source database are provided. Abort.")

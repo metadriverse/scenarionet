@@ -7,7 +7,7 @@ from metadrive.scenario.utils import get_number_of_scenarios
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--database_path", "-d", required=True, help="The path of the dataset")
+    parser.add_argument("--database_path", "-d", required=True, help="The path of the database")
     parser.add_argument("--render", action="store_true", help="Enable 3D rendering")
     parser.add_argument("--scenario_index", default=None, type=int, help="Specifying a scenario to run")
     args = parser.parse_args()

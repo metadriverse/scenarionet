@@ -35,13 +35,13 @@ def merge_database(
     filters: List[Callable] = None
 ):
     """
-    Combine multiple datasets. Each dataset should have a dataset_summary.pkl
-    :param output_path: The path to store the output dataset
+    Combine multiple datasets. Each database should have a dataset_summary.pkl
+    :param output_path: The path to store the output database
     :param exist_ok: If True, though the output_path already exist, still write into it
     :param overwrite: If True, overwrite existing dataset_summary.pkl and mapping.pkl. Otherwise, raise error
     :param try_generate_missing_file: If dataset_summary.pkl and mapping.pkl are missing, whether to try generating them
-    :param dataset_paths: Path of each dataset
-    :param filters: a set of filters to choose which scenario to be selected and added into this combined dataset
+    :param dataset_paths: Path of each database
+    :param filters: a set of filters to choose which scenario to be selected and added into this combined database
     :return: summary, mapping
     """
     filters = filters or []
@@ -63,12 +63,12 @@ def merge_database(
     for dataset_path in tqdm.tqdm(dataset_paths):
         abs_dir_path = osp.abspath(dataset_path)
         # summary
-        assert osp.exists(abs_dir_path), "Wrong dataset path. Can not find dataset at: {}".format(abs_dir_path)
+        assert osp.exists(abs_dir_path), "Wrong database path. Can not find database at: {}".format(abs_dir_path)
         if not osp.exists(osp.join(abs_dir_path, ScenarioDescription.DATASET.SUMMARY_FILE)):
             if try_generate_missing_file:
                 summary = try_generating_summary(abs_dir_path)
             else:
-                raise FileNotFoundError("Can not find summary file for dataset: {}".format(abs_dir_path))
+                raise FileNotFoundError("Can not find summary file for database: {}".format(abs_dir_path))
         else:
             with open(osp.join(abs_dir_path, ScenarioDescription.DATASET.SUMMARY_FILE), "rb+") as f:
                 summary = pickle.load(f)
@@ -85,7 +85,7 @@ def merge_database(
             if try_generate_missing_file:
                 mapping = {k: "" for k in summary}
             else:
-                raise FileNotFoundError("Can not find mapping file for dataset: {}".format(abs_dir_path))
+                raise FileNotFoundError("Can not find mapping file for database: {}".format(abs_dir_path))
         else:
             with open(osp.join(abs_dir_path, ScenarioDescription.DATASET.MAPPING_FILE), "rb+") as f:
                 mapping = pickle.load(f)
@@ -117,9 +117,9 @@ def move_database(
     overwrite=False,
 ):
     if not os.path.exists(from_path):
-        raise FileNotFoundError("Can not find dataset: {}".format(from_path))
+        raise FileNotFoundError("Can not find database: {}".format(from_path))
     if os.path.exists(to_path):
-        assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a dataset"
+        assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a database"
         assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
     merge_database(
         to_path,

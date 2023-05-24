@@ -1,3 +1,7 @@
+"""
+This script is for extracting a subset of data from an existing database
+"""
+
 import argparse
 
 from scenarionet.builder.utils import move_database
@@ -33,3 +37,5 @@ if __name__ == '__main__':
         exist_ok=args.exist_ok,
         overwrite=args.overwrite,
     )
+
+

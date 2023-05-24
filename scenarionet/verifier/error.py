@@ -53,12 +53,12 @@ class ErrorFile:
     @classmethod
     def generate_dataset(cls, error_file_path, new_dataset_path, overwrite=False, broken_scenario=False):
         """
-        Generate a new dataset containing all broken scenarios or all good scenarios
+        Generate a new database containing all broken scenarios or all good scenarios
         :param error_file_path: error file path
         :param new_dataset_path: a directory where you want to store your data
         :param overwrite: if new_dataset_path exists, whether to overwrite
         :param broken_scenario: generate broken scenarios. You can generate such a broken scenarios for debugging
-        :return: dataset summary, dataset mapping
+        :return: database summary, database mapping
         """
         new_dataset_path = os.path.abspath(new_dataset_path)
         if os.path.exists(new_dataset_path):
