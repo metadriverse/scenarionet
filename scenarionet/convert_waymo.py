@@ -1,4 +1,5 @@
 import pkg_resources  # for suppress warning
+import shutil
 import argparse
 import logging
 import os
@@ -48,6 +49,16 @@ if __name__ == '__main__':
     dataset_name = args.dataset_name
     output_path = args.database_path
     version = args.version
+
+    save_path = output_path
+    if os.path.exists(output_path):
+        if not overwrite:
+            raise ValueError(
+                "Directory {} already exists! Abort. "
+                "\n Try setting overwrite=True or adding --overwrite".format(output_path)
+            )
+        else:
+            shutil.rmtree(output_path)
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
     scenarios = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files,
