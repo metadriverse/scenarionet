@@ -3,6 +3,8 @@ import multiprocessing
 import os
 import pickle
 
+import tqdm
+
 from scenarionet.converter.utils import mph_to_kmh
 from scenarionet.converter.waymo.type import WaymoLaneType, WaymoAgentType, WaymoRoadLineType, WaymoRoadEdgeType
 
@@ -455,9 +457,13 @@ def get_waymo_scenarios(waymo_data_directory, num_workers=8):
 
 
 def read_from_files(arg):
+    try:
+        scenario_pb2
+    except NameError:
+        raise ImportError("Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0==1.5.0")
     waymo_data_directory, file_list = arg[0], arg[1]
     scenarios = []
-    for file_count, file in enumerate(file_list):
+    for file_count, file in tqdm.tqdm(enumerate(file_list)):
         file_path = os.path.join(waymo_data_directory, file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
