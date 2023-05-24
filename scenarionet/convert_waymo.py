@@ -28,6 +28,19 @@ if __name__ == '__main__':
         default=os.path.join(SCENARIONET_REPO_PATH, "waymo_origin"),
         help="The directory stores all waymo tfrecord"
     )
+    parser.add_argument(
+        "--start_file_index",
+        default=0,
+        type=int,
+        help="Control how many files to use. We will list all files in the raw data folder "
+             "and select files[start_file_index: start_file_index+num_files]"
+    )
+    parser.add_argument(
+        "--num_files",
+        default=1000,
+        help="Control how many files to use. We will list all files in the raw data folder "
+             "and select files[start_file_index: start_file_index+num_files]"
+    )
     args = parser.parse_args()
 
     overwrite = args.overwrite
@@ -36,7 +49,8 @@ if __name__ == '__main__':
     version = args.version
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
-    scenarios = get_waymo_scenarios(waymo_data_directory, num_workers=args.num_workers)
+    scenarios = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files,
+                                    num_workers=args.num_workers)
 
     write_to_directory(
         convert_func=convert_waymo_scenario,

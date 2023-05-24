@@ -420,13 +420,19 @@ def convert_waymo_scenario(scenario, version):
         }
         for count, id in enumerate(track_id)
     }
+    # clean memory
+    del scenario
+    scenario = None
     return md_scenario
 
 
-def get_waymo_scenarios(waymo_data_directory, num_workers=8):
+def get_waymo_scenarios(waymo_data_directory, start_index, num, num_workers=8):
     # parse raw data from input path to output path,
     # there is 1000 raw data in google cloud, each of them produce about 500 pkl file
     file_list = os.listdir(waymo_data_directory)
+    assert len(file_list) >= start_index + num and start_index >= 0, \
+        "No sufficient files ({}) in raw_data_directory. need: {}, start: {}".format(len(file_list), num, start_index)
+    file_list = file_list[start_index: start_index + num]
     num_files = len(file_list)
     if num_files < num_workers:
         # single process
