@@ -17,7 +17,7 @@ def test_split_dataset():
 
     #  split
     from_path = output_path
-    to_path = os.path.join(TMP_PATH, "split")
+    to_path = os.path.join(TMP_PATH, "split", "split")
     split_database(from_path, to_path, start_index=3, num_scenarios=4, overwrite=True, exist_ok=True)
     summary_1, lookup_1, mapping_1 = read_dataset_summary(from_path)
     summary_2, lookup_2, mapping_2 = read_dataset_summary(to_path)
