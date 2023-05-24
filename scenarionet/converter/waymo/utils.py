@@ -453,15 +453,15 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num, num_workers=8):
     #     all_result = list(p.imap(read_from_files, argument_list))
     # Disable multiprocessing read
     all_result = read_from_files([waymo_data_directory, file_list])
-    ret = []
-
-    # get result
-    for r in all_result:
-        if len(r) == 0:
-            logger.warning("0 scenarios found")
-        ret += r
-    logger.info("\n Find {} waymo scenarios from {} files".format(len(ret), num_files))
-    return ret
+    # ret = []
+    #
+    # # get result
+    # for r in all_result:
+    #     if len(r) == 0:
+    #         logger.warning("0 scenarios found")
+    #     ret += r
+    logger.info("\n Find {} waymo scenarios from {} files".format(len(all_result), num_files))
+    return all_result
 
 
 def read_from_files(arg):
