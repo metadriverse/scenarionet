@@ -12,7 +12,7 @@ config = dict(
         # scenario
         start_scenario_index=0,
         num_scenarios=40000,
-        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"),
+        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_train"),
         sequential_seed=True,
 
         # curriculum training
@@ -28,17 +28,19 @@ config = dict(
         # training
         horizon=None,
         use_lateral_reward=True,
+        # action_smooth_reward=0,
+
     ),
 
     # ===== Evaluation =====
     evaluation_interval=15,
     evaluation_num_episodes=1000,
     # 2000 envs each time for efficiency TODO LQY, do eval on all scenarios after training!
-    evaluation_config=dict(env_config=dict(start_scenario_index=40000,
+    evaluation_config=dict(env_config=dict(start_scenario_index=0,
                                            num_scenarios=1000,
                                            sequential_seed=True,
                                            curriculum_level=1,  # turn off
-                                           data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg"))),
+                                           data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_test"))),
     evaluation_num_workers=10,
     metrics_smoothing_episodes=10,
 
