@@ -28,6 +28,7 @@ config = dict(
         # training
         horizon=None,
         use_lateral_reward=True,
+        use_heading_reward=True,
         # action_smooth_reward=0,
 
     ),
