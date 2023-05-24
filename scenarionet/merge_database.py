@@ -34,8 +34,14 @@ if __name__ == '__main__':
         "whether to overwrite both files"
     )
     parser.add_argument(
+        "--filter_moving_dist",
+        action="store_true",
+        help="add this flag to select cases with SDC moving dist > sdc_moving_dist_min"
+    )
+    parser.add_argument(
         "--sdc_moving_dist_min",
-        default=0,
+        default=5,
+        type=float,
         help="Selecting case with sdc_moving_dist > this value. "
         "We will add more filter conditions in the future."
     )
@@ -50,7 +56,7 @@ if __name__ == '__main__':
             exist_ok=args.exist_ok,
             overwrite=args.overwrite,
             try_generate_missing_file=True,
-            filters=filters
+            filters=filters if args.filter_moving_dist else []
         )
     else:
         raise ValueError("No source database are provided. Abort.")
