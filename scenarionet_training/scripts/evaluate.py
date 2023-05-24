@@ -44,6 +44,9 @@ if __name__ == '__main__':
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,
                            num_scenarios=num_scenarios,
+                           curriculum_level=1, # disable curriculum
+                           target_success_rate=1,
+                           episodes_to_evaluate_curriculum=num_scenarios,
                            data_directory=scenario_data_path,
                            use_render=render))
     env = ScenarioEnv(env_config)
