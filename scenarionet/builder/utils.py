@@ -100,7 +100,7 @@ def merge_database(
     # apply filter stage
     file_to_pop = []
     for file_name, metadata, in summaries.items():
-        if not all([fil(metadata) for fil in filters]):
+        if not all([fil(metadata, os.path.join(output_abs_path, mappings[file_name], file_name)) for fil in filters]):
             file_to_pop.append(file_name)
     for file in file_to_pop:
         summaries.pop(file)
