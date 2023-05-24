@@ -464,6 +464,7 @@ def read_from_files(arg):
     waymo_data_directory, file_list = arg[0], arg[1]
     scenarios = []
     for file in tqdm.tqdm(enumerate(file_list)):
+        file = file[-1]
         file_path = os.path.join(waymo_data_directory, file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue

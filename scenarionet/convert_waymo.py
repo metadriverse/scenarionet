@@ -36,7 +36,7 @@ if __name__ == '__main__':
     version = args.version
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
-    scenarios = get_waymo_scenarios(waymo_data_directory)
+    scenarios = get_waymo_scenarios(waymo_data_directory, num_workers=args.num_workers)
 
     write_to_directory(
         convert_func=convert_waymo_scenario,
