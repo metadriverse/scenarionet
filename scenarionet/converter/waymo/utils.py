@@ -449,8 +449,10 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num, num_workers=8):
         argument_list.append([waymo_data_directory, file_list[i * num_files_each_worker:end_idx]])
 
     # Run, workers and process result from worker
-    with multiprocessing.Pool(num_workers) as p:
-        all_result = list(p.imap(read_from_files, argument_list))
+    # with multiprocessing.Pool(num_workers) as p:
+    #     all_result = list(p.imap(read_from_files, argument_list))
+    # Disable multiprocessing read
+    all_result = read_from_files([waymo_data_directory, file_list])
     ret = []
 
     # get result
