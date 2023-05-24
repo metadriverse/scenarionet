@@ -37,7 +37,7 @@ if __name__ == '__main__':
         ),
 
         # ===== Evaluation =====
-        evaluation_interval=10,
+        evaluation_interval=20,
         evaluation_num_episodes=5000,
         evaluation_config=dict(env_config=dict(start_scenario_index=40000,
                                                num_scenarios=5000,
