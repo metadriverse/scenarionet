@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
     scenarios = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files,
-                                    num_workers=args.num_workers)
+                                    num_workers=8)  # do not use too much worker to read data
 
     write_to_directory(
         convert_func=convert_waymo_scenario,
