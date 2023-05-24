@@ -1,5 +1,5 @@
-import pkg_resources  # for suppress warning
 import argparse
+
 from scenarionet.builder.filters import ScenarioFilter
 from scenarionet.builder.utils import merge_database
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
              "whether to overwrite both files"
     )
     parser.add_argument(
-        "--filter_moving_dist",
+        "--moving_dist",
         action="store_true",
         help="add this flag to select cases with SDC moving dist > sdc_moving_dist_min"
     )
@@ -42,11 +42,10 @@ if __name__ == '__main__':
         default=10,
         type=float,
         help="Selecting case with sdc_moving_dist > this value. "
-             "We will add more filter conditions in the future."
     )
 
     parser.add_argument(
-        "--filter_num_object",
+        "--num_object",
         action="store_true",
         help="add this flag to select cases with object_num < max_num_object"
     )
@@ -58,16 +57,33 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        "--filter_overpass",
+        "--no_overpass",
         action="store_true",
         help="Scenarios with overpass WON'T be selected"
+    )
+
+    parser.add_argument(
+        "--no_traffic_light",
+        action="store_true",
+        help="Scenarios with traffic light WON'T be selected"
     )
 
     args = parser.parse_args()
     target = args.sdc_moving_dist_min
     obj_threshold = args.max_num_object
-    filters = [ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=target, condition="greater"),
-               ScenarioFilter.make(ScenarioFilter.object_number, number_threshold=obj_threshold)]
+
+    filters = []
+    if args.no_overpass:
+        filters.append(ScenarioFilter.make(ScenarioFilter.no_overpass))
+    if args.num_object:
+        filters.append(ScenarioFilter.make(ScenarioFilter.object_number, number_threshold=obj_threshold))
+    if args.moving_dist:
+        filters.append(ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=target, condition="greater"))
+    if args.no_traffic_light:
+        filters.append(ScenarioFilter.make(ScenarioFilter.no_traffic_light))
+
+    if len(filters) == 0:
+        raise ValueError("No filters are applied. Abort.")
 
     if len(args.from_datasets) != 0:
         merge_database(
@@ -76,7 +92,7 @@ if __name__ == '__main__':
             exist_ok=args.exist_ok,
             overwrite=args.overwrite,
             try_generate_missing_file=True,
-            filters=filters if args.filter_moving_dist else []
+            filters=filters
         )
     else:
         raise ValueError("No source database are provided. Abort.")

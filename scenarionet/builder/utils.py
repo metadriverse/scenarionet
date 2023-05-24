@@ -61,7 +61,7 @@ def merge_database(
     mappings = {}
 
     # collect
-    for dataset_path in tqdm.tqdm(dataset_paths):
+    for dataset_path in tqdm.tqdm(dataset_paths, desc="Merge Data"):
         abs_dir_path = osp.abspath(dataset_path)
         # summary
         assert osp.exists(abs_dir_path), "Wrong database path. Can not find database at: {}".format(abs_dir_path)
@@ -99,7 +99,8 @@ def merge_database(
 
     # apply filter stage
     file_to_pop = []
-    for file_name, metadata, in summaries.items():
+    for file_name in tqdm.tqdm(summaries.keys(), desc="Filter Scenarios"):
+        metadata = summaries[file_name]
         if not all([fil(metadata, os.path.join(output_abs_path, mappings[file_name], file_name)) for fil in filters]):
             file_to_pop.append(file_name)
     for file in file_to_pop:
@@ -122,6 +123,13 @@ def move_database(
     if os.path.exists(to_path):
         assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a database"
         assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
+    files = os.listdir(from_path)
+    if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
+            files) > 2:
+        raise RuntimeError("The source database is not allowed to move! "
+                           "This will break the relationship between this database and other database built on it."
+                           "If it is ok for you, use 'mv' to move it manually ")
+
     merge_database(
         to_path,
         from_path,
@@ -129,7 +137,7 @@ def move_database(
         overwrite=overwrite,
         try_generate_missing_file=True,
     )
-    files = os.listdir(from_path)
+
     if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
             files) == 2:
         shutil.rmtree(from_path)
