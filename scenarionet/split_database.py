@@ -32,7 +32,7 @@ if __name__ == '__main__':
         "whether to overwrite both files"
     )
     args = parser.parse_args()
-    from_path = args.__getattr__("from")
+    from_path = args.__getattribute__("from")
     split_database(
         from_path,
         args.to,
