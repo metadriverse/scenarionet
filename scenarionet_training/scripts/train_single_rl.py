@@ -53,7 +53,7 @@ config = dict(
     num_gpus=0,
     num_cpus_per_worker=0.3,
     num_cpus_for_driver=1,
-    num_workers=25,
+    num_workers=20,
     framework="tf"
 )
 
