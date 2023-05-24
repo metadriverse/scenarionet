@@ -174,7 +174,7 @@ def split_database(
     selected_mapping = {}
     for scenario in selected:
         selected_summary[scenario] = summaries[scenario]
-        selected_mapping[scenario] = mappings[scenario]
+        selected_mapping[scenario] = os.path.relpath(osp.join(abs_dir_path, mappings[scenario]), output_abs_path)
 
     save_summary_anda_mapping(summary_file, mapping_file, selected_summary, selected_mapping)
 
