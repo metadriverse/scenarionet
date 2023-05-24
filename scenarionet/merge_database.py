@@ -35,7 +35,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "--sdc_moving_dist_min",
-        default=20,
+        default=0,
         help="Selecting case with sdc_moving_dist > this value. "
         "We will add more filter conditions in the future."
     )
