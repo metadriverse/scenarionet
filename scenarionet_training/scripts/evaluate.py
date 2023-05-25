@@ -34,7 +34,7 @@ def get_function(ckpt):
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_210\\checkpoint-210"
+    ckpt_path = "C:\\Users\\x1\\Desktop\\no_heading_bad\\checkpoint-620"
     scenario_data_path = os.path.join(SCENARIONET_DATASET_PATH, "pg_2000")
     num_scenarios = 2000
     start_scenario_index = 0
@@ -44,6 +44,7 @@ if __name__ == '__main__':
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,
                            num_scenarios=num_scenarios,
+                           # sequential_seed=False,
                            curriculum_level=1, # disable curriculum
                            target_success_rate=1,
                            episodes_to_evaluate_curriculum=num_scenarios,
@@ -78,6 +79,8 @@ if __name__ == '__main__':
         step += 1
         action_to_send = compute_actions(o)["default_policy"]
         o, r, d, info = env.step(action_to_send)
+        if env.config["use_render"]:
+            env.render(text={"reward": r})
         total_reward += r
         ep_reward += r
         total_cost += info["cost"]

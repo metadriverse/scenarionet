@@ -1,5 +1,5 @@
 import os.path
-
+from ray.tune import grid_search
 from metadrive.envs.scenario_env import ScenarioEnv
 
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
@@ -29,7 +29,8 @@ config = dict(
         horizon=None,
         use_lateral_reward=True,
         use_heading_reward=True,
-        # action_smooth_reward=0,
+        action_smooth_reward=0.2,
+        no_negative_reward=True,
 
     ),
 
