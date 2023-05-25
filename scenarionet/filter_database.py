@@ -15,7 +15,7 @@ if __name__ == '__main__':
              "that directory into a database."
     )
     parser.add_argument(
-        '--from_dataset',
+        '--from',
         required=True,
         type=str,
         help="Which dataset to filter. It takes one directory path as input"
@@ -71,6 +71,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     target = args.sdc_moving_dist_min
     obj_threshold = args.max_num_object
+    from_path = args.__getattribute__("from")
 
     filters = []
     if args.no_overpass:
@@ -85,14 +86,11 @@ if __name__ == '__main__':
     if len(filters) == 0:
         raise ValueError("No filters are applied. Abort.")
 
-    if len(args.from_datasets) != 0:
-        merge_database(
-            args.database_path,
-            *args.from_datasets,
-            exist_ok=args.exist_ok,
-            overwrite=args.overwrite,
-            try_generate_missing_file=True,
-            filters=filters
-        )
-    else:
-        raise ValueError("No source database are provided. Abort.")
+    merge_database(
+        args.database_path,
+        from_path,
+        exist_ok=args.exist_ok,
+        overwrite=args.overwrite,
+        try_generate_missing_file=True,
+        filters=filters
+    )
