@@ -47,7 +47,7 @@ python -m scenarionet.scripts.convert_pg -d pg --num_workers=16 --num_scenarios=
 ### Merge & move
 For merging two or more database, use
 ```
-python -m scenarionet.merge_database -d /destination/path --from_databases /database1 /2 ... 
+python -m scenarionet.merge_database -d /destination/path --from /database1 /2 ... 
 ```
 As a database contains a path mapping, one should move database folder with the following script instead of ```cp```
 command
