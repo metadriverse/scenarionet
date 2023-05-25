@@ -1,4 +1,5 @@
 import copy
+from random import choices
 from metadrive.scenario.utils import read_dataset_summary
 import logging
 import os
@@ -150,6 +151,7 @@ def split_database(
         num_scenarios,
         exist_ok=False,
         overwrite=False,
+        random=False,
 ):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
@@ -177,7 +179,10 @@ def split_database(
         lookup), "No enough scenarios in source dataset: total {}, start_index: {}, need: {}".format(len(lookup),
                                                                                                      start_index,
                                                                                                      num_scenarios)
-    selected = lookup[start_index: start_index + num_scenarios]
+    if random:
+        selected = choices(lookup, k=num_scenarios)
+    else:
+        selected = lookup[start_index: start_index + num_scenarios]
     selected_summary = {}
     selected_mapping = {}
     for scenario in selected:

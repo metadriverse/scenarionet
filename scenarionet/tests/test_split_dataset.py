@@ -18,12 +18,16 @@ def test_split_dataset():
     #  split
     from_path = output_path
     to_path = os.path.join(TMP_PATH, "split", "split")
+    split_database(from_path, to_path, start_index=0, random=True, num_scenarios=4, overwrite=True, exist_ok=True)
+    summary_2, lookup_2, mapping_2 = read_dataset_summary(to_path)
+    assert len(summary_2) == 4
+
     split_database(from_path, to_path, start_index=3, num_scenarios=4, overwrite=True, exist_ok=True)
     summary_1, lookup_1, mapping_1 = read_dataset_summary(from_path)
     summary_2, lookup_2, mapping_2 = read_dataset_summary(to_path)
     assert lookup_1[3:7] == lookup_2
     for k in range(4):
-        assert summary_1[lookup_2[k]]==summary_2[lookup_2[k]]
+        assert summary_1[lookup_2[k]] == summary_2[lookup_2[k]]
 
 
 if __name__ == '__main__':
