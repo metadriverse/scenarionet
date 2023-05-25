@@ -63,11 +63,11 @@ With teh error file, one can build a new database excluding or including the bro
 
 **Existence check**
 ```
-python -m scenarionet.verify_existence -d /database/to/check --error_file_path /error/file/path
+python -m scenarionet.check_existence -d /database/to/check --error_file_path /error/file/path
 ```
 **Runnable check**
 ```
-python -m scenarionet.verify_simulation -d /database/to/check --error_file_path /error/file/path
+python -m scenarionet.check_simulation -d /database/to/check --error_file_path /error/file/path
 ```
 **Generating new database**
 ```

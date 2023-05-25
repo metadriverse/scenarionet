@@ -1,5 +1,5 @@
 import copy
-from random import choices
+from random import sample
 from metadrive.scenario.utils import read_dataset_summary
 import logging
 import os
@@ -180,7 +180,7 @@ def split_database(
                                                                                                      start_index,
                                                                                                      num_scenarios)
     if random:
-        selected = choices(lookup, k=num_scenarios)
+        selected = sample(lookup[start_index:], k=num_scenarios)
     else:
         selected = lookup[start_index: start_index + num_scenarios]
     selected_summary = {}
