@@ -58,12 +58,13 @@ class ScenarioFilter:
         """
         We need read the map data to do overpass filter
         """
+        max_height_diff = 5
         if SD.SUMMARY.MAP_HEIGHT_DIFF in metadata:
-            return metadata[SD.SUMMARY.MAP_HEIGHT_DIFF] < 2
+            return metadata[SD.SUMMARY.MAP_HEIGHT_DIFF] < max_height_diff
         else:
             # calculate online
             map_features = read_scenario_data(file_path)[SD.MAP_FEATURES]
-            return abs(SD.map_height_diff(map_features)) < 2
+            return abs(SD.map_height_diff(map_features, target=max_height_diff)) < max_height_diff
 
     @staticmethod
     def make(func, **kwargs):

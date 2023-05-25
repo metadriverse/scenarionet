@@ -1,21 +1,17 @@
 import os
 import os.path
 
-from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
-from scenarionet.builder.utils import merge_database, split_database
-from scenarionet.common_utils import read_dataset_summary
-import argparse
+from metadrive.engine.asset_loader import AssetLoader
 
+from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
 from scenarionet.builder.filters import ScenarioFilter
 from scenarionet.builder.utils import merge_database
 
 
 def test_filter_overpass():
-    dataset_name = "nuscenes"
-    original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
-    overpass = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", "overpass")
-    dataset_paths = [original_dataset_path + "_{}".format(i) for i in [0, 1, 3, 4]]
-    dataset_paths.append(overpass)
+    overpass_1 = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", "overpass")
+    overpass_in_md = AssetLoader.file_path("waymo", return_raw_style=False)
+    dataset_paths = [overpass_1, overpass_in_md]
 
     output_path = os.path.join(TMP_PATH, "combine")
     merge_database(output_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True)
@@ -32,8 +28,9 @@ def test_filter_overpass():
         try_generate_missing_file=True,
         filters=filters
     )
+    assert len(summaries) == 3
     for scenario in summaries:
-        assert "waymo" not in scenario
+        assert scenario != "sd_waymo_v1.2_eb4b91b10ca94ff2.pkl"
 
 
 if __name__ == '__main__':
