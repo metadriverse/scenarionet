@@ -27,8 +27,8 @@ config = dict(
 
         # training scheme
         horizon=None,
-        action_smooth_penalty=0.5,
-        heading_penalty=1.0,
+        action_smooth_penalty=0.,
+        heading_penalty=.0,
         lateral_penalty=.5,
         no_negative_reward=True,
         on_lane_line_penalty=0,
