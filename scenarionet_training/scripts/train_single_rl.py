@@ -25,19 +25,24 @@ config = dict(
         no_static_vehicles=True,
         no_light=True,
 
-        # training
+        # training scheme
         horizon=None,
         use_lateral_reward=True,
-        use_heading_reward=True,
+        use_heading_reward=True,  # ablate me
         action_smooth_reward=0.2,
-        no_negative_reward=True,
+        no_negative_reward=False,
+        on_lane_line_penalty=0,
+        crash_vehicle_penalty=2.0,
+        crash_human_penalty=2.0,
+
+        vehicle_config=dict(side_detector=dict(num_lasers=0))
 
     ),
 
     # ===== Evaluation =====
     evaluation_interval=15,
     evaluation_num_episodes=1000,
-    # 2000 envs each time for efficiency TODO LQY, do eval on all scenarios after training!
+    # TODO (LQY), this is a sample from testset do eval on all scenarios after training!
     evaluation_config=dict(env_config=dict(start_scenario_index=0,
                                            num_scenarios=1000,
                                            sequential_seed=True,

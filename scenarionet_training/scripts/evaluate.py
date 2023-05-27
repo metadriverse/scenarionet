@@ -34,12 +34,12 @@ def get_function(ckpt):
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\no_heading_bad\\checkpoint-620"
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_480\\checkpoint-480"
     scenario_data_path = os.path.join(SCENARIONET_DATASET_PATH, "pg_2000")
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600
-    render = False
+    render = True
 
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,

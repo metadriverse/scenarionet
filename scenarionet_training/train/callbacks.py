@@ -7,23 +7,6 @@ from ray.rllib.evaluation import MultiAgentEpisode, RolloutWorker
 from ray.rllib.policy import Policy
 
 
-class CostCallbacks(DefaultCallbacks):
-    def on_episode_start(self, *, worker, base_env, policies, episode, env_index, **kwargs):
-        episode.user_data["cost"] = []
-
-    def on_episode_step(self, *, worker, base_env, episode, env_index, **kwargs):
-        info = episode.last_info_for()
-        if info is not None:
-            episode.user_data["cost"].append(info["cost"])
-
-    def on_episode_end(self, worker, base_env, policies, episode, **kwargs):
-        episode.custom_metrics["cost"] = float(sum(episode.user_data["cost"]))
-
-    def on_train_result(self, *, trainer, result: dict, **kwargs):
-        if "cost_mean" in result["custom_metrics"]:
-            result["cost"] = result["custom_metrics"]["cost_mean"]
-
-
 class DrivingCallbacks(DefaultCallbacks):
     def on_episode_start(
             self, *, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
@@ -35,6 +18,9 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.user_data["acceleration"] = []
         episode.user_data["lateral_dist"] = []
         episode.user_data["cost"] = []
+        episode.user_data["num_crash_vehicle"] = []
+        episode.user_data["num_crash_human"] = []
+        episode.user_data["num_crash_object"] = []
 
     def on_episode_step(
             self, *, worker: RolloutWorker, base_env: BaseEnv, episode: MultiAgentEpisode, env_index: int, **kwargs
@@ -47,6 +33,8 @@ class DrivingCallbacks(DefaultCallbacks):
             episode.user_data["acceleration"].append(info["acceleration"])
             episode.user_data["lateral_dist"].append(info["lateral_dist"])
             episode.user_data["cost"].append(info["cost"])
+            for x in ["num_crash_vehicle", "num_crash_object", "num_crash_human"]:
+                episode.user_data[x].append(info[x])
 
     def on_episode_end(
             self, worker: RolloutWorker, base_env: BaseEnv, policies: Dict[str, Policy], episode: MultiAgentEpisode,
@@ -77,7 +65,11 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["step_reward_max"] = float(np.max(episode.user_data["step_reward"]))
         episode.custom_metrics["step_reward_mean"] = float(np.mean(episode.user_data["step_reward"]))
         episode.custom_metrics["step_reward_min"] = float(np.min(episode.user_data["step_reward"]))
+
         episode.custom_metrics["cost"] = float(sum(episode.user_data["cost"]))
+        for x in ["num_crash_vehicle", "num_crash_object", "num_crash_human"]:
+            episode.custom_metrics[x] = float(sum(episode.user_data[x]))
+
         episode.custom_metrics["route_completion"] = float(episode.last_info_for()["route_completion"])
         episode.custom_metrics["curriculum_level"] = int(episode.last_info_for()["curriculum_level"])
         episode.custom_metrics["scenario_index"] = int(episode.last_info_for()["scenario_index"])
@@ -105,4 +97,3 @@ class DrivingCallbacks(DefaultCallbacks):
             result["max_step"] = result["custom_metrics"]["max_step_rate_mean"]
             result["level"] = result["custom_metrics"]["curriculum_level_mean"]
             result["coverage"] = result["custom_metrics"]["data_coverage_mean"]
-
