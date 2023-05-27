@@ -7,7 +7,7 @@ from ray.rllib.policy import Policy
 from ray.rllib.utils.typing import TrainerConfigDict, \
     EnvType
 
-from scenarionet_training.train.anisotropic_workerset import AnisotropicWorkerSet
+from scenarionet_training.train_utils.anisotropic_workerset import AnisotropicWorkerSet
 
 logger = logging.getLogger(__name__)
 

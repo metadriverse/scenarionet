@@ -21,7 +21,7 @@ Peng Zhenghao, 20210402
 """
 from ray import tune
 
-from scenarionet_training.train.utils import train
+from scenarionet_training.train_utils.utils import train
 
 if __name__ == "__main__":
     config = dict(env="CartPole-v0", num_workers=0, lr=tune.grid_search([1e-2, 1e-4]))

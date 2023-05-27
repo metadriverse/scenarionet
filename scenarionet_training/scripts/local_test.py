@@ -3,8 +3,8 @@ import os.path
 from metadrive.envs.scenario_env import ScenarioEnv
 
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
-from scenarionet_training.train.multi_worker_PPO import MultiWorkerPPO
-from scenarionet_training.train.utils import train, get_train_parser, get_exp_name
+from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
+from scenarionet_training.train_utils.utils import train, get_train_parser, get_exp_name
 
 if __name__ == '__main__':
     env = ScenarioEnv

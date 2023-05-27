@@ -6,9 +6,9 @@ from collections import defaultdict
 from metadrive.envs.scenario_env import ScenarioEnv
 
 from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet_training.train.multi_worker_PPO import MultiWorkerPPO
-from scenarionet_training.scripts.train_single_rl import config
-from scenarionet_training.train.utils import initialize_ray, get_time_str
+from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
+from scenarionet_training.scripts.train_pg import config
+from scenarionet_training.train_utils.utils import initialize_ray, get_time_str
 
 initialize_ray(test_mode=False, num_gpus=1)
 

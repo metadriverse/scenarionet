@@ -73,7 +73,7 @@ def train(
     if custom_callback:
         callback = custom_callback
     else:
-        from scenarionet_training.train.callbacks import DrivingCallbacks
+        from scenarionet_training.train_utils.callbacks import DrivingCallbacks
         callback = DrivingCallbacks
 
     used_config = {
