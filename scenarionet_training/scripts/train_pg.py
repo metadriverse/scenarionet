@@ -27,16 +27,16 @@ config = dict(
 
         # training scheme
         horizon=None,
-        action_smooth_penalty=1.0,
+        action_smooth_penalty=0,
         heading_penalty=1.0,
         lateral_penalty=1.0,
         no_negative_reward=True,
         on_lane_line_penalty=0,
-        crash_vehicle_penalty=0,
-        crash_human_penalty=0,
-        out_of_road_penalty=0,
+        crash_vehicle_penalty=2,
+        crash_human_penalty=2,
+        out_of_road_penalty=2,
         max_lateral_dist=2.5,
-        crash_vehicle_done=True,
+        # crash_vehicle_done=True,
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))
 
@@ -58,11 +58,11 @@ config = dict(
     model=dict(fcnet_hiddens=[512, 256, 128]),
     horizon=600,
     num_sgd_iter=20,
-    lr=5e-5,
+    lr=1e-4,
     rollout_fragment_length=500,
-    sgd_minibatch_size=100,
-    train_batch_size=40000,
-    num_gpus=0,
+    sgd_minibatch_size=200,
+    train_batch_size=50000,
+    num_gpus=0.5 if args.num_gpus>0 else 0 ,
     num_cpus_per_worker=0.3,
     num_cpus_for_driver=1,
     num_workers=20,
