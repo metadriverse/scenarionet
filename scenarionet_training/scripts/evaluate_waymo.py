@@ -1,13 +1,11 @@
 import copy
 import json
-import os.path
 from collections import defaultdict
 
 from metadrive.envs.scenario_env import ScenarioEnv
 
-from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.scripts.train_waymo import config
+from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train_utils.utils import initialize_ray, get_time_str
 
 initialize_ray(test_mode=False, num_gpus=1)
@@ -34,8 +32,8 @@ def get_function(ckpt):
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_350\\checkpoint-350"
-    scenario_data_path = os.path.join(SCENARIONET_DATASET_PATH, "pg_2000")
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_410\\checkpoint-410"
+    scenario_data_path = "D:\\scenarionet_testset\\waymo_test_raw_data"
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600

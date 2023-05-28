@@ -27,13 +27,15 @@ config = dict(
 
         # training scheme
         horizon=None,
-        action_smooth_penalty=0.,
-        heading_penalty=.0,
+        driving_reward=1.5,
+        action_smooth_penalty=1,
+        heading_penalty=1,
         lateral_penalty=.5,
         no_negative_reward=True,
         on_lane_line_penalty=0,
-        crash_vehicle_penalty=1.0,
-        crash_human_penalty=1.0,
+        crash_vehicle_penalty=0.5,
+        crash_human_penalty=0.5,
+        max_lateral_dist=2.5,
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))
 
