@@ -52,7 +52,7 @@ python -m scenarionet.merge_database -d /destination/path --from /database1 /2 .
 As a database contains a path mapping, one should move database folder with the following script instead of ```cp```
 command
 ```
-python -m scenarionet.move_database --to /destination/path --from /source/path
+python -m scenarionet.copy_database --to /destination/path --from /source/path
 ```
 
 ### Verify

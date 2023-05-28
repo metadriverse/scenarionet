@@ -34,7 +34,8 @@ def merge_database(
         exist_ok=False,
         overwrite=False,
         try_generate_missing_file=True,
-        filters: List[Callable] = None
+        filters: List[Callable] = None,
+        save=True,
 ):
     """
     Combine multiple datasets. Each database should have a dataset_summary.pkl
@@ -44,6 +45,7 @@ def merge_database(
     :param try_generate_missing_file: If dataset_summary.pkl and mapping.pkl are missing, whether to try generating them
     :param dataset_paths: Path of each database
     :param filters: a set of filters to choose which scenario to be selected and added into this combined database
+    :param save: save to output path, immediately
     :return: summary, mapping
     """
     filters = filters or []
@@ -107,17 +109,19 @@ def merge_database(
     for file in file_to_pop:
         summaries.pop(file)
         mappings.pop(file)
-
-    save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
+    if save:
+        save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings
 
 
-def move_database(
+def copy_database(
         from_path,
         to_path,
         exist_ok=False,
         overwrite=False,
+        copy_raw_data=False,
+        remove_source=False
 ):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
@@ -131,16 +135,25 @@ def move_database(
                            "This will break the relationship between this database and other database built on it."
                            "If it is ok for you, use 'mv' to move it manually ")
 
-    merge_database(
+    summaries, mappings = merge_database(
         to_path,
         from_path,
         exist_ok=exist_ok,
         overwrite=overwrite,
         try_generate_missing_file=True,
+        save=False
     )
+    summary_file = osp.join(to_path, ScenarioDescription.DATASET.SUMMARY_FILE)
+    mapping_file = osp.join(to_path, ScenarioDescription.DATASET.MAPPING_FILE)
 
-    if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
-            files) == 2:
+    if copy_raw_data:
+        for scenario_file, rel_path in mappings.items():
+            shutil.copyfile(os.path.join(to_path, rel_path, scenario_file), to_path)
+        mappings = {key: "./" for key in summaries.keys()}
+    save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
+
+    if remove_source and ScenarioDescription.DATASET.MAPPING_FILE in files and \
+            ScenarioDescription.DATASET.SUMMARY_FILE in files and len(files) == 2:
         shutil.rmtree(from_path)
 
 
