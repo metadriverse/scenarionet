@@ -147,7 +147,9 @@ def copy_database(
     mapping_file = osp.join(to_path, ScenarioDescription.DATASET.MAPPING_FILE)
 
     if copy_raw_data:
-        for scenario_file, rel_path in mappings.items():
+        logger.info("Copy raw data...")
+        for scenario_file in tqdm.tqdm(mappings.keys()):
+            rel_path = mappings[scenario_file]
             shutil.copyfile(os.path.join(to_path, rel_path, scenario_file), os.path.join(to_path, scenario_file))
         mappings = {key: "./" for key in summaries.keys()}
     save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
