@@ -148,7 +148,7 @@ def copy_database(
 
     if copy_raw_data:
         for scenario_file, rel_path in mappings.items():
-            shutil.copyfile(os.path.join(to_path, rel_path, scenario_file), to_path)
+            shutil.copyfile(os.path.join(to_path, rel_path, scenario_file), os.path.join(to_path, scenario_file))
         mappings = {key: "./" for key in summaries.keys()}
     save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
 
