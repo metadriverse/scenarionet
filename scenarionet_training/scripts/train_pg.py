@@ -32,9 +32,11 @@ config = dict(
         lateral_penalty=1.0,
         no_negative_reward=True,
         on_lane_line_penalty=0,
-        crash_vehicle_penalty=1.5,
-        crash_human_penalty=1.5,
-        max_lateral_dist=3.,
+        crash_vehicle_penalty=0,
+        crash_human_penalty=0,
+        out_of_road_penalty=0,
+        max_lateral_dist=2.5,
+        crash_vehicle_done=True,
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))
 

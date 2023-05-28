@@ -1,7 +1,6 @@
 import os.path
-from ray.tune import grid_search
-from metadrive.envs.scenario_env import ScenarioEnv
 
+from metadrive.envs.scenario_env import ScenarioEnv
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train_utils.utils import train, get_train_parser, get_exp_name
@@ -27,15 +26,17 @@ config = dict(
 
         # training scheme
         horizon=None,
-        driving_reward=1.5,
+        driving_reward=2,
         action_smooth_penalty=1,
         heading_penalty=1,
         lateral_penalty=.5,
         no_negative_reward=True,
         on_lane_line_penalty=0,
-        crash_vehicle_penalty=0.5,
-        crash_human_penalty=0.5,
+        crash_vehicle_penalty=0,
+        crash_human_penalty=0,
+        out_of_road_penalty=0,
         max_lateral_dist=2.5,
+        crash_vehicle_done=True,
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))
 
