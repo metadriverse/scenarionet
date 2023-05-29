@@ -40,7 +40,7 @@ install_requires = [
     "shapely"
 ]
 
-train_requirement = ['python<3.9',
+train_requirement = [
                      "ray[rllib]==1.0.0",
                      # "torch",
                      "wandb==0.12.1",
