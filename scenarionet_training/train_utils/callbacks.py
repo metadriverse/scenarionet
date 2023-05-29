@@ -21,6 +21,7 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.user_data["num_crash_vehicle"] = []
         episode.user_data["num_crash_human"] = []
         episode.user_data["num_crash_object"] = []
+        episode.user_data["num_on_line"] = []
 
         episode.user_data["step_reward_lateral"] = []
         episode.user_data["step_reward_heading"] = []
@@ -37,7 +38,7 @@ class DrivingCallbacks(DefaultCallbacks):
             episode.user_data["acceleration"].append(info["acceleration"])
             episode.user_data["lateral_dist"].append(info["lateral_dist"])
             episode.user_data["cost"].append(info["cost"])
-            for x in ["num_crash_vehicle", "num_crash_object", "num_crash_human"]:
+            for x in ["num_crash_vehicle", "num_crash_object", "num_crash_human", "num_on_line"]:
                 episode.user_data[x].append(info[x])
 
             for x in ["step_reward_lateral", "step_reward_heading", "step_reward_action_smooth"]:
@@ -74,7 +75,7 @@ class DrivingCallbacks(DefaultCallbacks):
         episode.custom_metrics["step_reward_min"] = float(np.min(episode.user_data["step_reward"]))
 
         episode.custom_metrics["cost"] = float(sum(episode.user_data["cost"]))
-        for x in ["num_crash_vehicle", "num_crash_object", "num_crash_human"]:
+        for x in ["num_crash_vehicle", "num_crash_object", "num_crash_human", "num_on_line"]:
             episode.custom_metrics[x] = float(sum(episode.user_data[x]))
 
         for x in ["step_reward_lateral", "step_reward_heading", "step_reward_action_smooth"]:
