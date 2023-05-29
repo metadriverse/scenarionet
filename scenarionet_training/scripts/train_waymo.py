@@ -27,7 +27,7 @@ config = dict(
         # training scheme
         horizon=None,
         driving_reward=1,
-        action_smooth_penalty=0,
+        steering_range_penalty=0,
         heading_penalty=1,
         lateral_penalty=1.0,
         no_negative_reward=True,

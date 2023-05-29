@@ -32,7 +32,7 @@ def get_function(ckpt, explore):
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_190\\checkpoint-190"
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_410\\checkpoint-410"
     scenario_data_path = "D:\\scenarionet_testset\\waymo_test_raw_data"
     num_scenarios = 2000
     start_scenario_index = 0
