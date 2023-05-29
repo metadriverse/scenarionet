@@ -34,14 +34,16 @@ def get_function(ckpt, explore):
 
 
 if __name__ == '__main__':
+    # Merge all evaluate script
     # 10/15/20/26/30/31/32
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_830\\checkpoint-830"
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_330\\checkpoint-330"
     scenario_data_path = os.path.join(SCENARIONET_DATASET_PATH, "pg_2000")
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600
-    render = True
+    render = False
     explore = True  # PPO is a stochastic policy, turning off exploration can reduce jitter but may harm performance
+    log_interval = 2
 
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,
@@ -82,7 +84,7 @@ if __name__ == '__main__':
         action_to_send = compute_actions(o)["default_policy"]
         o, r, d, info = env.step(action_to_send)
         if env.config["use_render"]:
-            env.render(text={"reward": r, "seed": env.current_seed})
+            env.render(text={"reward": r})
         total_reward += r
         ep_reward += r
         total_cost += info["cost"]
@@ -105,7 +107,7 @@ if __name__ == '__main__':
             success_flag = False
             step = 0
 
-            if epi_num % 100 == 0:
+            if epi_num % log_interval == 0:
                 log_msg()
 
     log_msg()

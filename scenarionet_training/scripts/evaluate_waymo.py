@@ -32,13 +32,14 @@ def get_function(ckpt, explore):
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_410\\checkpoint-410"
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_310\\checkpoint-310"
     scenario_data_path = "D:\\scenarionet_testset\\waymo_test_raw_data"
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600
     render = True
     explore = True  # PPO is a stochastic policy, turning off exploration can reduce jitter but may harm performance
+    log_interval = 2
 
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,
@@ -102,7 +103,7 @@ if __name__ == '__main__':
             success_flag = False
             step = 0
 
-            if epi_num % 100 == 0:
+            if epi_num % log_interval == 0:
                 log_msg()
 
     log_msg()
