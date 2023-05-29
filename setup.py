@@ -41,7 +41,7 @@ install_requires = [
 ]
 
 train_requirement = ["ray[rllib]==1.0.0",
-                     'python<3.9'
+                     'python<3.9',
                      # "torch",
                      "wandb==0.12.1",
                      "aiohttp==3.6.0",
