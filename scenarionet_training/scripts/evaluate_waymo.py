@@ -20,12 +20,12 @@ def get_eval_config():
     return eval_config
 
 
-def get_function(ckpt):
+def get_function(ckpt, explore):
     trainer = MultiWorkerPPO(get_eval_config())
     trainer.restore(ckpt)
 
     def _f(obs):
-        ret = trainer.compute_actions({"default_policy": obs}, explore=True)
+        ret = trainer.compute_actions({"default_policy": obs}, explore=explore)
         return ret
 
     return _f
@@ -38,6 +38,7 @@ if __name__ == '__main__':
     start_scenario_index = 0
     horizon = 600
     render = True
+    explore = True  # PPO is a stochastic policy, turning off exploration can reduce jitter but may harm performance
 
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,
@@ -52,7 +53,7 @@ if __name__ == '__main__':
 
     super_data = defaultdict(list)
     EPISODE_NUM = env.config["num_scenarios"]
-    compute_actions = get_function(ckpt_path)
+    compute_actions = get_function(ckpt_path, explore=explore)
 
     o = env.reset()
     epi_num = 0

@@ -22,24 +22,26 @@ def get_eval_config():
     return eval_config
 
 
-def get_function(ckpt):
+def get_function(ckpt, explore):
     trainer = MultiWorkerPPO(get_eval_config())
     trainer.restore(ckpt)
 
     def _f(obs):
-        ret = trainer.compute_actions({"default_policy": obs}, explore=True)
+        ret = trainer.compute_actions({"default_policy": obs}, explore=explore)
         return ret
 
     return _f
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_490\\checkpoint-490"
+    # 10/15/20/26/30/31/32
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_830\\checkpoint-830"
     scenario_data_path = os.path.join(SCENARIONET_DATASET_PATH, "pg_2000")
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600
     render = True
+    explore = True  # PPO is a stochastic policy, turning off exploration can reduce jitter but may harm performance
 
     env_config = get_eval_config()["env_config"]
     env_config.update(dict(start_scenario_index=start_scenario_index,
@@ -54,7 +56,7 @@ if __name__ == '__main__':
 
     super_data = defaultdict(list)
     EPISODE_NUM = env.config["num_scenarios"]
-    compute_actions = get_function(ckpt_path)
+    compute_actions = get_function(ckpt_path, explore=explore)
 
     o = env.reset()
     epi_num = 0
@@ -80,7 +82,7 @@ if __name__ == '__main__':
         action_to_send = compute_actions(o)["default_policy"]
         o, r, d, info = env.step(action_to_send)
         if env.config["use_render"]:
-            env.render(text={"reward": r})
+            env.render(text={"reward": r, "seed": env.current_seed})
         total_reward += r
         ep_reward += r
         total_cost += info["cost"]
