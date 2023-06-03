@@ -24,6 +24,7 @@ config = dict(
         reactive_traffic=False,
         no_static_vehicles=True,
         no_light=True,
+        static_traffic_object=True,
 
         # training scheme
         horizon=None,

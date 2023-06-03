@@ -25,6 +25,7 @@ if __name__ == '__main__':
             reactive_traffic=False,
             no_static_vehicles=True,
             no_light=True,
+            static_traffic_object=True,
 
             # curriculum training
             curriculum_level=4,
