@@ -26,7 +26,7 @@ config = dict(
 
         # training scheme
         horizon=None,
-        driving_reward=3,
+        driving_reward=1,
         steering_range_penalty=1.0,
         heading_penalty=1,
         lateral_penalty=1.0,
@@ -34,8 +34,9 @@ config = dict(
         on_lane_line_penalty=0,
         crash_vehicle_penalty=1,
         crash_human_penalty=1,
+        crash_object_penalty=0.5,
         # out_of_road_penalty=2,
-        max_lateral_dist=2.5,
+        max_lateral_dist=1.5,
         # crash_vehicle_done=True,
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))

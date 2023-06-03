@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from metadrive.envs.scenario_env import ScenarioEnv
 
-from scenarionet_training.scripts.train_waymo import config
+from scenarionet_training.scripts.train_nuplan import config
 from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train_utils.utils import initialize_ray, get_time_str
 
@@ -32,8 +32,9 @@ def get_function(ckpt, explore):
 
 
 if __name__ == '__main__':
-    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_170\\checkpoint-170"
-    scenario_data_path = "D:\\scenarionet_testset\\waymo_test_raw_data"
+    # 27 29 30 37 39
+    ckpt_path = "C:\\Users\\x1\\Desktop\\checkpoint_510\\checkpoint-510"
+    scenario_data_path = "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw"
     num_scenarios = 2000
     start_scenario_index = 0
     horizon = 600
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     env_config.update(dict(start_scenario_index=start_scenario_index,
                            num_scenarios=num_scenarios,
                            # sequential_seed=False,
-                           curriculum_level=1, # disable curriculum
+                           curriculum_level=1,  # disable curriculum
                            target_success_rate=1,
                            episodes_to_evaluate_curriculum=num_scenarios,
                            data_directory=scenario_data_path,
