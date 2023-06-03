@@ -1,17 +1,10 @@
 import argparse
 import json
-import multiprocessing
 import os
-from functools import partial
 
 from scenarionet_training.scripts.train_nuplan import config
-from scenarionet_training.train_utils.utils import eval_ckpt
-from scenarionet_training.train_utils.utils import get_time_str
-
-
-def _eval_single_wrapper(start_index, known_kwargs):
-    return eval_ckpt(start_scenario_index=start_index, **known_kwargs)
-
+from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
+from scenarionet_training.train_utils.utils import initialize_ray
 
 if __name__ == '__main__':
     # 27 29 30 37 39
@@ -22,44 +15,31 @@ if __name__ == '__main__':
     parser.add_argument("--num_scenarios", type=int, default=5000)
     parser.add_argument("--num_workers", type=int, default=10)
     parser.add_argument("--horizon", type=int, default=600)
-    parser.add_argument("--render", type=bool, default=False)
-    parser.add_argument("--explore", type=bool, default=True)
-    parser.add_argument("--log_interval", type=int, default=None)
+    parser.add_argument("--overwrite", action="store_true")
 
     args = parser.parse_args()
-    os.makedirs("eval_ret_{}".format(os.path.basename(args.ckpt_path)), exist_ok=False)
+    file = "eval_ret_{}.json".format(os.path.basename(args.ckpt_path))
+    if os.path.exists(file) and not args.overwrite:
+        raise FileExistsError("Please remove {} or set --overwrite".format(file))
+    initialize_ray(test_mode=False, num_gpus=1)
 
-    num_files = args.num_scenarios
-    num_workers = args.num_workers
-    num_files_each_worker = int(num_files / num_workers)
-    assert num_files_each_worker * num_workers == num_files, "num_scenarios should be dividable by num_workers!"
-    argument_list = []
-    for i in range(num_workers):
-        argument_list.append(args.start_index + i * num_files_each_worker)
+    config["evaluation_config"]["evaluation_num_workers"] = args.num_workers
+    config["evaluation_config"]["evaluation_num_episodes"] = args.num_scenarios
+    config["evaluation_config"]["metrics_smoothing_episodes"] = args.num_scenarios
+    config["num_workers"] = 0
+    config["evaluation_config"]["env_config"].update(dict(
+        start_scenario_index=args.start_index,
+        num_scenarios=args.num_scenarios,
+        sequential_seed=True,
+        curriculum_level=1,  # disable curriculum
+        target_success_rate=1,
+        horizon=args.horizon,
+        episodes_to_evaluate_curriculum=args.num_scenarios,
+        data_directory=args.database_path,
+        use_render=False))
 
-    _eval_func_wrapper = partial(_eval_single_wrapper,
-                                 known_kwagrs=dict(config=config,
-                                                   ckpt_path=args.ckpt_path,
-                                                   scenario_data_path=args.database_path,
-                                                   num_scenarios=args.num_scenarios,
-                                                   # start_scenario_index=start_index,
-                                                   horizon=args.horizon,
-                                                   render=args.render,
-                                                   explore=args.explore,
-                                                   log_interval=args.log_interval)
-
-                                 )
-
-    # Run, workers and process result from worker
-    with multiprocessing.Pool(num_workers, maxtasksperchild=10) as p:
-        all_ret = list(p.imap(_eval_func_wrapper, argument_list))
-        # call ret to block the process
-
-    final_result = {}
-    for ret in all_ret:
-        final_result.update(ret)
-
-    with open("merge_eval_ret_{}_{}_{}.json".format(args.start_index,
-                                                    args.start_index + args.num_scenarios,
-                                                    get_time_str()), "w") as f:
-        json.dump(final_result, f)
+    trainer = MultiWorkerPPO(config)
+    trainer.restore(args.ckpt_path)
+    ret = trainer._evaluate()["evaluation"]
+    with open(file, "w") as file:
+        json.dump(ret, file)
