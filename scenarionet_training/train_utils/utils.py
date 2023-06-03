@@ -6,6 +6,7 @@ import pickle
 from collections import defaultdict
 
 import numpy as np
+import tqdm
 from metadrive.constants import TerminationState
 from metadrive.envs.scenario_env import ScenarioEnv
 from ray import tune
@@ -275,7 +276,7 @@ def eval_ckpt(config,
               render=False,
               # PPO is a stochastic policy, turning off exploration can reduce jitter but may harm performance
               explore=True,
-              log_interval=2,
+              log_interval=None,
               ):
     initialize_ray(test_mode=False, num_gpus=1)
     # 27 29 30 37 39
@@ -313,7 +314,7 @@ def eval_ckpt(config,
                                                                                                total_reward / epi_num,
                                                                                                total_cost / epi_num))
 
-    for epi_num in range(0, EPISODE_NUM):
+    for epi_num in tqdm.tqdm(range(0, EPISODE_NUM)):
         step += 1
         action_to_send = compute_actions(o)["default_policy"]
         o, r, d, info = env.step(action_to_send)
@@ -343,10 +344,10 @@ def eval_ckpt(config,
             success_flag = False
             step = 0
 
-            if epi_num % log_interval == 0:
+            if log_interval is not None and epi_num % log_interval == 0:
                 log_msg()
-
-    log_msg()
+    if log_interval is not None:
+        log_msg()
     del compute_actions
     env.close()
     with open("eval_ret_{}_{}_{}.json".format(start_scenario_index,
