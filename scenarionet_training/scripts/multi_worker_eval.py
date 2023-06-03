@@ -2,12 +2,24 @@ import argparse
 import json
 import os
 
+import numpy as np
+
 from scenarionet_training.scripts.train_nuplan import config
+from scenarionet_training.train_utils.callbacks import DrivingCallbacks
 from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train_utils.utils import initialize_ray
 
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, np.int32):
+            return int(obj)
+        return json.JSONEncoder.default(self, obj)
+
+
 if __name__ == '__main__':
-    # 27 29 30 37 39
     parser = argparse.ArgumentParser()
     parser.add_argument("--start_index", type=int, default=0)
     parser.add_argument("--ckpt_path", type=str, required=True)
@@ -21,16 +33,19 @@ if __name__ == '__main__':
     file = "eval_ret_{}.json".format(os.path.basename(args.ckpt_path))
     if os.path.exists(file) and not args.overwrite:
         raise FileExistsError("Please remove {} or set --overwrite".format(file))
-    initialize_ray(test_mode=False, num_gpus=1)
+    initialize_ray(test_mode=True, num_gpus=1)
 
-    config["evaluation_config"]["evaluation_num_workers"] = args.num_workers
-    config["evaluation_config"]["evaluation_num_episodes"] = args.num_scenarios
-    config["evaluation_config"]["metrics_smoothing_episodes"] = args.num_scenarios
+    config["callbacks"] = DrivingCallbacks
+    config["evaluation_num_workers"] = args.num_workers
+    config["evaluation_num_episodes"] = args.num_scenarios
+    config["metrics_smoothing_episodes"] = args.num_scenarios
+    config["custom_eval_function"] = None
     config["num_workers"] = 0
     config["evaluation_config"]["env_config"].update(dict(
         start_scenario_index=args.start_index,
         num_scenarios=args.num_scenarios,
         sequential_seed=True,
+        store_map=False,
         curriculum_level=1,  # disable curriculum
         target_success_rate=1,
         horizon=args.horizon,
@@ -40,6 +55,7 @@ if __name__ == '__main__':
 
     trainer = MultiWorkerPPO(config)
     trainer.restore(args.ckpt_path)
+
     ret = trainer._evaluate()["evaluation"]
     with open(file, "w") as file:
-        json.dump(ret, file)
+        json.dump(ret, file, cls=NumpyEncoder)
