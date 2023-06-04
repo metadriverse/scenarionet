@@ -67,6 +67,13 @@ class ScenarioFilter:
             return abs(SD.map_height_diff(map_features, target=max_height_diff)) < max_height_diff
 
     @staticmethod
+    def id_filter(metadata, file_path, ids):
+        for id in ids:
+            if metadata["id"] in id:
+                return False
+        return True
+
+    @staticmethod
     def make(func, **kwargs):
         """
         A wrapper for partial() for filling some parameters
