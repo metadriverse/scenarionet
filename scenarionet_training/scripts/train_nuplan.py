@@ -16,7 +16,7 @@ config = dict(
 
         # curriculum training
         curriculum_level=100,
-        target_success_rate=0.8,
+        target_success_rate=0.8, # or 0.7
         # episodes_to_evaluate_curriculum=400,  # default=num_scenarios/curriculum_level
 
         # traffic & light
@@ -27,14 +27,14 @@ config = dict(
 
         # training scheme
         horizon=None,
-        driving_reward=1,
+        driving_reward=4,
         steering_range_penalty=1.0,
-        heading_penalty=1,
-        lateral_penalty=1.0,
+        heading_penalty=2,
+        lateral_penalty=2.0,
         no_negative_reward=True,
         on_lane_line_penalty=0,
-        crash_vehicle_penalty=1,
-        crash_human_penalty=1,
+        crash_vehicle_penalty=2,
+        crash_human_penalty=2,
         crash_object_penalty=0.5,
         # out_of_road_penalty=2,
         max_lateral_dist=2,
