@@ -37,7 +37,7 @@ config = dict(
         crash_human_penalty=1,
         crash_object_penalty=0.5,
         # out_of_road_penalty=2,
-        max_lateral_dist=1.5,
+        max_lateral_dist=2,
         # crash_vehicle_done=True,
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))
