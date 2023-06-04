@@ -1,4 +1,5 @@
 import argparse
+import pickle
 import json
 import os
 
@@ -16,6 +17,8 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.tolist()
         elif isinstance(obj, np.int32):
             return int(obj)
+        elif isinstance(obj, np.int64):
+            return int(obj)
         return json.JSONEncoder.default(self, obj)
 
 
@@ -28,15 +31,12 @@ if __name__ == '__main__':
     parser.add_argument("--num_scenarios", type=int, default=5000)
     parser.add_argument("--num_workers", type=int, default=10)
     parser.add_argument("--horizon", type=int, default=600)
-    # parser.add_argument("--ckpt_path", type=str, default="C:\\Users\\x1\\Desktop\\checkpoint_460\\checkpoint-460")
-    # parser.add_argument("--database_path", type=str, default="D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw")
-    # parser.add_argument("--num_scenarios", type=int, default=200)
-    # parser.add_argument("--num_workers", type=int, default=20)
-    # parser.add_argument("--horizon", type=int, default=200)
+    parser.add_argument("--allowed_more_steps", type=int, default=50)
+    parser.add_argument("--max_lateral_dist", type=int, default=2.5)
     parser.add_argument("--overwrite", action="store_true")
 
     args = parser.parse_args()
-    file = "eval_{}_{}_{}.json".format(args.id, os.path.basename(args.ckpt_path), os.path.basename(args.database_path))
+    file = "eval_{}_{}_{}".format(args.id, os.path.basename(args.ckpt_path), os.path.basename(args.database_path))
     if os.path.exists(file) and not args.overwrite:
         raise FileExistsError("Please remove {} or set --overwrite".format(file))
     initialize_ray(test_mode=True, num_gpus=1)
@@ -53,9 +53,9 @@ if __name__ == '__main__':
         sequential_seed=True,
         # store_map=False,
         # store_data=False,
-        allowed_more_steps=50,
+        allowed_more_steps=args.allowed_more_steps,
         # no_map=True,
-        max_lateral_dist=2,
+        max_lateral_dist=args.max_lateral_dist,
         curriculum_level=1,  # disable curriculum
         target_success_rate=1,
         horizon=args.horizon,
@@ -67,5 +67,8 @@ if __name__ == '__main__':
     trainer.restore(args.ckpt_path)
 
     ret = trainer._evaluate()["evaluation"]
-    with open(file, "w") as file:
-        json.dump(ret, file, cls=NumpyEncoder)
+    with open(file + ".json", "w") as f:
+        json.dump(ret, f, cls=NumpyEncoder)
+
+    with open(file + ".pkl", "wb+") as f:
+        pickle.dump(ret, f)
