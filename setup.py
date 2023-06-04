@@ -51,7 +51,7 @@ train_requirement = [
 
 setup(
     name="scenarionet",
-    python_requires='>=3.8',  # do version check with assert
+    python_requires='>=3.7',  # do version check with assert
     version=version,
     description="Scalable Traffic Scenario Management System",
     url="https://github.com/metadriverse/ScenarioNet",

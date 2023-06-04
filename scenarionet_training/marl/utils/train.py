@@ -4,11 +4,101 @@ import pickle
 
 import numpy as np
 from ray import tune
+import ray
 from ray.tune import CLIReporter
+import logging
 
-from newcopo.copo.train.utils import initialize_ray
+from multiprocessing import Queue
+
+from ray.air.integrations.wandb import WandbLoggerCallback, _clean_log
 
 root = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
+
+class OurWandbLogger(WandbLoggerCallback):
+    def __init__(self, exp_name, *args, **kwargs):
+        super(OurWandbLogger, self).__init__(*args, **kwargs)
+        self.exp_name = exp_name
+
+    def log_trial_start(self, trial: "Trial"):
+        config = trial.config.copy()
+
+        config.pop("callbacks", None)  # Remove callbacks
+
+        exclude_results = self._exclude_results.copy()
+
+        # Additional excludes
+        exclude_results += self.excludes
+
+        # Log config keys on each result?
+        if not self.log_config:
+            exclude_results += ["config"]
+
+        # Fill trial ID and name
+        trial_id = trial.trial_id if trial else None
+        trial_name = str(trial) if trial else None
+
+        # Project name for Wandb
+        wandb_project = self.project
+
+        # Grouping
+        wandb_group = self.group or trial.experiment_dir_name if trial else None
+
+        # remove unpickleable items!
+        config = _clean_log(config)
+
+        # ========== Our modification! ==========
+        run_name = "{}_{}".format(self.exp_name, trial_id)
+
+        wandb_init_kwargs = dict(
+            id=trial_id,
+            name=run_name,  # Our modification!
+            resume=False,
+            reinit=True,
+            allow_val_change=True,
+            group=wandb_group,
+            project=wandb_project,
+            config=config,
+        )
+        # ========== Our modification ends! ==========
+
+        wandb_init_kwargs.update(self.kwargs)
+
+        self._trial_queues[trial] = Queue()
+        self._trial_processes[trial] = self._logger_process_cls(
+            logdir=trial.logdir,
+            queue=self._trial_queues[trial],
+            exclude=exclude_results,
+            to_config=self._config_results,
+            **wandb_init_kwargs,
+        )
+        self._trial_processes[trial].start()
+
+
+def initialize_ray(local_mode=False, num_gpus=None, test_mode=False, **kwargs):
+    os.environ['OMP_NUM_THREADS'] = '1'
+
+    if ray.__version__.split(".")[0] == "1":  # 1.0 version Ray
+        if "redis_password" in kwargs:
+            redis_password = kwargs.pop("redis_password")
+            kwargs["_redis_password"] = redis_password
+
+    ray.init(
+        logging_level=logging.ERROR if not test_mode else logging.DEBUG,
+        log_to_driver=test_mode,
+        local_mode=local_mode,
+        num_gpus=num_gpus,
+        ignore_reinit_error=True,
+        include_dashboard=False,
+        **kwargs
+    )
+    print("Successfully initialize Ray!")
+    try:
+        print("Available resources: ", ray.available_resources())
+    except Exception:
+        pass
+
+
 
 
 def get_api_key_file(wandb_key_file):
@@ -114,67 +204,16 @@ def train(
     if wandb_key_file is not None:
         assert wandb_project is not None
     if wandb_project is not None:
-        assert wandb_project is not None
-        failed_wandb = False
-        try:
-            from newcopo.copo.train.our_wandb_callbacks import OurWandbLoggerCallback
-        except Exception as e:
-            # print("Please install wandb: pip install wandb")
-            failed_wandb = True
-
-        if failed_wandb:
-            from ray.tune.logger import DEFAULT_LOGGERS
-
-            try:
-                from newcopo.copo.train.our_wandb_callbacks_ray100 import OurWandbLogger
-                kwargs["loggers"] = DEFAULT_LOGGERS + (OurWandbLogger,)
-                config["logger_config"] = {
-                    "wandb": {
-                        "group": exp_name,
-                        "exp_name": exp_name,
-                        "entity": wandb_team,
-                        "project": wandb_project,
-                        "api_key_file": get_api_key_file(wandb_key_file),
-                        "log_config": wandb_log_config,
-                    }
-                }
-
-            except ImportError:
-                from newcopo.copo.train.our_wandb_callbacks_ray220 import OurWandbLogger
-                # kwargs["loggers"] = DEFAULT_LOGGERS + (OurWandbLogger,)
-                # config["logger_config"] = {
-                #     "wandb": {
-                #         "group": exp_name,
-                #         "exp_name": exp_name,
-                #         "entity": wandb_team,
-                #         "project": wandb_project,
-                #         "api_key_file": get_api_key_file(wandb_key_file),
-                #         "log_config": wandb_log_config,
-                #     }
-                # }
-
-                kwargs["callbacks"] = [
-                    OurWandbLogger(
-                        exp_name=exp_name,
-                        api_key_file=get_api_key_file(wandb_key_file),
-                        project=wandb_project,
-                        group=exp_name,
-                        log_config=wandb_log_config,
-                        entity=wandb_team
-                    )
-                ]
-
-        else:
-            kwargs["callbacks"] = [
-                OurWandbLoggerCallback(
-                    exp_name=exp_name,
-                    api_key_file=get_api_key_file(wandb_key_file),
-                    project=wandb_project,
-                    group=exp_name,
-                    log_config=wandb_log_config,
-                    entity=wandb_team
-                )
-            ]
+        kwargs["callbacks"] = [
+            OurWandbLogger(
+                exp_name=exp_name,
+                api_key_file=get_api_key_file(wandb_key_file),
+                project=wandb_project,
+                group=exp_name,
+                log_config=wandb_log_config,
+                entity=wandb_team
+            )
+        ]
 
     # start training
     analysis = tune.run(

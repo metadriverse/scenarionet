@@ -184,29 +184,6 @@ class SafeJSONEncoder(json.JSONEncoder):
             return str(value)  # give up, just stringify it (ok for logs)
 
 
-def initialize_ray(local_mode=False, num_gpus=None, test_mode=False, **kwargs):
-    os.environ['OMP_NUM_THREADS'] = '1'
-
-    if ray.__version__.split(".")[0] == "1":  # 1.0 version Ray
-        if "redis_password" in kwargs:
-            redis_password = kwargs.pop("redis_password")
-            kwargs["_redis_password"] = redis_password
-
-    ray.init(
-        logging_level=logging.ERROR if not test_mode else logging.DEBUG,
-        log_to_driver=test_mode,
-        local_mode=local_mode,
-        num_gpus=num_gpus,
-        ignore_reinit_error=True,
-        include_dashboard=False,
-        **kwargs
-    )
-    print("Successfully initialize Ray!")
-    try:
-        print("Available resources: ", ray.available_resources())
-    except Exception:
-        pass
-
 
 def get_train_parser():
     parser = argparse.ArgumentParser()
