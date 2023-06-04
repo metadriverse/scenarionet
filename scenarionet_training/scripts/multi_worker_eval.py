@@ -46,6 +46,8 @@ if __name__ == '__main__':
         num_scenarios=args.num_scenarios,
         sequential_seed=True,
         store_map=False,
+        store_data=False,
+        # no_map=True,
         curriculum_level=1,  # disable curriculum
         target_success_rate=1,
         horizon=args.horizon,
