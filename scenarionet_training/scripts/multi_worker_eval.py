@@ -27,10 +27,15 @@ if __name__ == '__main__':
     parser.add_argument("--num_scenarios", type=int, default=5000)
     parser.add_argument("--num_workers", type=int, default=10)
     parser.add_argument("--horizon", type=int, default=600)
+    # parser.add_argument("--ckpt_path", type=str, default="C:\\Users\\x1\\Desktop\\checkpoint_460\\checkpoint-460")
+    # parser.add_argument("--database_path", type=str, default="D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw")
+    # parser.add_argument("--num_scenarios", type=int, default=200)
+    # parser.add_argument("--num_workers", type=int, default=20)
+    # parser.add_argument("--horizon", type=int, default=200)
     parser.add_argument("--overwrite", action="store_true")
 
     args = parser.parse_args()
-    file = "eval_ret_{}.json".format(os.path.basename(args.ckpt_path))
+    file = "eval_ret_{}_{}.json".format(os.path.basename(args.ckpt_path), os.path.basename(args.database_path))
     if os.path.exists(file) and not args.overwrite:
         raise FileExistsError("Please remove {} or set --overwrite".format(file))
     initialize_ray(test_mode=True, num_gpus=1)
@@ -45,9 +50,11 @@ if __name__ == '__main__':
         start_scenario_index=args.start_index,
         num_scenarios=args.num_scenarios,
         sequential_seed=True,
-        store_map=False,
-        store_data=False,
+        # store_map=False,
+        # store_data=False,
+        allowed_more_steps=50,
         # no_map=True,
+        max_lateral_dist=2,
         curriculum_level=1,  # disable curriculum
         target_success_rate=1,
         horizon=args.horizon,
