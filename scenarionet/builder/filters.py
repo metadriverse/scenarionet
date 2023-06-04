@@ -68,7 +68,10 @@ class ScenarioFilter:
 
     @staticmethod
     def id_filter(metadata, file_path, ids):
-        return True if metadata["id"] not in ids else False
+        for id in ids:
+            if metadata["id"] in id:
+                return False
+        return True
 
     @staticmethod
     def make(func, **kwargs):
