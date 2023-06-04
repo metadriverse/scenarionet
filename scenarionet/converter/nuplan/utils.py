@@ -357,9 +357,9 @@ def extract_traffic(scenario: NuPlanScenario, center):
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -490,3 +490,84 @@ example_scenario_types = "[behind_pedestrian_on_pickup_dropoff,  \
                         starting_unprotected_cross_turn, \
                         starting_protected_noncross_turn, \
                         on_pickup_dropoff]"
+
+#   - accelerating_at_crosswalk
+#   - accelerating_at_stop_sign
+#   - accelerating_at_stop_sign_no_crosswalk
+#   - accelerating_at_traffic_light
+#   - accelerating_at_traffic_light_with_lead
+#   - accelerating_at_traffic_light_without_lead
+#   - behind_bike
+#   - behind_long_vehicle
+#   - behind_pedestrian_on_driveable
+#   - behind_pedestrian_on_pickup_dropoff
+#   - changing_lane
+#   - changing_lane_to_left
+#   - changing_lane_to_right
+#   - changing_lane_with_lead
+#   - changing_lane_with_trail
+#   - crossed_by_bike
+#   - crossed_by_vehicle
+#   - following_lane_with_lead
+#   - following_lane_with_slow_lead
+#   - following_lane_without_lead
+#   - high_lateral_acceleration
+#   - high_magnitude_jerk
+#   - high_magnitude_speed
+#   - low_magnitude_speed
+#   - medium_magnitude_speed
+#   - near_barrier_on_driveable
+#   - near_construction_zone_sign
+#   - near_high_speed_vehicle
+#   - near_long_vehicle
+#   - near_multiple_bikes
+#   - near_multiple_pedestrians
+#   - near_multiple_vehicles
+#   - near_pedestrian_at_pickup_dropoff
+#   - near_pedestrian_on_crosswalk
+#   - near_pedestrian_on_crosswalk_with_ego
+#   - near_trafficcone_on_driveable
+#   - on_all_way_stop_intersection
+#   - on_carpark
+#   - on_intersection
+#   - on_pickup_dropoff
+#   - on_stopline_crosswalk
+#   - on_stopline_stop_sign
+#   - on_stopline_traffic_light
+#   - on_traffic_light_intersection
+#   - starting_high_speed_turn
+#   - starting_left_turn
+#   - starting_low_speed_turn
+#   - starting_protected_cross_turn
+#   - starting_protected_noncross_turn
+#   - starting_right_turn
+#   - starting_straight_stop_sign_intersection_traversal
+#   - starting_straight_traffic_light_intersection_traversal
+#   - starting_u_turn
+#   - starting_unprotected_cross_turn
+#   - starting_unprotected_noncross_turn
+#   - stationary
+#   - stationary_at_crosswalk
+#   - stationary_at_traffic_light_with_lead
+#   - stationary_at_traffic_light_without_lead
+#   - stationary_in_traffic
+#   - stopping_at_crosswalk
+#   - stopping_at_stop_sign_no_crosswalk
+#   - stopping_at_stop_sign_with_lead
+#   - stopping_at_stop_sign_without_lead
+#   - stopping_at_traffic_light_with_lead
+#   - stopping_at_traffic_light_without_lead
+#   - stopping_with_lead
+#   - traversing_crosswalk
+#   - traversing_intersection
+#   - traversing_narrow_lane
+#   - traversing_pickup_dropoff
+#   - traversing_traffic_light_intersection
+#   - waiting_for_pedestrian_to_cross
+#
+
+all_scenario_types = "[near_pedestrian_on_crosswalk_with_ego," \
+                     "near_trafficcone_on_driveable,  " \
+                     "following_lane_with_lead, " \
+                     "following_lane_with_slow_lead,  " \
+                     "following_lane_without_lead]"
