@@ -68,6 +68,19 @@ if __name__ == '__main__':
         help="Scenarios with traffic light WON'T be selected"
     )
 
+    parser.add_argument(
+        "--id_filter",
+        action="store_true",
+        help="Scenarios with indicated name will NOT be selected"
+    )
+
+    parser.add_argument(
+        "--exclude_ids",
+        nargs='+',
+        default=[],
+        help="Scenarios with indicated name will NOT be selected"
+    )
+
     args = parser.parse_args()
     target = args.sdc_moving_dist_min
     obj_threshold = args.max_num_object
@@ -82,6 +95,8 @@ if __name__ == '__main__':
         filters.append(ScenarioFilter.make(ScenarioFilter.sdc_moving_dist, target_dist=target, condition="greater"))
     if args.no_traffic_light:
         filters.append(ScenarioFilter.make(ScenarioFilter.no_traffic_light))
+    if args.id_filter:
+        filters.append(ScenarioFilter.make(ScenarioFilter.id_filter, ids=args.exclude_ids))
 
     if len(filters) == 0:
         raise ValueError("No filters are applied. Abort.")
