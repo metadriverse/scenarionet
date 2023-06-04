@@ -24,6 +24,7 @@ if __name__ == '__main__':
     parser.add_argument("--start_index", type=int, default=0)
     parser.add_argument("--ckpt_path", type=str, required=True)
     parser.add_argument("--database_path", type=str, required=True)
+    parser.add_argument("--id", type=str, default="")
     parser.add_argument("--num_scenarios", type=int, default=5000)
     parser.add_argument("--num_workers", type=int, default=10)
     parser.add_argument("--horizon", type=int, default=600)
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument("--overwrite", action="store_true")
 
     args = parser.parse_args()
-    file = "eval_ret_{}_{}.json".format(os.path.basename(args.ckpt_path), os.path.basename(args.database_path))
+    file = "eval_{}_{}_{}.json".format(args.id, os.path.basename(args.ckpt_path), os.path.basename(args.database_path))
     if os.path.exists(file) and not args.overwrite:
         raise FileExistsError("Please remove {} or set --overwrite".format(file))
     initialize_ray(test_mode=True, num_gpus=1)
