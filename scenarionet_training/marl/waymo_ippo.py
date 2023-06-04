@@ -2,13 +2,13 @@ import os
 
 from ray import tune
 
-from newcopo.metadrive_scenario.marl_envs.marl_waymo_env import MARLWaymoEnv, WAYMO_DATASET_PATH
+# from newcopo.metadrive_scenario.marl_envs.marl_waymo_env import MARLWaymoEnv, WAYMO_DATASET_PATH
 from scenarionet_training.marl.algo.ippo import IPPOTrainer
 from scenarionet_training.marl.utils.callbacks import MultiAgentDrivingCallbacks
 from scenarionet_training.marl.utils.env_wrappers import get_rllib_compatible_env
 from scenarionet_training.marl.utils.train import train
 from scenarionet_training.marl.utils.utils import get_train_parser
-
+from metadrive.envs.marl_scenario_env import MARLWaymoEnv
 EXP_NAME = os.path.basename(__file__).replace(".py", "")
 
 if __name__ == "__main__":
@@ -25,11 +25,11 @@ if __name__ == "__main__":
             get_rllib_compatible_env(MARLWaymoEnv),
         ]),
         env_config=dict(
-            dataset_path=WAYMO_DATASET_PATH,
-            start_seed=tune.grid_search([5000, 6000, 7000, 8000, 9000]),
+            # dataset_path=WAYMO_DATASET_PATH,
+            # start_seed=tune.grid_search([5000, 6000, 7000, 8000, 9000]),
             # start_seed=tune.grid_search([5000, 6000, 7000]),
             start_case_index=0,
-            case_num=1000,
+            case_num=1000,  # TODO: What?
 
             store_map=True,
             store_map_buffer_size=10,
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         test_mode=args.test,
         custom_callback=MultiAgentDrivingCallbacks,
 
-        wandb_project="newcopo",
+        wandb_project="scenarionet",
         wandb_team="drivingforce",
         wandb_log_config=False,
 
