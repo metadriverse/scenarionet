@@ -328,8 +328,7 @@ def eval_ckpt(config,
             if info["arrive_dest"]:
                 success_rate += 1
                 success_flag = True
-            else:
-                o = env.reset()
+            o = env.reset()
 
             super_data[0].append(
                 {"reward": ep_reward,
