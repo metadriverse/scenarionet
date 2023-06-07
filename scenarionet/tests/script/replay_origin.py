@@ -12,22 +12,23 @@ if __name__ == "__main__":
             "use_render": True,
             "agent_policy": ReplayEgoCarPolicy,
             "show_interface": False,
-            # "need_lane_localization": False,
+            "image_observation": False,
             "show_logo": False,
             "no_traffic": False,
+            "drivable_region_extension": 15,
             "sequential_seed": True,
             "reactive_traffic": False,
             "show_fps": False,
             # "debug": True,
-            # "render_pipeline": True,
-            "daytime": "11:01",
+            "render_pipeline": True,
+            "daytime": "19:30",
             "window_size": (1600, 900),
-            "camera_dist": 0.8,
-            "camera_height": 1.5,
-            "camera_pitch": None,
-            "camera_fov": 60,
+            "camera_dist": 9,
+            # "camera_height": 1.5,
+            # "camera_pitch": None,
+            # "camera_fov": 60,
             "start_scenario_index": 0,
-            "num_scenarios": 10,
+            "num_scenarios": 1000,
             # "force_reuse_object_name": True,
             # "data_directory": "/home/shady/Downloads/test_processed",
             "horizon": 1000,
@@ -42,15 +43,14 @@ if __name__ == "__main__":
                 show_navi_mark=False,
                 use_special_color=False,
                 image_source="depth_camera",
-                rgb_camera=(1600, 900),
-                depth_camera=(1600, 900, True),
+                # rgb_camera=(1600, 900),
+                # depth_camera=(1600, 900, True),
                 # no_wheel_friction=True,
                 lidar=dict(num_lasers=120, distance=50),
                 lane_line_detector=dict(num_lasers=0, distance=50),
                 side_detector=dict(num_lasers=12, distance=50)
             ),
-            "data_directory": AssetLoader.file_path("nuscenes", return_raw_style=False),
-            "image_observation": True,
+            "data_directory": "D:\\scenarionet_testset\\waymo_test_raw_data",
         }
     )
 
@@ -64,16 +64,11 @@ if __name__ == "__main__":
     while True:
         # for i in range(10):
         start_reset = time.time()
-        env.reset(force_seed=0)
+        env.reset()
 
         reset_used_time += time.time() - start_reset
         reset_num += 1
         for t in range(10000):
-            if t==30:
-                # env.capture("camera_deluxe.jpg")
-                # ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(5000, 5000), track_target_vehicle=True)
-                # pygame.image.save(ret, "top_down.png")
-                env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "camera.jpg")
             o, r, d, info = env.step([1, 0.88])
             assert env.observation_space.contains(o)
             s += 1
