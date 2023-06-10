@@ -1,6 +1,6 @@
 import time
+
 import pygame
-from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
             # "camera_pitch": None,
             # "camera_fov": 60,
             "start_scenario_index": 0,
-            "num_scenarios": 1000,
+            "num_scenarios": 4,
             # "force_reuse_object_name": True,
             # "data_directory": "/home/shady/Downloads/test_processed",
             "horizon": 1000,
@@ -50,7 +50,7 @@ if __name__ == "__main__":
                 lane_line_detector=dict(num_lasers=0, distance=50),
                 side_detector=dict(num_lasers=12, distance=50)
             ),
-            "data_directory": "D:\\scenarionet_testset\\waymo_test_raw_data",
+            "data_directory": "D:\\code\\scenarionet\\scenarionet\\tests\\script\\waymo_scenes_adv"
         }
     )
 
@@ -61,6 +61,18 @@ if __name__ == "__main__":
     start = time.time()
     reset_used_time = 0
     s = 0
+
+    env.reset()
+
+
+    def capture():
+        env.capture()
+        ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(7000, 7000), track_target_vehicle=True)
+        pygame.image.save(ret, "top_down_{}.png".format(env.current_seed))
+
+
+    env.engine.accept("c", capture)
+
     while True:
         # for i in range(10):
         start_reset = time.time()
