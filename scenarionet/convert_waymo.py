@@ -1,4 +1,5 @@
 import pkg_resources  # for suppress warning
+import shutil
 import argparse
 import logging
 import os
@@ -28,6 +29,20 @@ if __name__ == '__main__':
         default=os.path.join(SCENARIONET_REPO_PATH, "waymo_origin"),
         help="The directory stores all waymo tfrecord"
     )
+    parser.add_argument(
+        "--start_file_index",
+        default=0,
+        type=int,
+        help="Control how many files to use. We will list all files in the raw data folder "
+             "and select files[start_file_index: start_file_index+num_files]"
+    )
+    parser.add_argument(
+        "--num_files",
+        default=1000,
+        type=int,
+        help="Control how many files to use. We will list all files in the raw data folder "
+             "and select files[start_file_index: start_file_index+num_files]"
+    )
     args = parser.parse_args()
 
     overwrite = args.overwrite
@@ -35,8 +50,19 @@ if __name__ == '__main__':
     output_path = args.database_path
     version = args.version
 
+    save_path = output_path
+    if os.path.exists(output_path):
+        if not overwrite:
+            raise ValueError(
+                "Directory {} already exists! Abort. "
+                "\n Try setting overwrite=True or adding --overwrite".format(output_path)
+            )
+        else:
+            shutil.rmtree(output_path)
+
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
-    scenarios = get_waymo_scenarios(waymo_data_directory)
+    scenarios = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files,
+                                    num_workers=8)  # do not use too much worker to read data
 
     write_to_directory(
         convert_func=convert_waymo_scenario,

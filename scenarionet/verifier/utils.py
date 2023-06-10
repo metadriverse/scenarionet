@@ -108,6 +108,7 @@ def loading_into_metadrive(
                 "agent_policy": ReplayEgoCarPolicy,
                 "num_scenarios": num_scenario,
                 "horizon": 1000,
+                "store_map": False,
                 "start_scenario_index": start_scenario_index,
                 "no_static_vehicles": False,
                 "data_directory": dataset_path,

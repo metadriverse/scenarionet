@@ -7,7 +7,7 @@ from metadrive.scenario.utils import get_number_of_scenarios
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--database_path", "-d", required=True, help="The path of the dataset")
+    parser.add_argument("--database_path", "-d", required=True, help="The path of the database")
     parser.add_argument("--render", action="store_true", help="Enable 3D rendering")
     parser.add_argument("--scenario_index", default=None, type=int, help="Specifying a scenario to run")
     args = parser.parse_args()
@@ -38,13 +38,13 @@ if __name__ == '__main__':
             "data_directory": database_path,
         }
     )
-    for seed in range(num_scenario if args.scenario_index is not None else 1000000):
-        env.reset(force_seed=seed if args.scenario_index is None else args.scenario_index)
+    for index in range(num_scenario if args.scenario_index is not None else 1000000):
+        env.reset(force_seed=index if args.scenario_index is None else args.scenario_index)
         for t in range(10000):
             o, r, d, info = env.step([0, 0])
             if env.config["use_render"]:
                 env.render(text={
-                    "seed": env.engine.global_seed + env.config["start_scenario_index"],
+                    "scenario index": env.engine.global_seed + env.config["start_scenario_index"],
                 })
 
             if d and info["arrive_dest"]:

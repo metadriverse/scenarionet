@@ -3,6 +3,8 @@ import multiprocessing
 import os
 import pickle
 
+import tqdm
+
 from scenarionet.converter.utils import mph_to_kmh
 from scenarionet.converter.waymo.type import WaymoLaneType, WaymoAgentType, WaymoRoadLineType, WaymoRoadEdgeType
 
@@ -418,13 +420,20 @@ def convert_waymo_scenario(scenario, version):
         }
         for count, id in enumerate(track_id)
     }
+    # clean memory
+    del scenario
+    scenario = None
     return md_scenario
 
 
-def get_waymo_scenarios(waymo_data_directory, num_workers=8):
+def get_waymo_scenarios(waymo_data_directory, start_index, num, num_workers=8):
     # parse raw data from input path to output path,
     # there is 1000 raw data in google cloud, each of them produce about 500 pkl file
+    logger.info("\n Reading raw data")
     file_list = os.listdir(waymo_data_directory)
+    assert len(file_list) >= start_index + num and start_index >= 0, \
+        "No sufficient files ({}) in raw_data_directory. need: {}, start: {}".format(len(file_list), num, start_index)
+    file_list = file_list[start_index: start_index + num]
     num_files = len(file_list)
     if num_files < num_workers:
         # single process
@@ -441,23 +450,29 @@ def get_waymo_scenarios(waymo_data_directory, num_workers=8):
         argument_list.append([waymo_data_directory, file_list[i * num_files_each_worker:end_idx]])
 
     # Run, workers and process result from worker
-    with multiprocessing.Pool(num_workers) as p:
-        all_result = list(p.imap(read_from_files, argument_list))
-    ret = []
-
-    # get result
-    for r in all_result:
-        if len(r) == 0:
-            logger.warning("0 scenarios found")
-        ret += r
-    logger.info("\n Find {} waymo scenarios from {} files".format(len(ret), num_files))
-    return ret
+    # with multiprocessing.Pool(num_workers) as p:
+    #     all_result = list(p.imap(read_from_files, argument_list))
+    # Disable multiprocessing read
+    all_result = read_from_files([waymo_data_directory, file_list])
+    # ret = []
+    #
+    # # get result
+    # for r in all_result:
+    #     if len(r) == 0:
+    #         logger.warning("0 scenarios found")
+    #     ret += r
+    logger.info("\n Find {} waymo scenarios from {} files".format(len(all_result), num_files))
+    return all_result
 
 
 def read_from_files(arg):
+    try:
+        scenario_pb2
+    except NameError:
+        raise ImportError("Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0==1.5.0")
     waymo_data_directory, file_list = arg[0], arg[1]
     scenarios = []
-    for file_count, file in enumerate(file_list):
+    for file in tqdm.tqdm(file_list):
         file_path = os.path.join(waymo_data_directory, file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue

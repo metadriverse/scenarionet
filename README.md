@@ -13,7 +13,8 @@ pip install -e .
 ## Usage
 
 We provide some explanation and demo for all scripts here.
-**You are encouraged to try them on your own, add ```-h``` or ```--help``` argument to know more details about these scripts.**
+**You are encouraged to try them on your own, add ```-h``` or ```--help``` argument to know more details about these
+scripts.**
 
 ### Convert
 
@@ -45,31 +46,42 @@ python -m scenarionet.scripts.convert_pg -d pg --num_workers=16 --num_scenarios=
 ```
 
 ### Merge & move
+
 For merging two or more database, use
+
 ```
-python -m scenarionet.merge_database -d /destination/path --from_databases /database1 /2 ... 
+python -m scenarionet.merge_database -d /destination/path --from /database1 /2 ... 
 ```
+
 As a database contains a path mapping, one should move database folder with the following script instead of ```cp```
-command
+command.
+Using ```--copy_raw_data``` will copy the raw scenario file into target directory and cancel the virtual mapping.
+
 ```
-python -m scenarionet.move_database --to /destination/path --from /source/path
+python -m scenarionet.copy_database --to /destination/path --from /source/path
 ```
 
 ### Verify
+
 The following scripts will check whether all scenarios exist or can be loaded into simulator.
-The missing or broken scenarios will be recorded and stored into the error file. Otherwise, no error file will be 
-generated. 
+The missing or broken scenarios will be recorded and stored into the error file. Otherwise, no error file will be
+generated.
 With teh error file, one can build a new database excluding or including the broken or missing scenarios.
 
 **Existence check**
+
 ```
-python -m scenarionet.verify_existence -d /database/to/check --error_file_path /error/file/path
+python -m scenarionet.check_existence -d /database/to/check --error_file_path /error/file/path
 ```
+
 **Runnable check**
+
 ```
-python -m scenarionet.verify_simulation -d /database/to/check --error_file_path /error/file/path
+python -m scenarionet.check_simulation -d /database/to/check --error_file_path /error/file/path
 ```
+
 **Generating new database**
+
 ```
 python -m scenarionet.generate_from_error_file -d /new/database/path --file /error/file/path
 ```
@@ -77,6 +89,7 @@ python -m scenarionet.generate_from_error_file -d /new/database/path --file /err
 ### visualization
 
 Visualizing the simulated scenario
+
 ```
 python -m scenarionet.run_simulation -d /path/to/database --render --scenario_index
 ```

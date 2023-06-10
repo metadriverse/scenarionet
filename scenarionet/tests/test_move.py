@@ -4,13 +4,13 @@ import os.path
 import pytest
 
 from scenarionet import SCENARIONET_PACKAGE_PATH, TMP_PATH
-from scenarionet.builder.utils import move_database, merge_database
+from scenarionet.builder.utils import copy_database, merge_database
 from scenarionet.common_utils import read_dataset_summary, read_scenario
 from scenarionet.verifier.utils import verify_database
 
 
 @pytest.mark.order("first")
-def test_move_database():
+def test_copy_database():
     dataset_name = "nuscenes"
     original_dataset_path = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", dataset_name)
     dataset_paths = [original_dataset_path + "_{}".format(i) for i in range(5)]
@@ -19,7 +19,7 @@ def test_move_database():
     # move
     for k, from_path in enumerate(dataset_paths):
         to = os.path.join(TMP_PATH, str(k))
-        move_database(from_path, to)
+        copy_database(from_path, to)
         moved_path.append(to)
         assert os.path.exists(from_path)
     merge_database(output_path, *moved_path, exist_ok=True, overwrite=True, try_generate_missing_file=True)
@@ -37,7 +37,7 @@ def test_move_database():
     for k, from_path in enumerate(moved_path):
         new_p = os.path.join(TMP_PATH, str(k) + str(k))
         new_move_pathes.append(new_p)
-        move_database(from_path, new_p, exist_ok=True, overwrite=True)
+        copy_database(from_path, new_p, exist_ok=True, overwrite=True)
         assert not os.path.exists(from_path)
     merge_database(output_path, *new_move_pathes, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     # verify
@@ -51,4 +51,4 @@ def test_move_database():
 
 
 if __name__ == '__main__':
-    test_move_database()
+    test_copy_database()

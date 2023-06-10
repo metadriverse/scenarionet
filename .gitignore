@@ -19,3 +19,7 @@ dataset/*
 **/passed_scenarios/
 **/waymo_origin
 /dataset/
+/scenarionet_training/wandb/*.pkl
+**/TEST/
+**/experiment/
+**/wandb/
