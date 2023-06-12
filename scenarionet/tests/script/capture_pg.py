@@ -6,7 +6,7 @@ from scenarionet.converter.pg.utils import make_env
 def capture():
     env.capture()
     ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(2000, 2000), track_target_vehicle=True)
-    pygame.image.save(ret, "top_down_{}.png".format(env.current_seed))
+    pygame.image.save(ret, "top_down_{}_step_{}.png".format(env.current_seed, env.episode_step))
 
 
 if __name__ == "__main__":

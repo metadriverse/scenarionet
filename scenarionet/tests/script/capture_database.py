@@ -19,8 +19,8 @@ if __name__ == "__main__":
             "daytime": "07:10",
             "window_size": (1600, 900),
             "camera_dist": 9,
-            "start_scenario_index": 0,
-            "num_scenarios": 4,
+            "start_scenario_index": 1000,
+            "num_scenarios": 4000,
             "horizon": 1000,
             "vehicle_config": dict(
                 show_navi_mark=False,
@@ -31,7 +31,7 @@ if __name__ == "__main__":
                 lane_line_detector=dict(num_lasers=0, distance=50),
                 side_detector=dict(num_lasers=12, distance=50)
             ),
-            "data_directory": "D:\\code\\scenarionet\\scenarionet\\tests\\script\\waymo_scenes_adv"
+            "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw"
         }
     )
     env.reset()
@@ -39,8 +39,8 @@ if __name__ == "__main__":
 
     def capture():
         env.capture()
-        ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(7000, 7000), track_target_vehicle=True)
-        pygame.image.save(ret, "top_down_{}.png".format(env.current_seed))
+        ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(8000, 8000), track_target_vehicle=True)
+        pygame.image.save(ret, "top_down_{}_step_{}.png".format(env.current_seed, env.episode_step))
 
 
     env.engine.accept("c", capture)
