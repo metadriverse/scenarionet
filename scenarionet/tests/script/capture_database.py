@@ -2,10 +2,8 @@ import pygame
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 
-NuScenesEnv = ScenarioEnv
-
 if __name__ == "__main__":
-    env = NuScenesEnv(
+    env = ScenarioEnv(
         {
             "use_render": True,
             "agent_policy": ReplayEgoCarPolicy,
@@ -18,12 +16,9 @@ if __name__ == "__main__":
             "reactive_traffic": False,
             "show_fps": False,
             "render_pipeline": True,
-            "daytime": "7:10",
+            "daytime": "07:10",
             "window_size": (1600, 900),
             "camera_dist": 9,
-            # "camera_height": 1.5,
-            # "camera_pitch": None,
-            # "camera_fov": 60,
             "start_scenario_index": 0,
             "num_scenarios": 4,
             "horizon": 1000,
