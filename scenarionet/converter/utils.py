@@ -12,13 +12,11 @@ from functools import partial
 import numpy as np
 import psutil
 import tqdm
-from metadrive.envs.metadrive_env import MetaDriveEnv
-from metadrive.policy.idm_policy import IDMPolicy
 from metadrive.scenario import ScenarioDescription as SD
 
 from scenarionet.builder.utils import merge_database
 from scenarionet.common_utils import save_summary_anda_mapping
-from scenarionet.converter.pg.utils import convert_pg_scenario
+from scenarionet.converter.pg.utils import convert_pg_scenario, make_env
 
 logger = logging.getLogger(__file__)
 
@@ -65,7 +63,7 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
+        convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
 ):
     # make sure dir not exist
     kwargs_for_workers = [{} for _ in range(num_workers)]
@@ -143,15 +141,15 @@ def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_na
 
 
 def write_to_directory_single_worker(
-    convert_func,
-    scenarios,
-    output_path,
-    dataset_version,
-    dataset_name,
-    worker_index=0,
-    overwrite=False,
-    report_memory_freq=None,
-    **kwargs
+        convert_func,
+        scenarios,
+        output_path,
+        dataset_version,
+        dataset_name,
+        worker_index=0,
+        overwrite=False,
+        report_memory_freq=None,
+        **kwargs
 ):
     """
     Convert a batch of scenarios.
@@ -189,19 +187,7 @@ def write_to_directory_single_worker(
 
     # for pg scenario only
     if convert_func is convert_pg_scenario:
-        env = MetaDriveEnv(
-            dict(
-                start_seed=scenarios[0],
-                num_scenarios=len(scenarios),
-                traffic_density=0.15,
-                agent_policy=IDMPolicy,
-                accident_prob=0.5,
-                crash_vehicle_done=False,
-                store_map=False,
-                map=2
-            )
-        )
-        kwargs["env"] = env
+        kwargs["env"] = make_env(start_index=scenarios[0], num_scenarios=len(scenarios))
 
     count = 0
     for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
