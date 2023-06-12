@@ -195,6 +195,7 @@ def write_to_directory_single_worker(
                 num_scenarios=len(scenarios),
                 traffic_density=0.15,
                 agent_policy=IDMPolicy,
+                accident_prob=0.5,
                 crash_vehicle_done=False,
                 store_map=False,
                 map=2
