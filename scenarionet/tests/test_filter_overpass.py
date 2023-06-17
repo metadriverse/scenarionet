@@ -21,12 +21,7 @@ def test_filter_overpass():
     filters.append(ScenarioFilter.make(ScenarioFilter.no_overpass))
 
     summaries, _ = merge_database(
-        output_path,
-        *dataset_paths,
-        exist_ok=True,
-        overwrite=True,
-        try_generate_missing_file=True,
-        filters=filters
+        output_path, *dataset_paths, exist_ok=True, overwrite=True, try_generate_missing_file=True, filters=filters
     )
     assert len(summaries) == 3
     for scenario in summaries:

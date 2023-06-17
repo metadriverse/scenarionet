@@ -34,14 +34,14 @@ if __name__ == '__main__':
         default=0,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-             "and select files[start_file_index: start_file_index+num_files]"
+        "and select files[start_file_index: start_file_index+num_files]"
     )
     parser.add_argument(
         "--num_files",
         default=1000,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-             "and select files[start_file_index: start_file_index+num_files]"
+        "and select files[start_file_index: start_file_index+num_files]"
     )
     args = parser.parse_args()
 
@@ -61,8 +61,9 @@ if __name__ == '__main__':
             shutil.rmtree(output_path)
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
-    scenarios = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files,
-                                    num_workers=8)  # do not use too much worker to read data
+    scenarios = get_waymo_scenarios(
+        waymo_data_directory, args.start_file_index, args.num_files, num_workers=8
+    )  # do not use too much worker to read data
 
     write_to_directory(
         convert_func=convert_waymo_scenario,

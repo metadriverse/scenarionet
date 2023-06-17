@@ -19,9 +19,7 @@ def make_env(start_index, num_scenarios, extra_config=None):
     )
     extra_config = extra_config or {}
     config.update(extra_config)
-    env = MetaDriveEnv(
-        config
-    )
+    env = MetaDriveEnv(config)
     return env
 
 

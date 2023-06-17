@@ -10,18 +10,23 @@ def capture():
 
 
 if __name__ == "__main__":
-    env = make_env(0, 50000, extra_config=dict(use_render=True,
-                                               show_logo=False,
-                                               show_fps=False,
-                                               show_interface=False,
-                                               drivable_region_extension=15,
-                                               window_size=(1600, 900),
-                                               render_pipeline=True,
-                                               camera_dist=9,
-                                               random_spawn_lane_index=False,
-                                               vehicle_config=dict(show_navi_mark=False),
-                                               daytime="07:10"
-                                               ))
+    env = make_env(
+        0,
+        50000,
+        extra_config=dict(
+            use_render=True,
+            show_logo=False,
+            show_fps=False,
+            show_interface=False,
+            drivable_region_extension=15,
+            window_size=(1600, 900),
+            render_pipeline=True,
+            camera_dist=9,
+            random_spawn_lane_index=False,
+            vehicle_config=dict(show_navi_mark=False),
+            daytime="07:10"
+        )
+    )
 
     # o = env.reset(force_seed=0)
     # env.engine.accept("c", capture)

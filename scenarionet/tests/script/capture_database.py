@@ -35,13 +35,17 @@ if __name__ == "__main__":
             "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw"
         }
     )
+
     # env.reset()
     #
     #
     def capture():
         env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
-        ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(10000, 10000), target_vehicle_heading_up=True)
+        ret = env.render(
+            mode="topdown", screen_size=(1600, 900), film_size=(10000, 10000), target_vehicle_heading_up=True
+        )
         pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, env.episode_step))
+
     #
     #
     # env.engine.accept("c", capture)

@@ -59,8 +59,9 @@ if __name__ == "__main__":
         env.reset(force_seed=seed)
         for t in range(10000):
             env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
-            ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000),
-                             target_vehicle_heading_up=True)
+            ret = env.render(
+                mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True
+            )
             pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, t))
             # env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
             # env.vehicle.get_camera("rgb_camera").save_image(env.vehicle, "rgb_{}.jpg".format(t))
