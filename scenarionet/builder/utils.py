@@ -115,15 +115,17 @@ def merge_database(
     return summaries, mappings
 
 
-def copy_database(from_path, to_path, exist_ok=False, overwrite=False, copy_raw_data=False, remove_source=False):
+def copy_database(
+    from_path, to_path, exist_ok=False, overwrite=False, copy_raw_data=False, remove_source=False, force_move=False
+):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
     if os.path.exists(to_path):
         assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a database"
         assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
     files = os.listdir(from_path)
-    if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
-            files) > 2:
+    if not force_move and (ScenarioDescription.DATASET.MAPPING_FILE in files
+                           and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(files) > 2):
         raise RuntimeError(
             "The source database is not allowed to move! "
             "This will break the relationship between this database and other database built on it."

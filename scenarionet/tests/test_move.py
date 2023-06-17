@@ -19,7 +19,7 @@ def test_copy_database():
     # move
     for k, from_path in enumerate(dataset_paths):
         to = os.path.join(TMP_PATH, str(k))
-        copy_database(from_path, to)
+        copy_database(from_path, to, force_move=True, exist_ok=True, overwrite=True)
         moved_path.append(to)
         assert os.path.exists(from_path)
     merge_database(output_path, *moved_path, exist_ok=True, overwrite=True, try_generate_missing_file=True)
@@ -37,7 +37,7 @@ def test_copy_database():
     for k, from_path in enumerate(moved_path):
         new_p = os.path.join(TMP_PATH, str(k) + str(k))
         new_move_pathes.append(new_p)
-        copy_database(from_path, new_p, exist_ok=True, overwrite=True)
+        copy_database(from_path, new_p, exist_ok=True, overwrite=True, remove_source=True)
         assert not os.path.exists(from_path)
     merge_database(output_path, *new_move_pathes, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     # verify
