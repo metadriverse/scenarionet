@@ -22,6 +22,7 @@ if __name__ == "__main__":
             "start_scenario_index": 1000,
             "num_scenarios": 4000,
             "horizon": 1000,
+            "store_map": False,
             "vehicle_config": dict(
                 show_navi_mark=False,
                 no_wheel_friction=True,
@@ -34,21 +35,21 @@ if __name__ == "__main__":
             "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw"
         }
     )
-    env.reset()
-
-
+    # env.reset()
+    #
+    #
     def capture():
-        env.capture()
-        ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(8000, 8000), track_target_vehicle=True)
-        pygame.image.save(ret, "top_down_{}_step_{}.png".format(env.current_seed, env.episode_step))
+        env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
+        ret = env.render(mode="topdown", screen_size=(1600, 900), film_size=(10000, 10000), target_vehicle_heading_up=True)
+        pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, env.episode_step))
+    #
+    #
+    # env.engine.accept("c", capture)
 
-
-    env.engine.accept("c", capture)
-
-    while True:
-        env.reset()
-        for t in range(10000):
-            o, r, d, info = env.step([1, 0.88])
-            assert env.observation_space.contains(o)
-            if d:
-                break
+    # for seed in [1001, 1002, 1005, 1011]:
+    env.reset(force_seed=1020)
+    for t in range(10000):
+        capture()
+        o, r, d, info = env.step([1, 0.88])
+        if env.episode_step >= env.engine.data_manager.current_scenario_length:
+            break
