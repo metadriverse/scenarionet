@@ -9,6 +9,7 @@ from scenarionet.converter.pg.utils import get_pg_scenarios, convert_pg_scenario
 from scenarionet.converter.utils import write_to_directory
 
 if __name__ == '__main__':
+    # For the PG environment config, see: scenarionet/converter/pg/utils.py:6
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--database_path",

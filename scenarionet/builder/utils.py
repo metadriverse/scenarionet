@@ -29,13 +29,13 @@ def try_generating_summary(file_folder):
 
 
 def merge_database(
-        output_path,
-        *dataset_paths,
-        exist_ok=False,
-        overwrite=False,
-        try_generate_missing_file=True,
-        filters: List[Callable] = None,
-        save=True,
+    output_path,
+    *dataset_paths,
+    exist_ok=False,
+    overwrite=False,
+    try_generate_missing_file=True,
+    filters: List[Callable] = None,
+    save=True,
 ):
     """
     Combine multiple datasets. Each database should have a dataset_summary.pkl
@@ -116,12 +116,7 @@ def merge_database(
 
 
 def copy_database(
-        from_path,
-        to_path,
-        exist_ok=False,
-        overwrite=False,
-        copy_raw_data=False,
-        remove_source=False
+    from_path, to_path, exist_ok=False, overwrite=False, copy_raw_data=False, remove_source=False, force_move=False
 ):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
@@ -129,19 +124,16 @@ def copy_database(
         assert exist_ok, "to_directory already exists. Set exists_ok to allow turning it into a database"
         assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
     files = os.listdir(from_path)
-    if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(
-            files) > 2:
-        raise RuntimeError("The source database is not allowed to move! "
-                           "This will break the relationship between this database and other database built on it."
-                           "If it is ok for you, use 'mv' to move it manually ")
+    if not force_move and (ScenarioDescription.DATASET.MAPPING_FILE in files
+                           and ScenarioDescription.DATASET.SUMMARY_FILE in files and len(files) > 2):
+        raise RuntimeError(
+            "The source database is not allowed to move! "
+            "This will break the relationship between this database and other database built on it."
+            "If it is ok for you, use 'mv' to move it manually "
+        )
 
     summaries, mappings = merge_database(
-        to_path,
-        from_path,
-        exist_ok=exist_ok,
-        overwrite=overwrite,
-        try_generate_missing_file=True,
-        save=False
+        to_path, from_path, exist_ok=exist_ok, overwrite=overwrite, try_generate_missing_file=True, save=False
     )
     summary_file = osp.join(to_path, ScenarioDescription.DATASET.SUMMARY_FILE)
     mapping_file = osp.join(to_path, ScenarioDescription.DATASET.MAPPING_FILE)
@@ -160,13 +152,13 @@ def copy_database(
 
 
 def split_database(
-        from_path,
-        to_path,
-        start_index,
-        num_scenarios,
-        exist_ok=False,
-        overwrite=False,
-        random=False,
+    from_path,
+    to_path,
+    start_index,
+    num_scenarios,
+    exist_ok=False,
+    overwrite=False,
+    random=False,
 ):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
@@ -191,13 +183,14 @@ def split_database(
     assert osp.exists(abs_dir_path), "Wrong database path. Can not find database at: {}".format(abs_dir_path)
     summaries, lookup, mappings = read_dataset_summary(from_path)
     assert start_index >= 0 and start_index + num_scenarios <= len(
-        lookup), "No enough scenarios in source dataset: total {}, start_index: {}, need: {}".format(len(lookup),
-                                                                                                     start_index,
-                                                                                                     num_scenarios)
+        lookup
+    ), "No enough scenarios in source dataset: total {}, start_index: {}, need: {}".format(
+        len(lookup), start_index, num_scenarios
+    )
     if random:
         selected = sample(lookup[start_index:], k=num_scenarios)
     else:
-        selected = lookup[start_index: start_index + num_scenarios]
+        selected = lookup[start_index:start_index + num_scenarios]
     selected_summary = {}
     selected_mapping = {}
     for scenario in selected:

@@ -1,6 +1,26 @@
 import logging
 
+from metadrive.envs.metadrive_env import MetaDriveEnv
+from metadrive.policy.idm_policy import IDMPolicy
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
+
+
+def make_env(start_index, num_scenarios, extra_config=None):
+    config = dict(
+        start_seed=start_index,
+        num_scenarios=num_scenarios,
+        traffic_density=0.15,
+        agent_policy=IDMPolicy,
+        accident_prob=0.5,
+        crash_vehicle_done=False,
+        crash_object_done=False,
+        store_map=False,
+        map=2
+    )
+    extra_config = extra_config or {}
+    config.update(extra_config)
+    env = MetaDriveEnv(config)
+    return env
 
 
 def convert_pg_scenario(scenario_index, version, env):
