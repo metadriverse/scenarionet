@@ -9,6 +9,7 @@ import numpy as np
 import tqdm
 from metadrive.constants import TerminationState
 from metadrive.envs.scenario_env import ScenarioEnv
+from metadrive.envs.gym_wrapper import GymEnvWrapper
 from ray import tune
 from ray.tune import CLIReporter
 
@@ -291,7 +292,7 @@ def eval_ckpt(config,
         episodes_to_evaluate_curriculum=num_scenarios,
         data_directory=scenario_data_path,
         use_render=render))
-    env = ScenarioEnv(env_config)
+    env = GymEnvWrapper(dict(inner_class=ScenarioEnv, inner_config=env_config))
 
     super_data = defaultdict(list)
     EPISODE_NUM = env.config["num_scenarios"]

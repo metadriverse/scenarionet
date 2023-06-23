@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     # 0,1,3,4,5,6
     for seed in range(10):
-        env.reset(force_seed=seed)
+        env.reset(seed=seed)
         for t in range(10000):
             env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
             ret = env.render(
@@ -65,8 +65,7 @@ if __name__ == "__main__":
             pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, t))
             # env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
             # env.vehicle.get_camera("rgb_camera").save_image(env.vehicle, "rgb_{}.jpg".format(t))
-            o, r, d, info = env.step([1, 0.88])
-            assert env.observation_space.contains(o)
+            env.step([1, 0.88])
             # if d:
             if env.episode_step >= env.engine.data_manager.current_scenario_length:
                 break

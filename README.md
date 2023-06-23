@@ -4,7 +4,7 @@
 
 [**Webpage**](https://metadriverse.github.io/scenarionet/) |
 [**Code**](https://github.com/metadriverse/scenarionet) |
-[**Video**](https://metadriverse.github.io/scenarionet/) |
+[**Video**](https://youtu.be/3bOqswXP6OA) |
 [**Paper**](http://arxiv.org/abs/2306.12241) |
 
 ScenarioNet allows users to load scenarios from real-world dataset like Waymo, nuPlan, nuScenes, l5 and synthetic 

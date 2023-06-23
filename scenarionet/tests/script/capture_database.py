@@ -51,9 +51,9 @@ if __name__ == "__main__":
     # env.engine.accept("c", capture)
 
     # for seed in [1001, 1002, 1005, 1011]:
-    env.reset(force_seed=1020)
+    env.reset(seed=1020)
     for t in range(10000):
         capture()
-        o, r, d, info = env.step([1, 0.88])
+        env.step([1, 0.88])
         if env.episode_step >= env.engine.data_manager.current_scenario_length:
             break
