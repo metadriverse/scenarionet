@@ -28,10 +28,10 @@ if __name__ == "__main__":
         )
     )
 
-    # o = env.reset(force_seed=0)
+    # o = env.reset(seed=0)
     # env.engine.accept("c", capture)
     for s in range(6, 1000):
-        env.reset(force_seed=16)
+        env.reset(seed=16)
         for t in range(10000):
             capture()
             o, r, d, info = env.step([0, 0])

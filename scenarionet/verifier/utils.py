@@ -119,12 +119,12 @@ def loading_into_metadrive(
         desc = "Scenarios: {}-{}".format(start_scenario_index, start_scenario_index + num_scenario)
         for scenario_index in tqdm.tqdm(range(start_scenario_index, start_scenario_index + num_scenario), desc=desc):
             try:
-                env.reset(force_seed=scenario_index)
+                env.reset(seed=scenario_index)
                 arrive = False
                 if random_drop and np.random.rand() < 0.5:
                     raise ValueError("Random Drop")
                 for _ in range(steps_to_run):
-                    o, r, d, info = env.step([0, 0])
+                    o, r, d, _, info = env.step([0, 0])
                     if d and info["arrive_dest"]:
                         arrive = True
                 assert arrive, "Can not arrive destination"

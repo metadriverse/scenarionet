@@ -39,14 +39,14 @@ if __name__ == '__main__':
         }
     )
     for index in range(num_scenario if args.scenario_index is not None else 1000000):
-        env.reset(force_seed=index if args.scenario_index is None else args.scenario_index)
+        env.reset(seed=index if args.scenario_index is None else args.scenario_index)
         for t in range(10000):
-            o, r, d, info = env.step([0, 0])
+            env.step([0, 0])
             if env.config["use_render"]:
                 env.render(text={
                     "scenario index": env.engine.global_seed + env.config["start_scenario_index"],
                 })
 
-            if d and info["arrive_dest"]:
+            if env.episode_step >= env.engine.data_manager.current_scenario_length:
                 print("scenario:{}, success".format(env.engine.global_random_seed))
                 break

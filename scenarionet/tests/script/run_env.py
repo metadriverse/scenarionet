@@ -40,11 +40,11 @@ if __name__ == '__main__':
         }
     )
     success = []
-    env.reset(force_seed=91)
+    env.reset(seed=91)
     while True:
-        env.reset(force_seed=91)
+        env.reset(seed=91)
         for t in range(10000):
-            o, r, d, info = env.step([0, 0])
+            o, r, d, _, info = env.step([0, 0])
             assert env.observation_space.contains(o)
             c_lane = env.vehicle.lane
             long, lat, = c_lane.local_coordinates(env.vehicle.position)
