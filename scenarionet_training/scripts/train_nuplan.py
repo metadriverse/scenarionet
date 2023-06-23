@@ -1,13 +1,13 @@
 import os.path
-
+from metadrive.envs.gym_wrapper import GymEnvWrapper
 from metadrive.envs.scenario_env import ScenarioEnv
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train_utils.utils import train, get_train_parser, get_exp_name
 
 config = dict(
-    env=ScenarioEnv,
-    env_config=dict(
+    env=GymEnvWrapper,
+    env_config=dict(inner_class=ScenarioEnv, inner_config=dict(
         # scenario
         start_scenario_index=0,
         num_scenarios=40000,
@@ -42,7 +42,7 @@ config = dict(
 
         vehicle_config=dict(side_detector=dict(num_lasers=0))
 
-    ),
+    )),
 
     # ===== Evaluation =====
     evaluation_interval=15,
