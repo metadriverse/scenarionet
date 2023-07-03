@@ -22,6 +22,16 @@ various applications like AD stack test, reinforcement learning, imitation learn
 ## Installation
 
 ```
+# create environment
+conda create -n scenarionet python=3.9
+conda activate scenarionet
+
+# Install MetaDrive Simulator
+git clone git@github.com:metadriverse/metadrive.git
+cd metadrive
+pip install -e.
+
+# Install ScenarioNet
 git clone git@github.com:metadriverse/scenarionet.git
 cd scenarionet
 pip install -e .
@@ -35,8 +45,8 @@ scripts.**
 
 ### Convert
 
-**Waymo**: the following script can convert Waymo tfrecord to Metadrive scenario description and
-store them at directory ./waymo
+**Waymo**: the following script can convert Waymo tfrecord (version: v1.2, data_bin: training_20s) to Metadrive scenario 
+description and store them at directory ./waymo
 
 ```
 python -m scenarionet.convert_waymo -d waymo --raw_data_path /path/to/tfrecords --num_workers=16
