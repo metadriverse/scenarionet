@@ -1,7 +1,7 @@
 import os.path
 
 from metadrive.envs.scenario_env import ScenarioEnv
-from metadrive.envs.gym_wrapper import GymEnvWrapper
+from metadrive.envs.gym_wrapper import createGymWrapper
 
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
@@ -14,8 +14,8 @@ if __name__ == '__main__':
     stop = int(100_000_000)
 
     config = dict(
-        env=GymEnvWrapper,
-        env_config=dict(inner_class=ScenarioEnv, inner_config=dict(
+        env=createGymWrapper(ScenarioEnv),
+        env_config=dict(
             # scenario
             start_scenario_index=0,
             num_scenarios=32,
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
             # training
             horizon=None,
-        )),
+        ),
 
         # # ===== Evaluation =====
         evaluation_interval=2,

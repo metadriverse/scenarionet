@@ -1,16 +1,13 @@
 import pygame
 from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.real_data_envs.nuscenes_env import ScenarioEnv
-from metadrive.envs.gym_wrapper import GymEnvWrapper
+from metadrive.envs.gym_wrapper import createGymWrapper
 from scenarionet_training.train_utils.utils import initialize_ray, get_function
 from scenarionet_training.scripts.train_nuplan import config
 
 if __name__ == "__main__":
     initialize_ray(test_mode=False, num_gpus=1)
-    env = GymEnvWrapper(
-        dict(
-            inner_class=ScenarioEnv,
-            inner_config={
+    env = createGymWrapper(ScenarioEnv)({
                 # "data_directory": AssetLoader.file_path("nuscenes", return_raw_style=False),
                 "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw",
                 "use_render": True,
@@ -44,7 +41,7 @@ if __name__ == "__main__":
                 ),
             }
         )
-    )
+
 
     # env.reset()
     #
