@@ -16,7 +16,7 @@ config = dict(
 
         # curriculum training
         curriculum_level=100,
-        target_success_rate=0.8, # or 0.7
+        target_success_rate=0.7,
         # episodes_to_evaluate_curriculum=400,  # default=num_scenarios/curriculum_level
 
         # traffic & light
