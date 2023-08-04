@@ -13,6 +13,9 @@ config = dict(
         num_scenarios=40000,
         data_directory=os.path.join(SCENARIONET_DATASET_PATH, "nuplan_train"),
         sequential_seed=True,
+        no_map=True,
+        # store_map=False,
+        # store_data=False,
 
         # curriculum training
         curriculum_level=100,
