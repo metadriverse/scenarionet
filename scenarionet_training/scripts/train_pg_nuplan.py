@@ -1,7 +1,6 @@
 import os.path
-from ray.tune import grid_search
-from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.envs.gym_wrapper import GymEnvWrapper
+from metadrive.envs.scenario_env import ScenarioEnv
 from scenarionet import SCENARIONET_REPO_PATH, SCENARIONET_DATASET_PATH
 from scenarionet_training.train_utils.multi_worker_PPO import MultiWorkerPPO
 from scenarionet_training.train_utils.utils import train, get_train_parser, get_exp_name
@@ -12,12 +11,12 @@ config = dict(
         # scenario
         start_scenario_index=0,
         num_scenarios=40000,
-        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_train"),
+        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "nuplan_train"),
         sequential_seed=True,
 
         # curriculum training
         curriculum_level=100,
-        target_success_rate=0.8,
+        target_success_rate=0.8, # or 0.7
         # episodes_to_evaluate_curriculum=400,  # default=num_scenarios/curriculum_level
 
         # traffic & light
@@ -28,14 +27,16 @@ config = dict(
 
         # training scheme
         horizon=None,
-        steering_range_penalty=2,
-        heading_penalty=1.0,
-        lateral_penalty=1.0,
+        driving_reward=4,
+        steering_range_penalty=1.0,
+        heading_penalty=2,
+        lateral_penalty=2.0,
         no_negative_reward=True,
         on_lane_line_penalty=0,
         crash_vehicle_penalty=2,
         crash_human_penalty=2,
-        out_of_road_penalty=2,
+        crash_object_penalty=0.5,
+        # out_of_road_penalty=2,
         max_lateral_dist=2,
         # crash_vehicle_done=True,
 
@@ -46,12 +47,11 @@ config = dict(
     # ===== Evaluation =====
     evaluation_interval=15,
     evaluation_num_episodes=1000,
-    # TODO (LQY), this is a sample from testset do eval on all scenarios after training!
     evaluation_config=dict(env_config=dict(start_scenario_index=0,
                                            num_scenarios=1000,
                                            sequential_seed=True,
                                            curriculum_level=1,  # turn off
-                                           data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_test"))),
+                                           data_directory=os.path.join(SCENARIONET_DATASET_PATH, "nuplan_test"))),
     evaluation_num_workers=10,
     metrics_smoothing_episodes=10,
 
