@@ -10,7 +10,7 @@ config = dict(
     env_config=dict(
         # scenario
         start_scenario_index=0,
-        num_scenarios=40000,
+        num_scenarios=80000,
         data_directory=os.path.join(SCENARIONET_DATASET_PATH, "nuplan_train"),
         sequential_seed=True,
         no_map=True,
@@ -19,7 +19,7 @@ config = dict(
 
         # curriculum training
         curriculum_level=100,
-        target_success_rate=0.7,
+        target_success_rate=0.75,
         # episodes_to_evaluate_curriculum=400,  # default=num_scenarios/curriculum_level
 
         # traffic & light
