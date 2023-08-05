@@ -11,7 +11,7 @@ config = dict(
         # scenario
         start_scenario_index=0,
         num_scenarios=80000,
-        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "nuplan_train"),
+        data_directory=os.path.join(SCENARIONET_DATASET_PATH, "pg_nuplan_train"),
         sequential_seed=True,
         no_map=True,
         # store_map=False,
