@@ -7,41 +7,41 @@ from scenarionet_training.scripts.train_nuplan import config
 
 if __name__ == "__main__":
     initialize_ray(test_mode=False, num_gpus=1)
-    env = createGymWrapper(ScenarioEnv)({
-                # "data_directory": AssetLoader.file_path("nuscenes", return_raw_style=False),
-                "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw",
-                "use_render": True,
-                # "agent_policy": ReplayEgoCarPolicy,
-                "show_interface": False,
-                "image_observation": False,
-                "show_logo": False,
-                "no_traffic": False,
-                "no_static_vehicles": False,
-                "drivable_region_extension": 15,
-                "sequential_seed": True,
-                "reactive_traffic": True,
-                "show_fps": False,
-                "render_pipeline": True,
-                "daytime": "07:10",
-                "max_lateral_dist": 2,
-                "window_size": (1200, 800),
-                "camera_dist": 9,
-                "start_scenario_index": 5,
-                "num_scenarios": 4000,
-                "horizon": 1000,
-                "store_map": False,
-                "vehicle_config": dict(
-                    show_navi_mark=True,
-                    # no_wheel_friction=True,
-                    use_special_color=False,
-                    image_source="depth_camera",
-                    lidar=dict(num_lasers=120, distance=50),
-                    lane_line_detector=dict(num_lasers=0, distance=50),
-                    side_detector=dict(num_lasers=0, distance=50)
-                ),
-            }
-        )
-
+    env = createGymWrapper(ScenarioEnv)(
+        {
+            # "data_directory": AssetLoader.file_path("nuscenes", return_raw_style=False),
+            "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw",
+            "use_render": True,
+            # "agent_policy": ReplayEgoCarPolicy,
+            "show_interface": False,
+            "image_observation": False,
+            "show_logo": False,
+            "no_traffic": False,
+            "no_static_vehicles": False,
+            "drivable_region_extension": 15,
+            "sequential_seed": True,
+            "reactive_traffic": True,
+            "show_fps": False,
+            "render_pipeline": True,
+            "daytime": "07:10",
+            "max_lateral_dist": 2,
+            "window_size": (1200, 800),
+            "camera_dist": 9,
+            "start_scenario_index": 5,
+            "num_scenarios": 4000,
+            "horizon": 1000,
+            "store_map": False,
+            "vehicle_config": dict(
+                show_navi_mark=True,
+                # no_wheel_friction=True,
+                use_special_color=False,
+                image_source="depth_camera",
+                lidar=dict(num_lasers=120, distance=50),
+                lane_line_detector=dict(num_lasers=0, distance=50),
+                side_detector=dict(num_lasers=0, distance=50)
+            ),
+        }
+    )
 
     # env.reset()
     #
