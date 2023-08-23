@@ -1,6 +1,6 @@
-########################
+##########################
 ScenarioNet Documentation
-########################
+##########################
 
 
 Welcome to the *ScenarioNet* documentation!
@@ -29,6 +29,8 @@ Please feel free to contact us if you have any suggestions or ideas!
    :hidden:
    :maxdepth: 2
    :caption: Scenario Description
+
+   description.rst
 
 .. toctree::
    :hidden:
