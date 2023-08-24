@@ -31,7 +31,8 @@ release = '0.1.1'
 # ones.
 extensions = [
     "sphinx.ext.autosectionlabel",
-    "sphinx_rtd_theme"
+    "sphinx_rtd_theme",
+    "sphinxemoji.sphinxemoji"
 ]
 
 # Add any paths that contain templates here, relative to this directory.

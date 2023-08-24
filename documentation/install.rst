@@ -1,14 +1,14 @@
 .. _install:
 
 ########################
-Install ScenarioNet
+Installation
 ########################
 
-The *ScenarionNet* repo contains tools for converting scenarios and building database from various data sources.
-The simulation part is maintained in [MetaDrive](https://github.com/metadriverse/metadrive) repo, and let's install MetaDrive first.
+The ScenarioNet repo contains tools for converting scenarios and building database from various data sources.
+The simulation part is maintained in `MetaDrive <https://github.com/metadriverse/metadrive>`_ repo, and let's install MetaDrive first.
 
-Install MetaDrive for simulation support
-############################################
+Install MetaDrive
+******************
 
 The installation of MetaDrive on different platforms is straightforward and easy!
 We recommend to use the following command to install::
@@ -28,8 +28,8 @@ To check whether MetaDrive is successfully installed, please run::
 
 .. note:: Please do not run the above command in the folder that has a sub-folder called :code:`./metadrive`.
 
-Install ScenarioNet for data processing
-############################################
+Install ScenarioNet
+********************
 For ScenarioNet, we only provide Github installation::
 
     # Install ScenarioNet
