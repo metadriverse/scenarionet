@@ -121,4 +121,16 @@ More operations and details is available at :ref:`operations`.
 
 **5. Simulation**
 
+The database can be loaded to MetaDrive simulator for scenario replay or closed-loop simulation.
+First of all, let's replay scenarios in the ``exp_converted`` database::
 
+    python -m scenarionet.sim -d /path/to/exp_converted
+
+
+By adding ``--render 3D`` flag, we can use 3D renderer::
+
+    python -m scenarionet.sim -d /path/to/exp_converted --render 3D
+
+.. note::
+    ``--render advanced`` enables the advanced deferred rendering pipeline,
+    but an advanced GPU better than RTX 2060 is required.

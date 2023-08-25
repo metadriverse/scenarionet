@@ -117,6 +117,6 @@ python -m scenarionet.generate_from_error_file -d /new/database/path --file /err
 Visualizing the simulated scenario
 
 ```
-python -m scenarionet.run_simulation -d /path/to/database --render --scenario_index
+python -m scenarionet.sim -d /path/to/database --render --scenario_index
 ```
 
