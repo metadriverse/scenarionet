@@ -34,20 +34,26 @@ install_requires = [
     "matplotlib",
     "pandas",
     "tqdm",
-    "metadrive-simulator",
+    "metadrive-simulator>=0.4.1.1",
     "geopandas",
-    "yapf==0.30.0",
+    "yapf",
     "shapely"
 ]
 
+doc = [
+    "sphinxemoji",
+    "sphinx",
+    "sphinx_rtd_theme",
+]
+
 train_requirement = [
-                     "ray[rllib]==1.0.0",
-                     # "torch",
-                     "wandb==0.12.1",
-                     "aiohttp==3.6.0",
-                     "gymnasium",
-                     "tensorflow",
-                     "tensorflow_probability"]
+    "ray[rllib]==1.0.0",
+    # "torch",
+    "wandb==0.12.1",
+    "aiohttp==3.6.0",
+    "gymnasium",
+    "tensorflow",
+    "tensorflow_probability"]
 
 setup(
     name="scenarionet",
@@ -61,6 +67,7 @@ setup(
     install_requires=install_requires,
     extras_require={
         "train": train_requirement,
+        "doc": doc
     },
     include_package_data=True,
     license="Apache 2.0",
@@ -68,30 +75,3 @@ setup(
     long_description_content_type='text/markdown',
 )
 
-"""
-How to publish to pypi?  Noted by Zhenghao in Dec 27, 2020.
-
-0. Rename version in setup.py
-
-1. Remove old files and ext_modules from setup() to get a clean wheel for all platforms in py3-none-any.wheel
-    rm -rf dist/ build/ documentation/build/ scenarionet.egg-info/ docs/build/
-
-2. Rename current version to X.Y.Z.rcA, where A is arbitrary value represent "release candidate A". 
-   This is really important since pypi do not support renaming and re-uploading. 
-   Rename version in setup.py 
-
-3. Get wheel
-    python setup.py sdist bdist_wheel
-
-4. Upload to test channel
-    twine upload --repository testpypi dist/*
-
-5. Test as next line. If failed, change the version name and repeat 1, 2, 3, 4, 5.
-    pip install --index-url https://test.pypi.org/simple/ scenarionet
-
-6. Rename current version to X.Y.Z in setup.py, rerun 1, 3 steps.
-
-7. Upload to production channel 
-    twine upload dist/*
-
-"""

@@ -1,6 +1,6 @@
-########################
+##########################
 ScenarioNet Documentation
-########################
+##########################
 
 
 Welcome to the ScenarioNet documentation!
@@ -15,6 +15,40 @@ It can thus support several applications including large-scale scenario generati
 This documentation brings you the information on installation, usages and more of ScenarioNet!
 You can also visit the `GitHub repo <https://github.com/metadriverse/scenarionet>`_ and `Webpage <https://metadriverse.github.io/scenarionet/>`_ for code and videos.
 Please feel free to contact us if you have any suggestions or ideas!
+
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Quick Start
+
+   install.rst
+   example.rst
+   operations.rst
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Scenario Description
+
+   description.rst
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Supported Dataset
+
+   datasets.rst
+   nuplan.rst
+   nuscenes.rst
+   waymo.rst
+   new_data.rst
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Simulation
+
 
 
 Citation
