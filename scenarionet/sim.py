@@ -46,7 +46,7 @@ if __name__ == '__main__':
             "data_directory": database_path,
         }
     )
-    for index in range(num_scenario if args.scenario_index is not None else 1000000):
+    for index in range(2, num_scenario if args.scenario_index is not None else 1000000):
         env.reset(seed=index if args.scenario_index is None else args.scenario_index)
         for t in range(10000):
             env.step([0, 0])
