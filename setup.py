@@ -34,11 +34,16 @@ install_requires = [
     "matplotlib",
     "pandas",
     "tqdm",
-    "sphinxemoji",
     "metadrive-simulator>=0.4.1.1",
     "geopandas",
     "yapf==0.30.0",
     "shapely"
+]
+
+doc = [
+    "sphinxemoji",
+    "sphinx",
+    "sphinx_rtd_theme",
 ]
 
 train_requirement = [
@@ -62,6 +67,7 @@ setup(
     install_requires=install_requires,
     extras_require={
         "train": train_requirement,
+        "doc": doc
     },
     include_package_data=True,
     license="Apache 2.0",

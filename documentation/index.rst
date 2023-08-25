@@ -24,6 +24,7 @@ Please feel free to contact us if you have any suggestions or ideas!
 
    install.rst
    example.rst
+   operations.rst
 
 .. toctree::
    :hidden:
@@ -37,6 +38,7 @@ Please feel free to contact us if you have any suggestions or ideas!
    :maxdepth: 2
    :caption: Supported Dataset
 
+   datasets.rst
    nuplan.rst
    nuscenes.rst
    waymo.rst
