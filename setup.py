@@ -36,7 +36,7 @@ install_requires = [
     "tqdm",
     "metadrive-simulator>=0.4.1.1",
     "geopandas",
-    "yapf==0.30.0",
+    "yapf",
     "shapely"
 ]
 
