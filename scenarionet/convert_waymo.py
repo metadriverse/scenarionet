@@ -1,17 +1,19 @@
-import pkg_resources  # for suppress warning
-import shutil
-import argparse
-import logging
-import os
-
-from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
-from scenarionet.converter.utils import write_to_directory
-from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios
-
-logger = logging.getLogger(__name__)
+desc = "Build database from Waymo scenarios"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import pkg_resources  # for suppress warning
+    import shutil
+    import argparse
+    import logging
+    import os
+
+    from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
+    from scenarionet.converter.utils import write_to_directory
+    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios
+
+    logger = logging.getLogger(__name__)
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "--database_path",
         "-d",
@@ -34,14 +36,14 @@ if __name__ == '__main__':
         default=0,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]"
+             "and select files[start_file_index: start_file_index+num_files]"
     )
     parser.add_argument(
         "--num_files",
         default=1000,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]"
+             "and select files[start_file_index: start_file_index+num_files]"
     )
     args = parser.parse_args()
 

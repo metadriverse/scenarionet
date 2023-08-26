@@ -1,9 +1,11 @@
-import argparse
-
-from scenarionet.builder.utils import copy_database
+desc = "Move or Copy an existing database"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import argparse
+
+    from scenarionet.builder.utils import copy_database
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--from', required=True, help="Which database to move.")
     parser.add_argument(
         "--to",

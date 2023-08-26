@@ -1,14 +1,16 @@
-import logging
-
-import pkg_resources  # for suppress warning
-import argparse
-import os
-from metadrive.envs.scenario_env import ScenarioEnv
-from metadrive.policy.replay_policy import ReplayEgoCarPolicy
-from metadrive.scenario.utils import get_number_of_scenarios
+desc = "Load a database to simulator and replay scenarios"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import logging
+
+    import pkg_resources  # for suppress warning
+    import argparse
+    import os
+    from metadrive.envs.scenario_env import ScenarioEnv
+    from metadrive.policy.replay_policy import ReplayEgoCarPolicy
+    from metadrive.scenario.utils import get_number_of_scenarios
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument("--database_path", "-d", required=True, help="The path of the database")
     parser.add_argument("--render", default="none", choices=["none", "2D", "3D", "advanced"])
     parser.add_argument("--scenario_index", default=None, type=int, help="Specifying a scenario to run")
