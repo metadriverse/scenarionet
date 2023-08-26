@@ -9,16 +9,20 @@ if __name__ == '__main__':
     parser.add_argument(
         "--database_path", "-d", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
     )
-    parser.add_argument("--error_file_path", default="./", help="Where to save the error file. "
-                                                                "One can generate a new database excluding "
-                                                                "or only including the failed scenarios."
-                                                                "For more details, "
-                                                                "see operation 'generate_from_error_file'")
+    parser.add_argument(
+        "--error_file_path",
+        default="./",
+        help="Where to save the error file. "
+        "One can generate a new database excluding "
+        "or only including the failed scenarios."
+        "For more details, "
+        "see operation 'generate_from_error_file'"
+    )
     parser.add_argument(
         "--overwrite",
         action="store_true",
         help="If an error file already exists in error_file_path, "
-             "whether to overwrite it"
+        "whether to overwrite it"
     )
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     parser.add_argument("--random_drop", action="store_true", help="Randomly make some scenarios fail. for test only!")

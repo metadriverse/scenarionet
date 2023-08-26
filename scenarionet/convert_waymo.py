@@ -36,14 +36,14 @@ if __name__ == '__main__':
         default=0,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-             "and select files[start_file_index: start_file_index+num_files]"
+        "and select files[start_file_index: start_file_index+num_files]"
     )
     parser.add_argument(
         "--num_files",
         default=1000,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-             "and select files[start_file_index: start_file_index+num_files]"
+        "and select files[start_file_index: start_file_index+num_files]"
     )
     args = parser.parse_args()
 

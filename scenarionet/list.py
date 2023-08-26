@@ -25,4 +25,9 @@ if __name__ == '__main__':
     print("\nAvailable operations (usage python -m scenarionet.operation): \n")
     for module in modules:
         # module="convert_nuplan"
-        print("{}scenarionet.{}:   {} \n".format(" " * 5, module, importlib.import_module("scenarionet.{}".format(module)).desc))
+        print(
+            "{}scenarionet.{}:   {} \n".format(
+                " " * 5, module,
+                importlib.import_module("scenarionet.{}".format(module)).desc
+            )
+        )

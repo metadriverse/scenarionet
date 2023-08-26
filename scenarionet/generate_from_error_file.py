@@ -15,7 +15,7 @@ if __name__ == '__main__':
         "--broken",
         action="store_true",
         help="By default, only successful scenarios will be picked to build the new database. "
-             "If turn on this flog, it will generate database containing only broken scenarios."
+        "If turn on this flog, it will generate database containing only broken scenarios."
     )
     args = parser.parse_args()
     ErrorFile.generate_dataset(args.file, args.database_path, args.overwrite, args.broken)
