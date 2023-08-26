@@ -1,13 +1,23 @@
-import argparse
-
-from scenarionet.verifier.utils import verify_database, set_random_drop
+desc = "Check if the database is intact and all scenarios can be found and recorded in internal scenario description"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import argparse
+
+    from scenarionet.verifier.utils import verify_database, set_random_drop
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "--database_path", "-d", required=True, help="Dataset path, a directory containing summary.pkl and mapping.pkl"
     )
-    parser.add_argument("--error_file_path", default="./", help="Where to save the error file")
+    parser.add_argument(
+        "--error_file_path",
+        default="./",
+        help="Where to save the error file. "
+        "One can generate a new database excluding "
+        "or only including the failed scenarios."
+        "For more details, "
+        "see operation 'generate_from_error_file'"
+    )
     parser.add_argument(
         "--overwrite",
         action="store_true",

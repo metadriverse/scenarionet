@@ -1,12 +1,14 @@
-import pkg_resources  # for suppress warning
-import argparse
-import os.path
-from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
-from scenarionet.converter.utils import write_to_directory
+desc = "Build database from nuScenes/Lyft scenarios"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import pkg_resources  # for suppress warning
+    import argparse
+    import os.path
+    from scenarionet import SCENARIONET_DATASET_PATH
+    from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
+    from scenarionet.converter.utils import write_to_directory
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "--database_path",
         "-d",

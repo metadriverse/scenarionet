@@ -1,13 +1,15 @@
 """
 This script is for extracting a subset of data from an existing database
 """
-import pkg_resources  # for suppress warning
-import argparse
-
-from scenarionet.builder.utils import split_database
+desc = "Build a new database containing a subset of scenarios from an existing database."
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import pkg_resources  # for suppress warning
+    import argparse
+
+    from scenarionet.builder.utils import split_database
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--from', required=True, help="Which database to extract data from.")
     parser.add_argument(
         "--to",

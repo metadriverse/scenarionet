@@ -1,10 +1,12 @@
-import argparse
-
-from scenarionet.builder.filters import ScenarioFilter
-from scenarionet.builder.utils import merge_database
+desc = "Filter unwanted scenarios out and build a new database"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import argparse
+
+    from scenarionet.builder.filters import ScenarioFilter
+    from scenarionet.builder.utils import merge_database
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "--database_path",
         "-d",
