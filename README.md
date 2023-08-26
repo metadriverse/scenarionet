@@ -1,6 +1,7 @@
 # ScenarioNet
 
 **Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling**
+
 [
 [**Webpage**](https://metadriverse.github.io/scenarionet/) |
 [**Code**](https://github.com/metadriverse/scenarionet) |
