@@ -132,7 +132,7 @@ Convert nuScenes (Lyft)
 
 This script converted the recorded nuScenes scenario into our scenario descriptions.
 It needs to install ``nuscenes-devkit`` and download the source data from https://www.nuscenes.org/nuscenes.
-For Lyft datasets, this API can only convert the old version Lyft data as the old Lyft data can be parsed via 'nuscenes-devkit'.
+For Lyft datasets, this API can only convert the old version Lyft data as the old Lyft data can be parsed via `nuscenes-devkit`.
 However, Lyft is now a part of Woven Planet and the new data has to be parsed via new toolkit.
 We are working on support this new toolkit to support the new Lyft dataset.
 Detailed guide is available at Section :ref:`nuscenes`.
