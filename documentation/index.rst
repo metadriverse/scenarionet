@@ -29,26 +29,22 @@ Please feel free to contact us if you have any suggestions or ideas!
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: Scenario Description
-
-   description.rst
-
-.. toctree::
-   :hidden:
-   :maxdepth: 2
    :caption: Supported Dataset
 
    datasets.rst
    nuplan.rst
    nuscenes.rst
    waymo.rst
+   PG.rst
    new_data.rst
 
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: Simulation
+   :caption: System Design
 
+   description.rst
+   simulation.rst
 
 
 Citation

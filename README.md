@@ -84,7 +84,7 @@ command.
 Using ```--copy_raw_data``` will copy the raw scenario file into target directory and cancel the virtual mapping.
 
 ```
-python -m scenarionet.copy_database --to /destination/path --from /source/path
+python -m scenarionet.copy --to /destination/path --from /source/path
 ```
 
 ### Verify
