@@ -42,7 +42,7 @@ And place the downloaded tfrecord file to a folder. Let's call it ``exp_waymo`` 
     Likewise, place all downloaded tfrecord files to the same folder.
 
 
-3. Build Database
+3. Build Mini Database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the following command to extract scenarios in ``exp_waymo`` to ``exp_converted``::

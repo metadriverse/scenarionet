@@ -24,7 +24,8 @@ The dataset includes:
     using new Lyft data.
 
 
+Known Issues: Lyft
+===================
 
-Known Issues
-#############
+N/A
 

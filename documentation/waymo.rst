@@ -26,7 +26,7 @@ The dataset includes:
 - Adjusted some road edge boundary height estimates
 
 
-1. Install requirements
+1. Install Waymo Toolkit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First of all, we have to install the waymo toolkit and tensorflow::
@@ -40,7 +40,7 @@ First of all, we have to install the waymo toolkit and tensorflow::
 .. note::
     This package is only supported on Linux platform.
 
-2. Download Raw Data
+2. Download TFRecord
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Waymo motion dataset is at `Google Cloud <https://console.cloud.google.com/storage/browser/waymo_open_dataset_motion_v_1_2_0>`_.
@@ -72,7 +72,7 @@ The downloaded data should be stored in a directory like this::
         └── ...
 
 
-3. Build Database
+3. Build Waymo Database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the following command to extract scenarios in any directory containing ``tfrecord``.
@@ -82,7 +82,7 @@ Here we take converting raw data in ``training_20s`` as an example::
 
 Now all converted scenarios will be placed at ``/path/to/your/database`` and are ready to be used in your work.
 
-Known Issues
-==================
+Known Issues: Waymo
+=====================
 
 N/A
