@@ -1,4 +1,6 @@
-.. _operations:
+###########
+Operations
+###########
 
 How to run
 ~~~~~~~~~~

@@ -16,7 +16,7 @@ For Waymo data, please install the toolkit via::
     pip install waymo-open-dataset-tf-2-11-0==1.5.0
 
     # Or install with scenarionet
-    pip install -e .[scenarionet]
+    pip install -e .[waymo]
 
 .. note::
     This package is only supported on Linux platform.
@@ -53,7 +53,7 @@ Run the following command to extract scenarios in ``exp_waymo`` to ``exp_convert
     When running ``python -m``, make sure the directory you are at doesn't contain a folder called ``scenarionet``.
     Otherwise, the running may fail. For more details about the command, use ``python -m scenarionet.convert_waymo -h``
 
-Now all exracted scenarios will be placed in ``exp_converted`` directory.
+Now all extracted scenarios will be placed in ``exp_converted`` directory.
 If we list the directory with ``ll`` command, the structure will be like::
 
     exp_converted

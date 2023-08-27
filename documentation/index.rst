@@ -23,11 +23,6 @@ Please feel free to contact us if you have any suggestions or ideas!
 
    install.rst
    example.rst
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Database Operations
-
    operations.rst
 
 .. modify the toctree in datasets.rst together
