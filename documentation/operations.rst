@@ -80,7 +80,7 @@ Convert nuPlan
 
 .. code-block:: text
 
-    python -m scenarionet.convert_nuplan.py [-h] [--database_path DATABASE_PATH]
+    python -m scenarionet.convert_nuplan [-h] [--database_path DATABASE_PATH]
                          [--dataset_name DATASET_NAME] [--version VERSION]
                          [--overwrite] [--num_workers NUM_WORKERS]
                          [--raw_data_path RAW_DATA_PATH] [--test]
@@ -226,7 +226,7 @@ This is usually used to build training/test/validation set.
 
 .. code-block:: text
 
-    usage: split.py [-h] --from FROM --to TO [--num_scenarios NUM_SCENARIOS]
+    python -m scenarionet.split [-h] --from FROM --to TO [--num_scenarios NUM_SCENARIOS]
                 [--start_index START_INDEX] [--random] [--exist_ok]
                 [--overwrite]
 
@@ -297,7 +297,7 @@ Report the number of scenarios in a database.
 
 .. code-block:: text
 
-    usage: num.py [-h] --database_path DATABASE_PATH
+    python -m scenarionet.num [-h] --database_path DATABASE_PATH
 
     The number of scenarios in the specified database
 
@@ -394,7 +394,7 @@ please check Section :ref:`simulation` or the `MetaDrive document <https://metad
 
 .. code-block:: text
 
-    usage: sim.py [-h] --database_path DATABASE_PATH
+    python -m scenarionet.sim [-h] --database_path DATABASE_PATH
               [--render {none,2D,3D,advanced}]
               [--scenario_index SCENARIO_INDEX]
 
