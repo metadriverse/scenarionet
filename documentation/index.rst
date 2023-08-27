@@ -19,16 +19,20 @@ Please feel free to contact us if you have any suggestions or ideas!
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
    :caption: Quick Start
 
    install.rst
    example.rst
-   operations.rst
 
 .. toctree::
-   :hidden:
    :maxdepth: 2
+   :caption: Database Operations
+
+   operations.rst
+
+.. modify the toctree in datasets.rst together
+.. toctree::
+   :maxdepth: 1
    :caption: Supported Dataset
 
    datasets.rst
@@ -40,7 +44,6 @@ Please feel free to contact us if you have any suggestions or ideas!
    new_data.rst
 
 .. toctree::
-   :hidden:
    :maxdepth: 2
    :caption: System Design
 

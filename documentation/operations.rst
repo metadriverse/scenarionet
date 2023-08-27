@@ -1,6 +1,7 @@
-###############
-Operations
-###############
+.. _operations:
+
+How to run
+~~~~~~~~~~
 
 We provide various basic operations allowing users to modify the built database for ML applications.
 These operations include building database from different data providers;aggregating datasets from diverse source;
