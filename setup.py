@@ -55,6 +55,10 @@ train_requirement = [
     "tensorflow",
     "tensorflow_probability"]
 
+waymo = ["waymo-open-dataset-tf-2-11-0", "tensorflow==2.11.0"]
+nuplan = ["nuplan-devkit>=1.2.0"]
+nuscenes = ["nuscenes-devkit>=1.1.10"]
+
 setup(
     name="scenarionet",
     python_requires='>=3.8',  # do version check with assert
@@ -67,11 +71,13 @@ setup(
     install_requires=install_requires,
     extras_require={
         "train": train_requirement,
-        "doc": doc
+        "doc": doc,
+        "waymo": waymo,
+        "nuplan": nuplan,
+        "nuscenes": nuscenes,
     },
     include_package_data=True,
     license="Apache 2.0",
     long_description=long_description,
     long_description_content_type='text/markdown',
 )
-

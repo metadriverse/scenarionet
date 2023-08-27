@@ -1,13 +1,13 @@
 #######################
-Example
+Waymo Example
 #######################
 
 In this example, we will show you how to convert a small batch of `Waymo <https://waymo.com/intl/en_us/open/>`_ scenarios into the internal Scenario Description.
 After that, the scenarios will be loaded to simulator for closed-loop simulation.
 First of all, please install `MetaDrive <https://github.com/metadriverse/metadrive>`_ and `ScenarioNet <https://github.com/metadriverse/scenarionet>`_ following these steps :ref:`installation`.
 
-**1. Setup Waymo toolkit**
-
+1. Setup Waymo toolkit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For any dataset, this step is necessary after installing ScenarioNet,
 as we need to use the official toolkits of the data provider to parse the original scenario description and convert to our internal scenario description.
@@ -15,14 +15,17 @@ For Waymo data, please install the toolkit via::
 
     pip install waymo-open-dataset-tf-2-11-0==1.5.0
 
+    # Or install with scenarionet
+    pip install -e .[scenarionet]
+
 .. note::
     This package is only supported on Linux platform.
 
 For other datasets like nuPlan and nuScenes, you need to setup `nuplan-devkit <https://github.com/motional/nuplan-devkit>`_ and `nuscenes-devkit <https://github.com/nutonomy/nuscenes-devkit>`_ respectively.
 Guidance on how to setup these datasets and connect them with ScenarioNet can be found at :ref:`datasets`.
 
-**2. Prepare Data**
-
+2. Prepare Data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Access the Waymo motion data at `Google Cloud <https://console.cloud.google.com/storage/browser/waymo_open_dataset_motion_v_1_2_0>`_.
 Download one tfrecord scenario file from ``waymo_open_dataset_motion_v_1_2_0/uncompressed/scenario/training_20s``.
@@ -39,7 +42,8 @@ And place the downloaded tfrecord file to a folder. Let's call it ``exp_waymo`` 
     Likewise, place all downloaded tfrecord files to the same folder.
 
 
-**3. Convert to Scenario Description**
+3. Build Database
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the following command to extract scenarios in ``exp_waymo`` to ``exp_converted``::
 
@@ -82,7 +86,8 @@ To aggregate the scenarios produced by all workers, the ``exp_converted/dataset_
 from `scenario_id` to the path of the target scenario file relative to ``exp_converted``.
 As a result, we can get all scenarios produced by 8 workers by loading the database `exp_converted`.
 
-**4. Database Operations**
+4. Database Operations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Several basic operations are available and allow us to split, merge, move, and check the databases.
 First of all, let's check how many scenarios are included in this database built from ``training_20s.tfrecord-00000-of-01000``::
@@ -119,7 +124,8 @@ It will show there are 61 overlapped scenarios.
 Congratulations! Now you are already familiar with some common operations.
 More operations and details is available at :ref:`operations`.
 
-**5. Simulation**
+5. Simulation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The database can be loaded to MetaDrive simulator for scenario replay or closed-loop simulation.
 First of all, let's replay scenarios in the ``exp_converted`` database::

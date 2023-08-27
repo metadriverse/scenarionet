@@ -36,6 +36,7 @@ Please feel free to contact us if you have any suggestions or ideas!
    nuscenes.rst
    waymo.rst
    PG.rst
+   lyft.rst
    new_data.rst
 
 .. toctree::
