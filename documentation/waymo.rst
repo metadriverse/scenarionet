@@ -83,6 +83,5 @@ Here we take converting raw data in ``training_20s`` as an example::
 Now all converted scenarios will be placed at ``/path/to/your/database`` and are ready to be used in your work.
 
 Known Issues: Waymo
-=====================
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 N/A

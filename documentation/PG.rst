@@ -2,6 +2,10 @@
 PG
 ############
 
+| Website: https://metadriverse.github.io/metadrive/
+| Download: *N/A (collected online)*
+| Paper: https://arxiv.org/pdf/2109.12674.pdf
+
 The PG scenarios are collected by running simulation and record the episodes in MetaDrive simulator.
 The name PG refers to Procedural Generation, which is a technique used to generate maps.
 When a map is determined, the vehicles and objects will be spawned and actuated  according to a hand-crafted rules.

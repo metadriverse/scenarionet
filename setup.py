@@ -75,6 +75,7 @@ setup(
         "waymo": waymo,
         "nuplan": nuplan,
         "nuscenes": nuscenes,
+        "all": nuscenes + waymo + nuplan
     },
     include_package_data=True,
     license="Apache 2.0",
