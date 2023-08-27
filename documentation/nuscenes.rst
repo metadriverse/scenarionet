@@ -98,7 +98,7 @@ Please try ``nuscenes-devkit/python-sdk/tutorials/nuscenes_tutorial.ipynb`` and 
 After setup the raw data, convertors in ScenarioNet can read the raw data, convert scenario format and build the database.
 Here we take converting raw data in ``nuscenes-mini`` as an example::
 
-    python -m scenarionet.convert_waymo -d /path/to/your/database --version v1.0-mini --dataroot /nuscens/data/path
+    python -m scenarionet.convert_nuscenes -d /path/to/your/database --version v1.0-mini --dataroot /nuscens/data/path
 
 The ``version`` is to determine which split to convert. ``dataroot`` is set to ``/data/sets/nuscenes`` by default,
 but you need to specify it if your data is stored in any other directory.

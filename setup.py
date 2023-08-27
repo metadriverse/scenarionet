@@ -56,7 +56,17 @@ train_requirement = [
     "tensorflow_probability"]
 
 waymo = ["waymo-open-dataset-tf-2-11-0", "tensorflow==2.11.0"]
-nuplan = ["nuplan-devkit>=1.2.0"]
+
+nuplan = ["nuplan-devkit>=1.2.0",
+          "bokeh==2.4",
+          "hydra-core",
+          "chardet",
+          "pyarrow",
+          "aiofiles",
+          "retry",
+          "boto3",
+          "aioboto3"]
+
 nuscenes = ["nuscenes-devkit>=1.1.10"]
 
 setup(
