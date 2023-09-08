@@ -1,10 +1,12 @@
-import argparse
-
-from scenarionet.builder.filters import ScenarioFilter
-from scenarionet.builder.utils import merge_database
+desc = "Merge a list of databases. e.g. scenario.merge --from db_1 db_2 db_3...db_n --to db_dest"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import argparse
+
+    from scenarionet.builder.filters import ScenarioFilter
+    from scenarionet.builder.utils import merge_database
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "--database_path",
         "-d",

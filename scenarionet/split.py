@@ -1,10 +1,16 @@
-import argparse
-
-from scenarionet.builder.utils import copy_database
+"""
+This script is for extracting a subset of data from an existing database
+"""
+desc = "Build a new database containing a subset of scenarios from an existing database."
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--from', required=True, help="Which database to move.")
+    import pkg_resources  # for suppress warning
+    import argparse
+
+    from scenarionet.builder.utils import split_database
+
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument('--from', required=True, help="Which database to extract data from.")
     parser.add_argument(
         "--to",
         required=True,
@@ -13,11 +19,14 @@ if __name__ == '__main__':
         "If exists_ok=True, those two .pkl files will be stored in an existing directory and turn "
         "that directory into a database."
     )
-    parser.add_argument("--remove_source", action="store_true", help="Remove the `from_database` if set this flag")
+    parser.add_argument("--num_scenarios", type=int, default=64, help="how many scenarios to extract (default: 30)")
+    parser.add_argument("--start_index", type=int, default=0, help="which index to start")
     parser.add_argument(
-        "--copy_raw_data",
+        "--random",
         action="store_true",
-        help="Instead of creating virtual file mapping, copy raw scenario.pkl file"
+        help="If set to true, it will choose scenarios randomly "
+        "from all_scenarios[start_index:]. "
+        "Otherwise, the scenarios will be selected sequentially"
     )
     parser.add_argument(
         "--exist_ok",
@@ -33,11 +42,12 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     from_path = args.__getattribute__("from")
-    copy_database(
+    split_database(
         from_path,
         args.to,
+        args.start_index,
+        args.num_scenarios,
         exist_ok=args.exist_ok,
         overwrite=args.overwrite,
-        copy_raw_data=args.copy_raw_data,
-        remove_source=args.remove_source
+        random=args.random
     )

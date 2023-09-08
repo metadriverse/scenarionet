@@ -1,12 +1,14 @@
-import pkg_resources  # for suppress warning
-import argparse
-import os.path
-from scenarionet import SCENARIONET_DATASET_PATH
-from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
-from scenarionet.converter.utils import write_to_directory
+desc = "Build database from nuScenes/Lyft scenarios"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    import pkg_resources  # for suppress warning
+    import argparse
+    import os.path
+    from scenarionet import SCENARIONET_DATASET_PATH
+    from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
+    from scenarionet.converter.utils import write_to_directory
+
+    parser = argparse.ArgumentParser(description=desc)
     parser.add_argument(
         "--database_path",
         "-d",
@@ -22,6 +24,7 @@ if __name__ == '__main__':
         default='v1.0-mini',
         help="version of nuscenes data, scenario of this version will be converted "
     )
+    parser.add_argument("--dataroot", default="/data/sets/nuscenes", help="The path of nuscenes data")
     parser.add_argument("--overwrite", action="store_true", help="If the database_path exists, whether to overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()
@@ -31,8 +34,7 @@ if __name__ == '__main__':
     output_path = args.database_path
     version = args.version
 
-    dataroot = '/home/shady/data/nuscenes'
-    scenarios, nuscs = get_nuscenes_scenarios(dataroot, version, args.num_workers)
+    scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
 
     write_to_directory(
         convert_func=convert_nuscenes_scenario,

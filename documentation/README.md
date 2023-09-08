@@ -3,7 +3,7 @@ This folder contains files for the documentation: [https://scenarionet.readthedo
 To build documents locally, please run the following codes:
 
 ```
-pip install sphinx sphinx_rtd_theme
+pip install -e .[doc]
 cd scenarionet/documentation
 make html
 ```
