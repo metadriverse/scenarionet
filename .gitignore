@@ -23,3 +23,5 @@ dataset/*
 **/TEST/
 **/experiment/
 **/wandb/
+/tutorial/*.gif
+/tutorial/.ipynb_checkpoints/

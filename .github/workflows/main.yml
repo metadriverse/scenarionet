@@ -48,3 +48,26 @@ jobs:
           cd scenarionet/
           pytest --cov=./ --cov-config=.coveragerc --cov-report=xml -sv tests
 
+
+  test_ipynb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Blackbox tests
+        run: |
+          pip install cython
+          pip install numpy
+          pip install -e .
+          pip install pytest
+          pip install pytest-cov
+          pip install ray
+          git clone https://github.com/metadriverse/metadrive.git
+          cd metadrive
+          pip install -e .
+          cd ../
+          pip install nbmake pytest-xdist
+          pytest --nbmake -n=auto ./tutorial/

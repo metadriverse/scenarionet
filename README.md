@@ -1,13 +1,14 @@
 # ScenarioNet
 
-**Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling**
+**Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling** ![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)
 
 [
 [**Webpage**](https://metadriverse.github.io/scenarionet/) |
 [**Code**](https://github.com/metadriverse/scenarionet) |
 [**Video**](https://youtu.be/3bOqswXP6OA) |
 [**Paper**](http://arxiv.org/abs/2306.12241) |
-[**Documentation**](https://scenarionet.readthedocs.io/en/latest/)
+[**Documentation**](https://scenarionet.readthedocs.io/en/latest/) |
+[**Colab Example**](https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/simulation.ipynb)
 ]
 
 ScenarioNet allows users to load scenarios from real-world dataset like Waymo, nuPlan, nuScenes, l5 and synthetic
