@@ -69,6 +69,5 @@ jobs:
           cd metadrive
           pip install -e .
           cd ../
-          cd scenarionet/
           pip install nbmake pytest-xdist
           pytest --nbmake -n=auto ./tutorial/
