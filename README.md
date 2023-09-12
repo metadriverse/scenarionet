@@ -18,7 +18,7 @@ The built database provides tools for building training and test sets for ML app
 Powered by [MetaDrive Simulator](https://github.com/metadriverse/metadrive), the scenarios can be reconstructed for
 various applications like AD stack test, reinforcement learning, imitation learning, scenario generation and so on.
 
-![system](docs/asset/system_01.png)
+![system](docs/asset/system.png)
 
 ## Installation
 
