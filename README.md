@@ -1,6 +1,6 @@
 # ScenarioNet
 
-**Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling** ![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)
+**Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/simulation.ipynb)
 
 [
 [**Webpage**](https://metadriverse.github.io/scenarionet/) |
