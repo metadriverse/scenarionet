@@ -304,7 +304,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         polygons.append(polygon)
     polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
     # logger.warning("Stop using boundaries! Use exterior instead!")
-    boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
+    boundaries = gpd.GeoSeries(unary_union(polygons)).exterior.explode(index_parts=True)
     for idx, boundary in enumerate(boundaries[0]):
         block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
         id = "boundary_{}".format(idx)
@@ -330,7 +330,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
     for id in map_objs["lane"]:
         lane_info = map_api.get("lane", id)
         assert lane_info["token"] == id
-        boundary = map_api.extract_polygon(lane_info["polygon_token"]).boundary.xy
+        boundary = map_api.extract_polygon(lane_info["polygon_token"]).exterior.xy
         boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
         # boundary_polygon += [[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))]
         ret[id] = {

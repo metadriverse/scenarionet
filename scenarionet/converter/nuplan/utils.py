@@ -209,15 +209,15 @@ def extract_map_features(map_api, center, radius=500):
             for lane_meta_data in block.interior_edges:
                 if not hasattr(lane_meta_data, "baseline_path"):
                     continue
-                if isinstance(lane_meta_data.polygon.boundary, MultiLineString):
+                if isinstance(lane_meta_data.polygon.exterior, MultiLineString):
                     # logger.warning("Stop using boundaries! Use exterior instead!")
-                    boundary = gpd.GeoSeries(lane_meta_data.polygon.boundary).explode(index_parts=True)
+                    boundary = gpd.GeoSeries(lane_meta_data.polygon.exterior).explode(index_parts=True)
                     sizes = []
                     for idx, polygon in enumerate(boundary[0]):
                         sizes.append(len(polygon.xy[1]))
                     points = boundary[0][np.argmax(sizes)].xy
-                elif isinstance(lane_meta_data.polygon.boundary, LineString):
-                    points = lane_meta_data.polygon.boundary.xy
+                elif isinstance(lane_meta_data.polygon.exterior, LineString):
+                    points = lane_meta_data.polygon.exterior.xy
                 polygon = [[points[0][i], points[1][i]] for i in range(len(points[0]))]
                 polygon = nuplan_to_metadrive_vector(polygon, nuplan_center=[center[0], center[1]])
                 ret[lane_meta_data.id] = {
@@ -240,7 +240,7 @@ def extract_map_features(map_api, center, radius=500):
 
     interpolygons = [block.polygon for block in nearest_vector_map[SemanticMapLayer.INTERSECTION]]
     # logger.warning("Stop using boundaries! Use exterior instead!")
-    boundaries = gpd.GeoSeries(unary_union(interpolygons + block_polygons)).boundary.explode(index_parts=True)
+    boundaries = gpd.GeoSeries(unary_union(interpolygons + block_polygons)).exterior.explode(index_parts=True)
     # boundaries.plot()
     # plt.show()
     for idx, boundary in enumerate(boundaries[0]):
