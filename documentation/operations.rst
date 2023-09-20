@@ -267,7 +267,7 @@ When ``--remove_source`` is added, this ``copy`` command will be changed to ``mo
 
 .. code-block:: text
 
-    python -m scenarionet.copy [-h] --from FROM --to TO [--remove_source] [--copy_raw_data]
+    python -m scenarionet.cp [-h] --from FROM --to TO [--remove_source] [--copy_raw_data]
                    [--exist_ok] [--overwrite]
 
     Move or Copy an existing database
