@@ -24,12 +24,12 @@ if __name__ == '__main__':
         default='v1.0-mini',
         help="version of nuscenes data, scenario of this version will be converted "
     )
-    parser.add_argument("--dataroot", default="/data/sets/nuscenes", help="The path of nuscenes data")
+    parser.add_argument("--dataroot", default="/home/shady/data/nuscenes", help="The path of nuscenes data")
     parser.add_argument("--overwrite", action="store_true", help="If the database_path exists, whether to overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()
 
-    overwrite = args.overwrite
+    overwrite = True
     dataset_name = args.dataset_name
     output_path = args.database_path
     version = args.version
