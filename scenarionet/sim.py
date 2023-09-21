@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument("--database_path", "-d", required=True, help="The path of the database")
-    parser.add_argument("--render", default="none", choices=["none", "2D", "3D", "advanced"])
+    parser.add_argument("--render", default="none", choices=["none", "2D", "3D", "advanced", "semantic"])
     parser.add_argument("--scenario_index", default=None, type=int, help="Specifying a scenario to run")
     args = parser.parse_args()
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
             "data_directory": database_path,
         }
     )
-    for index in range(2, num_scenario if args.scenario_index is not None else 1000000):
+    for index in range(0, num_scenario if args.scenario_index is not None else 1000000):
         env.reset(seed=index if args.scenario_index is None else args.scenario_index)
         for t in range(10000):
             env.step([0, 0])
@@ -62,9 +62,10 @@ if __name__ == '__main__':
                     }
                 )
 
-            if args.render == "2D":
+            if args.render == "2D" or args.render == "semantic":
                 env.render(
                     film_size=(3000, 3000),
+                    semantic_map=args.render == "semantic",
                     target_vehicle_heading_up=False,
                     mode="top_down",
                     text={

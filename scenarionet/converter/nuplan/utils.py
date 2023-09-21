@@ -206,11 +206,12 @@ def extract_map_features(map_api, center, radius=500):
     block_polygons = []
     for layer in [SemanticMapLayer.ROADBLOCK, SemanticMapLayer.ROADBLOCK_CONNECTOR]:
         for block in nearest_vector_map[layer]:
-            for lane_meta_data in block.interior_edges:
+            edges = sorted(block.interior_edges, key=lambda lane: lane.index) \
+                if layer == SemanticMapLayer.ROADBLOCK else block.interior_edges
+            for index, lane_meta_data in enumerate(edges):
                 if not hasattr(lane_meta_data, "baseline_path"):
                     continue
                 if isinstance(lane_meta_data.polygon.boundary, MultiLineString):
-                    # logger.warning("Stop using boundaries! Use exterior instead!")
                     boundary = gpd.GeoSeries(lane_meta_data.polygon.boundary).explode(index_parts=True)
                     sizes = []
                     for idx, polygon in enumerate(boundary[0]):
@@ -220,9 +221,20 @@ def extract_map_features(map_api, center, radius=500):
                     points = lane_meta_data.polygon.boundary.xy
                 polygon = [[points[0][i], points[1][i]] for i in range(len(points[0]))]
                 polygon = nuplan_to_metadrive_vector(polygon, nuplan_center=[center[0], center[1]])
+
+                # According to the map attributes, lanes are numbered left to right with smaller indices being on the
+                # left and larger indices being on the right.
+                # @ See NuPlanLane.adjacent_edges()
                 ret[lane_meta_data.id] = {
-                    SD.TYPE: MetaDriveType.LANE_SURFACE_STREET,
+                    SD.TYPE: MetaDriveType.LANE_SURFACE_STREET \
+                        if layer == SemanticMapLayer.ROADBLOCK else MetaDriveType.LANE_SURFACE_UNSTRUCTURE,
                     SD.POLYLINE: extract_centerline(lane_meta_data, center),
+                    SD.ENTRY: [edge.id for edge in lane_meta_data.incoming_edges],
+                    SD.EXIT: [edge.id for edge in lane_meta_data.outgoing_edges],
+                    SD.LEFT_NEIGHBORS: [edge.id for edge in block.interior_edges[:index]] \
+                        if layer == SemanticMapLayer.ROADBLOCK else [],
+                    SD.RIGHT_NEIGHBORS: [edge.id for edge in block.interior_edges[index + 1:]] \
+                        if layer == SemanticMapLayer.ROADBLOCK else [],
                     SD.POLYGON: polygon
                 }
                 if layer == SemanticMapLayer.ROADBLOCK_CONNECTOR:
@@ -238,8 +250,41 @@ def extract_map_features(map_api, center, radius=500):
             if layer == SemanticMapLayer.ROADBLOCK:
                 block_polygons.append(block.polygon)
 
+    # walkway
+    for area in nearest_vector_map[SemanticMapLayer.WALKWAYS]:
+        if isinstance(area.polygon.exterior, MultiLineString):
+            boundary = gpd.GeoSeries(area.polygon.exterior).explode(index_parts=True)
+            sizes = []
+            for idx, polygon in enumerate(boundary[0]):
+                sizes.append(len(polygon.xy[1]))
+            points = boundary[0][np.argmax(sizes)].xy
+        elif isinstance(area.polygon.exterior, LineString):
+            points = area.polygon.exterior.xy
+        polygon = [[points[0][i], points[1][i]] for i in range(len(points[0]))]
+        polygon = nuplan_to_metadrive_vector(polygon, nuplan_center=[center[0], center[1]])
+        ret[area.id] = {
+            SD.TYPE: MetaDriveType.BOUNDARY_SIDEWALK,
+            SD.POLYGON: polygon,
+        }
+
+    # corsswalk
+    for area in nearest_vector_map[SemanticMapLayer.CROSSWALK]:
+        if isinstance(area.polygon.exterior, MultiLineString):
+            boundary = gpd.GeoSeries(area.polygon.exterior).explode(index_parts=True)
+            sizes = []
+            for idx, polygon in enumerate(boundary[0]):
+                sizes.append(len(polygon.xy[1]))
+            points = boundary[0][np.argmax(sizes)].xy
+        elif isinstance(area.polygon.exterior, LineString):
+            points = area.polygon.exterior.xy
+        polygon = [[points[0][i], points[1][i]] for i in range(len(points[0]))]
+        polygon = nuplan_to_metadrive_vector(polygon, nuplan_center=[center[0], center[1]])
+        ret[area.id] = {
+            SD.TYPE: MetaDriveType.CROSSWALK,
+            SD.POLYGON: polygon,
+        }
+
     interpolygons = [block.polygon for block in nearest_vector_map[SemanticMapLayer.INTERSECTION]]
-    # logger.warning("Stop using boundaries! Use exterior instead!")
     boundaries = gpd.GeoSeries(unary_union(interpolygons + block_polygons)).boundary.explode(index_parts=True)
     # boundaries.plot()
     # plt.show()

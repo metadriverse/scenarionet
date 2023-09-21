@@ -267,7 +267,7 @@ When ``--remove_source`` is added, this ``copy`` command will be changed to ``mo
 
 .. code-block:: text
 
-    python -m scenarionet.copy [-h] --from FROM --to TO [--remove_source] [--copy_raw_data]
+    python -m scenarionet.cp [-h] --from FROM --to TO [--remove_source] [--copy_raw_data]
                    [--exist_ok] [--overwrite]
 
     Move or Copy an existing database
@@ -395,7 +395,7 @@ please check Section :ref:`simulation` or the `MetaDrive document <https://metad
 .. code-block:: text
 
     python -m scenarionet.sim [-h] --database_path DATABASE_PATH
-              [--render {none,2D,3D,advanced}]
+              [--render {none,2D,3D,advanced,semantic}]
               [--scenario_index SCENARIO_INDEX]
 
     Load a database to simulator and replay scenarios
@@ -404,7 +404,7 @@ please check Section :ref:`simulation` or the `MetaDrive document <https://metad
       -h, --help            show this help message and exit
       --database_path DATABASE_PATH, -d DATABASE_PATH
                             The path of the database
-      --render {none,2D,3D,advanced}
+      --render {none,2D,3D,advanced,semantic}
       --scenario_index SCENARIO_INDEX
                             Specifying a scenario to run
 
