@@ -305,7 +305,6 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         polygon = map_api.extract_polygon(seg_info["polygon_token"])
         polygons.append(polygon)
     polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
-    # logger.warning("Stop using boundaries! Use exterior instead!")
     boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
     for idx, boundary in enumerate(boundaries[0]):
         block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
@@ -335,7 +334,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
     for id in map_objs["lane"]:
         lane_info = map_api.get("lane", id)
         assert lane_info["token"] == id
-        boundary = map_api.extract_polygon(lane_info["polygon_token"]).exterior.xy
+        boundary = map_api.extract_polygon(lane_info["polygon_token"]).boundary.xy
         boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
         # boundary_polygon += [[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))]
         ret[id] = {
@@ -345,6 +344,8 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
             SD.EXIT: map_api.get_outgoing_lane_ids(id),
+            SD.LEFT_NEIGHBORS: [],
+            SD.RIGHT_NEIGHBORS: [],
         }
 
     # intersection lane
