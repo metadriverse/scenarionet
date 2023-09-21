@@ -206,7 +206,9 @@ def extract_map_features(map_api, center, radius=500):
     block_polygons = []
     for layer in [SemanticMapLayer.ROADBLOCK, SemanticMapLayer.ROADBLOCK_CONNECTOR]:
         for block in nearest_vector_map[layer]:
-            for lane_meta_data in block.interior_edges:
+            edges = sorted(block.interior_edges, key=lambda lane: lane.index) \
+                if layer == SemanticMapLayer.ROADBLOCK else block.interior_edges
+            for index, lane_meta_data in enumerate(edges):
                 if not hasattr(lane_meta_data, "baseline_path"):
                     continue
                 if isinstance(lane_meta_data.polygon.exterior, MultiLineString):
@@ -220,9 +222,20 @@ def extract_map_features(map_api, center, radius=500):
                     points = lane_meta_data.polygon.exterior.xy
                 polygon = [[points[0][i], points[1][i]] for i in range(len(points[0]))]
                 polygon = nuplan_to_metadrive_vector(polygon, nuplan_center=[center[0], center[1]])
+
+                # According to the map attributes, lanes are numbered left to right with smaller indices being on the
+                # left and larger indices being on the right.
+                # @ See NuPlanLane.adjacent_edges()
                 ret[lane_meta_data.id] = {
-                    SD.TYPE: MetaDriveType.LANE_SURFACE_STREET,
+                    SD.TYPE: MetaDriveType.LANE_SURFACE_STREET \
+                        if layer == SemanticMapLayer.ROADBLOCK else MetaDriveType.LANE_SURFACE_UNSTRUCTURE,
                     SD.POLYLINE: extract_centerline(lane_meta_data, center),
+                    SD.ENTRY: [edge.id for edge in lane_meta_data.incoming_edges],
+                    SD.EXIT: [edge.id for edge in lane_meta_data.outgoing_edges],
+                    SD.LEFT_NEIGHBORS: [edge.id for edge in block.interior_edges[:index]] \
+                        if layer == SemanticMapLayer.ROADBLOCK else [],
+                    SD.RIGHT_NEIGHBORS: [edge.id for edge in block.interior_edges[index + 1:]] \
+                        if layer == SemanticMapLayer.ROADBLOCK else [],
                     SD.POLYGON: polygon
                 }
                 if layer == SemanticMapLayer.ROADBLOCK_CONNECTOR:
@@ -240,7 +253,7 @@ def extract_map_features(map_api, center, radius=500):
 
     interpolygons = [block.polygon for block in nearest_vector_map[SemanticMapLayer.INTERSECTION]]
     # logger.warning("Stop using boundaries! Use exterior instead!")
-    boundaries = gpd.GeoSeries(unary_union(interpolygons + block_polygons)).exterior.explode(index_parts=True)
+    boundaries = gpd.GeoSeries(unary_union(interpolygons + block_polygons)).boundary.explode(index_parts=True)
     # boundaries.plot()
     # plt.show()
     for idx, boundary in enumerate(boundaries[0]):
@@ -357,9 +370,9 @@ def extract_traffic(scenario: NuPlanScenario, center):
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
