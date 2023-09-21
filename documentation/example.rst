@@ -130,7 +130,7 @@ More operations and details is available at :ref:`operations`.
 The database can be loaded to MetaDrive simulator for scenario replay or closed-loop simulation.
 First of all, let's replay scenarios in the ``exp_converted`` database::
 
-    python -m scenarionet.sim -d /path/to/exp_converted
+    python -m scenarionet.sim -d /path/to/exp_converted --render 2D
 
 
 By adding ``--render 3D`` flag, we can use 3D renderer::
