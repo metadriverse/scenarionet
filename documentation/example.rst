@@ -17,7 +17,7 @@ For Waymo data, please install the toolkit via::
     pip install tensorflow==2.11.0
 
     # waymo-open-dataset may degrade numpy, raising errors from cv2. This line is a workaround
-    pip install numpy>=1.24.2
+    pip install numpy==1.24.2
 
 .. note::
     This package is only supported on Linux platform.
