@@ -30,7 +30,7 @@ print("We will install the following packages: ", packages)
 version = "0.0.1"
 
 install_requires = [
-    "numpy>=1.21.6, <=1.24.2",
+    "numpy>=1.21.6",
     "matplotlib",
     "pandas",
     "tqdm",
@@ -55,19 +55,20 @@ train_requirement = [
     "tensorflow",
     "tensorflow_probability"]
 
-waymo = ["waymo-open-dataset-tf-2-11-0", "tensorflow==2.11.0"]
-
-nuplan = ["nuplan-devkit>=1.2.0",
-          "bokeh==2.4",
-          "hydra-core",
-          "chardet",
-          "pyarrow",
-          "aiofiles",
-          "retry",
-          "boto3",
-          "aioboto3"]
-
-nuscenes = ["nuscenes-devkit>=1.1.10"]
+# Disable this kind of installation
+# waymo = ["waymo-open-dataset-tf-2-11-0", "tensorflow==2.11.0"]
+#
+# nuplan = ["nuplan-devkit>=1.2.0",
+#           "bokeh==2.4",
+#           "hydra-core",
+#           "chardet",
+#           "pyarrow",
+#           "aiofiles",
+#           "retry",
+#           "boto3",
+#           "aioboto3"]
+#
+# nuscenes = ["nuscenes-devkit>=1.1.10"]
 
 setup(
     name="scenarionet",
@@ -82,10 +83,10 @@ setup(
     extras_require={
         "train": train_requirement,
         "doc": doc,
-        "waymo": waymo,
-        "nuplan": nuplan,
-        "nuscenes": nuscenes,
-        "all": nuscenes + waymo + nuplan
+        # "waymo": waymo,
+        # "nuplan": nuplan,
+        # "nuscenes": nuscenes,
+        # "all": nuscenes + waymo + nuplan
     },
     include_package_data=True,
     license="Apache 2.0",

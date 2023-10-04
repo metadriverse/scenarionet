@@ -67,25 +67,7 @@ For ScenarioNet, we only provide Github installation::
 
     git clone git@github.com:metadriverse/scenarionet.git
     cd scenarionet
-
-Anyone of the following commands will automatically install basic requirements with additional requirements
-for specific datasets::
-
-    # Install basic requirement only
     pip install -e .
-
-    # Install  Waymo official toolkit
-    pip install -e .[waymo]
-
-    # Install nuScenes development tookit
-    pip install -e .[nuscenes]
-
-    # Install nuPlan development tookit
-    pip install -e .[nuplan]
-
-    # Install all toolkit for all datasets
-    pip install -e .[all]
-
 
 .. note::
     If you don't wanna access the source code, you can install these two packages with

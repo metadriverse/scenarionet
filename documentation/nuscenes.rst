@@ -34,9 +34,6 @@ First of all, we have to install the ``nuscenes-devkit``.
     # or install from PyPI
     pip install nuscenes-devkit
 
-    # or install with scenarionet
-    pip install -e .[nuscenes]
-
 By installing from github, you can access examples and source code the toolkit.
 The examples are useful to verify whether the installation and dataset setup is correct or not.
 

@@ -21,7 +21,7 @@ except ImportError as e:
 try:
     from waymo_open_dataset.protos import scenario_pb2
 except ImportError as e:
-    logger.warning(e, "\n Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0==1.5.0")
+    logger.warning(e, "\n Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0")
 
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
@@ -469,7 +469,7 @@ def read_from_files(arg):
     try:
         scenario_pb2
     except NameError:
-        raise ImportError("Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0==1.5.0")
+        raise ImportError("Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0")
     waymo_data_directory, file_list = arg[0], arg[1]
     scenarios = []
     for file in tqdm.tqdm(file_list):
