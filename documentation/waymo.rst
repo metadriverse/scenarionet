@@ -34,9 +34,6 @@ First of all, we have to install the waymo toolkit and tensorflow::
     pip install waymo-open-dataset-tf-2-11-0
     pip install tensorflow==2.11.0
 
-    # Or install with scenarionet
-    pip install -e .[waymo]
-
 .. note::
     This package is only supported on Linux platform.
 

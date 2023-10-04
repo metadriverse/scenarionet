@@ -30,9 +30,6 @@ First of all, we have to install the ``nuplan-devkit``.
     # 2. or install from PyPI
     pip install nuplan-devkit
 
-    # 3. or install with scenarionet
-    pip install -e .[nuplan]
-
 By installing from github, you can access examples and source code the toolkit.
 The examples are useful to verify whether the installation and dataset setup is correct or not.
 
