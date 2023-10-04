@@ -34,7 +34,7 @@ install_requires = [
     "matplotlib",
     "pandas",
     "tqdm",
-    "metadrive-simulator>=0.4.1.1",
+    "metadrive-simulator>=0.4.1.2",
     "geopandas",
     "yapf",
     "shapely"
