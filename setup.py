@@ -30,7 +30,7 @@ print("We will install the following packages: ", packages)
 version = "0.0.1"
 
 install_requires = [
-    "numpy>=1.21.6, <=1.24.2",
+    "numpy>=1.21.6",
     "matplotlib",
     "pandas",
     "tqdm",
