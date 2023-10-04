@@ -34,11 +34,10 @@ First of all, we have to install the waymo toolkit and tensorflow::
     pip install waymo-open-dataset-tf-2-11-0
     pip install tensorflow==2.11.0
 
-    # waymo-open-dataset may degrade numpy, raising errors from cv2. This line is a workaround
-    pip install numpy==1.24.2
-
 .. note::
     This package is only supported on Linux platform.
+    `waymo-open-dataset` may degrade numpy, causing conflicts with cv2.
+    A workaround is `pip install numpy==1.24.2`
 
 2. Download TFRecord
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -16,11 +16,10 @@ For Waymo data, please install the toolkit via::
     pip install waymo-open-dataset-tf-2-11-0
     pip install tensorflow==2.11.0
 
-    # waymo-open-dataset may degrade numpy, raising errors from cv2. This line is a workaround
-    pip install numpy==1.24.2
-
 .. note::
     This package is only supported on Linux platform.
+    `waymo-open-dataset` may degrade numpy, causing conflicts with cv2.
+    A workaround is `pip install numpy==1.24.2`
 
 For other datasets like nuPlan and nuScenes, you need to setup `nuplan-devkit <https://github.com/motional/nuplan-devkit>`_ and `nuscenes-devkit <https://github.com/nutonomy/nuscenes-devkit>`_ respectively.
 Guidance on how to setup these datasets and connect them with ScenarioNet can be found at :ref:`datasets`.
