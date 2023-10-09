@@ -14,7 +14,7 @@ It can thus support several applications including large-scale scenario generati
 
 This documentation brings you the information on installation, usages and more of ScenarioNet!
 You can also visit the `GitHub repo <https://github.com/metadriverse/scenarionet>`_ and `Webpage <https://metadriverse.github.io/scenarionet/>`_ for code and videos.
-Please feel free to contact us if you have any suggestions or ideas!
+Please feel free to contact us if you have any suggestion or idea!
 
 
 .. toctree::
