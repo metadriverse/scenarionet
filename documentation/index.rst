@@ -3,6 +3,24 @@ ScenarioNet Documentation
 ##########################
 
 
+
+.. |colab_sim| image:: https://colab.research.google.com/assets/colab-badge.svg
+   :alt: Open In Colab
+   :target: https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/simulation.ipynb
+
+
+**Colab example for running simulation with ScenarioNet:** |colab_sim|
+
+
+.. |colab_read| image:: https://colab.research.google.com/assets/colab-badge.svg
+   :alt: Open In Colab
+   :target: https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/read_established_scenarionet_dataset.ipynb
+
+**Colab example for reading established ScenarioNet dataset:** |colab_read|
+
+
+
+
 Welcome to the ScenarioNet documentation!
 ScenarioNet is an open-sourced platform for large-scale traffic scenario modeling and simulation with the following features:
 
@@ -14,7 +32,7 @@ It can thus support several applications including large-scale scenario generati
 
 This documentation brings you the information on installation, usages and more of ScenarioNet!
 You can also visit the `GitHub repo <https://github.com/metadriverse/scenarionet>`_ and `Webpage <https://metadriverse.github.io/scenarionet/>`_ for code and videos.
-Please feel free to contact us if you have any suggestions or ideas!
+Please feel free to contact us if you have any suggestion or idea!
 
 
 .. toctree::
@@ -23,12 +41,12 @@ Please feel free to contact us if you have any suggestions or ideas!
 
    install.rst
    example.rst
-   operations.rst
+
 
 .. modify the toctree in datasets.rst together
 .. toctree::
    :maxdepth: 1
-   :caption: Supported Dataset
+   :caption: Setup Datasets
 
    datasets.rst
    nuplan.rst
@@ -37,6 +55,14 @@ Please feel free to contact us if you have any suggestions or ideas!
    PG.rst
    lyft.rst
    new_data.rst
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Operations
+
+   operations.rst
+
 
 .. toctree::
    :maxdepth: 2
