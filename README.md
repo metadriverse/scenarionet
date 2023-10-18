@@ -7,11 +7,18 @@
 [**Code**](https://github.com/metadriverse/scenarionet) |
 [**Video**](https://youtu.be/3bOqswXP6OA) |
 [**Paper**](http://arxiv.org/abs/2306.12241) |
-[**Documentation**](https://scenarionet.readthedocs.io/en/latest/) |
-[**Colab Example**](https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/simulation.ipynb)
+[**Documentation**](https://scenarionet.readthedocs.io/en/latest/)
 ]
 
+
+***Colab example for running simulation with ScenarioNet:***
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/simulation.ipynb)
+
+
+***Colab example for reading established ScenarioNet dataset:***
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/read_established_scenarionet_dataset.ipynb)
+
+
 
 
 ScenarioNet allows users to load scenarios from real-world datasets like Waymo, nuPlan, 
