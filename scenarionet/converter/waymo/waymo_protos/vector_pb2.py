@@ -10,18 +10,17 @@ from google.protobuf.internal import builder as _builder
 
 _sym_db = _symbol_database.Default()
 
-
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n5scenarionet/converter/waymo/waymo_protos/vector.proto\x12\x12waymo.open_dataset\" \n\x08Vector2d\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"+\n\x08Vector3d\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01z\x18\x03 \x01(\x01')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n5scenarionet/converter/waymo/waymo_protos/vector.proto\x12\x12waymo.open_dataset\" \n\x08Vector2d\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\"+\n\x08Vector3d\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01z\x18\x03 \x01(\x01'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'scenarionet.converter.waymo.waymo_protos.vector_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
-  DESCRIPTOR._options = None
-  _globals['_VECTOR2D']._serialized_start=77
-  _globals['_VECTOR2D']._serialized_end=109
-  _globals['_VECTOR3D']._serialized_start=111
-  _globals['_VECTOR3D']._serialized_end=154
+    DESCRIPTOR._options = None
+    _globals['_VECTOR2D']._serialized_start = 77
+    _globals['_VECTOR2D']._serialized_end = 109
+    _globals['_VECTOR3D']._serialized_start = 111
+    _globals['_VECTOR3D']._serialized_end = 154
 # @@protoc_insertion_point(module_scope)
