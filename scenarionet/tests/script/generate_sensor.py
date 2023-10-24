@@ -1,5 +1,6 @@
 import pygame
 from metadrive.component.sensors.semantic_camera import SemanticCamera
+from metadrive.component.sensors.depth_camera import DepthCamera
 from metadrive.component.sensors.rgb_camera import RGBCamera
 from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.scenario_env import ScenarioEnv
@@ -39,6 +40,7 @@ if __name__ == "__main__":
             # "show_coordinates": True,
             # "force_destroy": True,
             # "default_vehicle_in_traffic": True,
+            "default_vehicle_in_traffic": True,
             "sensors": dict(semantic_camera=(SemanticCamera, 1600, 900)),
             "vehicle_config": dict(
                 show_navi_mark=False,
@@ -56,18 +58,20 @@ if __name__ == "__main__":
 
     # 0,1,3,4,5,6
     # for seed in range(10):
-    env.reset(seed=0)
-    for t in range(10000):
-        # env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
-        # ret = env.render(
-        #     mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True
-        # )
-        # pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, t))
-        # env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
-        # env.vehicle.get_camera("rgb_camera").save_image(env.vehicle, "rgb_{}.jpg".format(t))
-        if t==54:
-            env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "semantic_{}.jpg".format(t))
-        env.step([1, 0.88])
-        # if d:
-        if env.episode_step >= env.engine.data_manager.current_scenario_length:
-            break
+    while True:
+        env.reset(seed=6)
+        for t in range(10000):
+            # env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
+            # ret = env.render(
+            #     mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True
+            # )
+            # pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, t))
+            # env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
+            # env.vehicle.get_camera("rgb_camera").save_image(env.vehicle, "rgb_{}.jpg".format(t))
+            if t==100:
+                # env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
+                env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "semantic_{}.jpg".format(t))
+                break
+            env.step([1, 0.88])
+            # if d:
+
