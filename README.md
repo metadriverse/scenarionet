@@ -67,13 +67,10 @@ If you already have ScenarioNet installed, you can check all operations by `pyth
 If you used this project in your research, please cite:
 
 ```latex
-```
 @article{li2023scenarionet,
   title={ScenarioNet: Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling},
   author={Li, Quanyi and Peng, Zhenghao and Feng, Lan and Liu, Zhizheng and Duan, Chenda and Mo, Wenjie and Zhou, Bolei},
   journal={Advances in Neural Information Processing Systems},
   year={2023}
 }
-```
-
 ```
