@@ -68,10 +68,9 @@ if __name__ == "__main__":
             # pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, t))
             # env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
             # env.vehicle.get_camera("rgb_camera").save_image(env.vehicle, "rgb_{}.jpg".format(t))
-            if t==100:
+            if t == 100:
                 # env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
                 env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "semantic_{}.jpg".format(t))
                 break
             env.step([1, 0.88])
             # if d:
-
