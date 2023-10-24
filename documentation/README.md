@@ -1,9 +1,11 @@
-This folder contains files for the documentation: [https://scenarionet.readthedocs.io/](https://scenarionet.readthedocs.io/).
+This folder contains files for the documentation:
+[https://scenarionet.readthedocs.io/](https://scenarionet.readthedocs.io/).
 
-To build documents locally, please run the following codes:
+To build documents locally, please run the following script:
 
-```
+```bash
+cd scenarionet
 pip install -e .[doc]
-cd scenarionet/documentation
+cd documentation
 make html
 ```

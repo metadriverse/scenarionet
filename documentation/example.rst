@@ -1,25 +1,45 @@
+#####################
+Example Colab
+#####################
+
+
+.. |colab_sim| image:: https://colab.research.google.com/assets/colab-badge.svg
+   :alt: Open In Colab
+   :target: https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/simulation.ipynb
+
+
+**Colab example for running simulation with ScenarioNet:** |colab_sim|
+
+
+.. |colab_read| image:: https://colab.research.google.com/assets/colab-badge.svg
+   :alt: Open In Colab
+   :target: https://colab.research.google.com/github/metadriverse/scenarionet/blob/main/tutorial/read_established_scenarionet_dataset.ipynb
+
+**Colab example for reading established ScenarioNet dataset:** |colab_read|
+
+
+
 #######################
 Waymo Example
 #######################
 
-In this example, we will show you how to convert a small batch of `Waymo <https://waymo.com/intl/en_us/open/>`_ scenarios into the internal Scenario Description.
-After that, the scenarios will be loaded to simulator for closed-loop simulation.
+In this example, we will show you how to convert a small batch of `Waymo <https://waymo.com/intl/en_us/open/>`_ scenarios into the internal **Scenario Description**.
+After that, the scenarios will be loaded to MetaDrive simulator for closed-loop simulation.
 First of all, please install `MetaDrive <https://github.com/metadriverse/metadrive>`_ and `ScenarioNet <https://github.com/metadriverse/scenarionet>`_ following these steps :ref:`installation`.
+
 
 1. Setup Waymo toolkit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For any dataset, this step is necessary after installing ScenarioNet,
-as we need to use the official toolkits of the data provider to parse the original scenario description and convert to our internal scenario description.
-For Waymo data, please install the toolkit via::
+For any dataset, the first step after installing ScenarioNet is to install the corresponding official toolkit as we need to use it to parse the original data and convert to our internal scenario description. For Waymo data, please install the toolkit via::
 
     pip install waymo-open-dataset-tf-2-11-0
     pip install tensorflow==2.11.0
 
 .. note::
     This package is only supported on Linux platform.
-    `waymo-open-dataset` may degrade numpy, causing conflicts with cv2.
-    A workaround is ``pip install numpy==1.24.2``
+    `waymo-open-dataset` may degrade numpy, causing conflicts with `cv2` (`opencv-python`).
+    A workaround is to ``pip install numpy==1.24.2``
 
 For other datasets like nuPlan and nuScenes, you need to setup `nuplan-devkit <https://github.com/motional/nuplan-devkit>`_ and `nuscenes-devkit <https://github.com/nutonomy/nuscenes-devkit>`_ respectively.
 Guidance on how to setup these datasets and connect them with ScenarioNet can be found at :ref:`datasets`.

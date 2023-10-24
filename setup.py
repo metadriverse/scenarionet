@@ -1,4 +1,3 @@
-# Please don't change the order of following packages!
 import os
 import sys
 from os import path
@@ -30,7 +29,7 @@ print("We will install the following packages: ", packages)
 version = "0.0.1"
 
 install_requires = [
-    "numpy>=1.21.6",
+    "numpy>=1.23.0",
     "matplotlib",
     "pandas",
     "tqdm",
@@ -53,9 +52,12 @@ train_requirement = [
     "aiohttp==3.6.0",
     "gymnasium",
     "tensorflow",
-    "tensorflow_probability"]
+    "tensorflow_probability"
+]
 
-# Disable this kind of installation
+# Remove the dependencies to real-world dataset. Instead, we will point the user to the installation guideline
+# in the original sources.
+#
 # waymo = ["waymo-open-dataset-tf-2-11-0", "tensorflow==2.11.0"]
 #
 # nuplan = ["nuplan-devkit>=1.2.0",
