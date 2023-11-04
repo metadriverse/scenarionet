@@ -21,6 +21,18 @@ from scenarionet.converter.pg.utils import convert_pg_scenario, make_env
 logger = logging.getLogger(__file__)
 
 
+def single_worker_preprocess(x, worker_index):
+    """
+    All scenarios passed to write_to_directory_single_worker will be preprocessed. The input is expected to be a list.
+    The output should be a list too. The element in the second list will be processed by convertors. By default, you
+    don't need to provide this processor. We override it for waymo convertor to release the memory in time.
+    :param x: input
+    :param worker_index: worker_index, useful for logging
+    :return: input
+    """
+    return x
+
+
 def nuplan_to_metadrive_vector(vector, nuplan_center=(0, 0)):
     "All vec in nuplan should be centered in (0,0) to avoid numerical explosion"
     vector = np.array(vector)
@@ -63,7 +75,15 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func, scenarios, output_path, dataset_version, dataset_name, overwrite=False, num_workers=8, **kwargs
+    convert_func,
+    scenarios,
+    output_path,
+    dataset_version,
+    dataset_name,
+    overwrite=False,
+    num_workers=8,
+    preprocess=single_worker_preprocess,
+    **kwargs
 ):
     # make sure dir not exist
     kwargs_for_workers = [{} for _ in range(num_workers)]
@@ -117,6 +137,7 @@ def write_to_directory(
         convert_func=convert_func,
         dataset_version=dataset_version,
         dataset_name=dataset_name,
+        preprocess=preprocess,
         overwrite=overwrite
     )
 
@@ -127,13 +148,16 @@ def write_to_directory(
     merge_database(save_path, *output_pathes, exist_ok=True, overwrite=False, try_generate_missing_file=False)
 
 
-def writing_to_directory_wrapper(args, convert_func, dataset_version, dataset_name, overwrite=False):
+def writing_to_directory_wrapper(
+    args, convert_func, dataset_version, dataset_name, overwrite=False, preprocess=single_worker_preprocess
+):
     return write_to_directory_single_worker(
         convert_func=convert_func,
         scenarios=args[0],
         output_path=args[3],
         dataset_version=dataset_version,
         dataset_name=dataset_name,
+        preprocess=preprocess,
         overwrite=overwrite,
         worker_index=args[2],
         **args[1]
@@ -149,6 +173,7 @@ def write_to_directory_single_worker(
     worker_index=0,
     overwrite=False,
     report_memory_freq=None,
+    preprocess=single_worker_preprocess,
     **kwargs
 ):
     """
@@ -160,6 +185,9 @@ def write_to_directory_single_worker(
     if "version" in kwargs:
         kwargs.pop("version")
         logger.info("the specified version in kwargs is replaced by argument: 'dataset_version'")
+
+    # preprocess
+    scenarios = preprocess(scenarios, worker_index)
 
     save_path = copy.deepcopy(output_path)
     output_path = output_path + "_tmp"
