@@ -453,8 +453,7 @@ def preprocess_waymo_scenarios(files, worker_index):
     except NameError:
         raise ImportError("Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0")
 
-    scenarios = []
-    for file in tqdm.tqdm(files, desc="Preprocess Waymo Scenarios for worker {}".format(worker_index)):
+    for file in tqdm.tqdm(files, desc="Process Waymo scenarios for worker {}".format(worker_index)):
         file_path = os.path.join(file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
@@ -463,6 +462,6 @@ def preprocess_waymo_scenarios(files, worker_index):
             scenario.ParseFromString(data)
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
-            scenarios.append(scenario)
-    logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))
-    return scenarios
+            yield scenario
+    # logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))
+    # return scenarios
