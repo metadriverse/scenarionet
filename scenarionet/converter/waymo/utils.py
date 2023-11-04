@@ -461,7 +461,7 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num, num_workers=8):
     #     if len(r) == 0:
     #         logger.warning("0 scenarios found")
     #     ret += r
-    logger.info("\n Find {} waymo scenarios from {} files".format(len(all_result), num_files))
+    logger.info("\n Find {} waymo files".format(num_files))
     return all_result
 
 
@@ -482,4 +482,4 @@ def read_from_files(arg):
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
             scenarios.append(scenario)
-    return scenarios
+    yield scenarios
