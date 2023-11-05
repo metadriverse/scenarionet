@@ -234,7 +234,8 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
                     for state in canbus.get_messages(scene_info["name"], "pose")[::5]
                 ]
             )
-            interpolate_tracks[id]["state"]["heading"][:len(imu_heading)] = imu_heading
+            min_len = min(len(imu_heading), new_episode_len)
+            interpolate_tracks[id]["state"]["heading"][:min_len] = imu_heading[:min_len]
 
         for k, v in track["state"].items():
             if k in ["valid", "heading", "position", "velocity"]:
