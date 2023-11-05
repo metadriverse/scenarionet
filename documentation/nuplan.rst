@@ -85,7 +85,7 @@ All data should be placed to ``~/nuplan/dataset`` and the folder structure shoul
             │     │    ├── 2021.06.09.17.23.18_veh-38_00773_01140.db
             │     │    ├── ...
             │     │    └── 2021.10.11.08.31.07_veh-50_01750_01948.db
-            │     └── trainval
+            │     └── train_boston
             │          ├── 2021.05.12.22.00.38_veh-35_01008_01518.db
             │          ├── 2021.06.09.17.23.18_veh-38_00773_01140.db
             │          ├── ...
