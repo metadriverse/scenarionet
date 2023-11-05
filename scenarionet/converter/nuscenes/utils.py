@@ -455,4 +455,4 @@ def get_nuscenes_scenarios(dataroot, version, num_workers=2):
     def _get_nusc():
         return NuScenes(version=version, dataroot=dataroot)
 
-    return scenarios, [_get_nusc() for _ in range(num_workers)]
+    return scenarios, [nusc for _ in range(num_workers)]
