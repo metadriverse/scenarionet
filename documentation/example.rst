@@ -28,13 +28,14 @@ After that, the scenarios will be loaded to MetaDrive simulator for closed-loop 
 First of all, please install `MetaDrive <https://github.com/metadriverse/metadrive>`_ and `ScenarioNet <https://github.com/metadriverse/scenarionet>`_ following these steps :ref:`installation`.
 
 
-1. Setup Tensorflow
+1. Setup Requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For any dataset, the first step after installing ScenarioNet is to install the corresponding official toolkit as we need to use it to parse the original data and convert to our internal scenario description.
-For Waymo data, we already have the parser in ScenarioNet so just install the TensorFlow via::
+For Waymo data, we already have the parser in ScenarioNet so just install the TensorFlow and Protobuf via::
 
     pip install tensorflow==2.11.0
+    pip install protobuf
 
 For other datasets like nuPlan and nuScenes, you need to setup `nuplan-devkit <https://github.com/motional/nuplan-devkit>`_ and `nuscenes-devkit <https://github.com/nutonomy/nuscenes-devkit>`_ respectively.
 Guidance on how to setup these datasets and connect them with ScenarioNet can be found at :ref:`datasets`.

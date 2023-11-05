@@ -26,12 +26,13 @@ The dataset includes:
 - Adjusted some road edge boundary height estimates
 
 
-1. Install TensorFlow
+1. Install Requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First of all, we have to install tensorflow::
+First of all, we have to install tensorflow and Protobuf::
 
     pip install tensorflow==2.11.0
+    pip install protobuf
 
 
 2. Download TFRecord
