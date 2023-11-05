@@ -18,10 +18,8 @@ try:
 
 except ImportError as e:
     logger.info(e)
-try:
-    from waymo_open_dataset.protos import scenario_pb2
-except ImportError as e:
-    logger.warning(e, "\n Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0")
+
+import scenarionet.converter.waymo.waymo_protos.scenario_pb2
 
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
@@ -440,7 +438,7 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num):
     logger.info("\nFind {} waymo files".format(num_files))
     return all_result
 
-
+  
 def preprocess_waymo_scenarios(files, worker_index):
     """
     Convert the waymo files into scenario_pb2. This happens in each worker.
@@ -458,7 +456,7 @@ def preprocess_waymo_scenarios(files, worker_index):
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
         for data in tf.data.TFRecordDataset(file_path, compression_type="").as_numpy_iterator():
-            scenario = scenario_pb2.Scenario()
+            scenario = scenarionet.converter.waymo.waymo_protos.scenario_pb2.Scenario()
             scenario.ParseFromString(data)
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
