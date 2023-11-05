@@ -32,7 +32,10 @@ The dataset includes:
 First of all, we have to install tensorflow and Protobuf::
 
     pip install tensorflow==2.11.0
-    pip install protobuf
+    conda install protobuf==3.20
+
+.. note::
+    You mat fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
 
 
 2. Download TFRecord

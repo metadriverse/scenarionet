@@ -35,7 +35,10 @@ For any dataset, the first step after installing ScenarioNet is to install the c
 For Waymo data, we already have the parser in ScenarioNet so just install the TensorFlow and Protobuf via::
 
     pip install tensorflow==2.11.0
-    pip install protobuf
+    conda install protobuf==3.20
+
+.. note::
+    You mat fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
 
 For other datasets like nuPlan and nuScenes, you need to setup `nuplan-devkit <https://github.com/motional/nuplan-devkit>`_ and `nuscenes-devkit <https://github.com/nutonomy/nuscenes-devkit>`_ respectively.
 Guidance on how to setup these datasets and connect them with ScenarioNet can be found at :ref:`datasets`.
