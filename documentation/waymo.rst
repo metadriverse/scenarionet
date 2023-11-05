@@ -26,18 +26,13 @@ The dataset includes:
 - Adjusted some road edge boundary height estimates
 
 
-1. Install Waymo Toolkit
+1. Install TensorFlow
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First of all, we have to install the waymo toolkit and tensorflow::
+First of all, we have to install tensorflow::
 
-    pip install waymo-open-dataset-tf-2-11-0
     pip install tensorflow==2.11.0
 
-.. note::
-    This package is only supported on Linux platform.
-    `waymo-open-dataset` may degrade numpy, causing conflicts with cv2.
-    A workaround is ``pip install numpy==1.24.2``
 
 2. Download TFRecord
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
