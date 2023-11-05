@@ -51,7 +51,7 @@ Thus please download the following files:
 
 
 We recommend to download the mini split to test and make yourself familiar with the setup process.
-All downloaded files are ``.tgz`` files and can be uncompressed by ``tar -zxf xyz.tgz``.
+All downloaded files are ``.zip`` files and can be uncompressed by ``unzip "*.zip"``.
 All data should be placed to ``~/nuplan/dataset`` and the folder structure should comply `file hierarchy <https://nuplan-devkit.readthedocs.io/en/latest/dataset_setup.html#filesystem-hierarchy>`_.
 
 .. code-block:: text
