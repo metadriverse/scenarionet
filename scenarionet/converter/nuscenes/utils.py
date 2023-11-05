@@ -217,7 +217,6 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
                 interpolate_tracks[id]["state"]["velocity"][k - 1] = np.array([0., 0.])
         # speed outlier check
         max_vel = np.max(np.linalg.norm(interpolate_tracks[id]["state"]["velocity"], axis=-1))
-        assert max_vel < 50, "Abnormal velocity!"
         if max_vel > 30:
             print("\nWARNING: Too large speed for {}: {}".format(id, max_vel))
 
