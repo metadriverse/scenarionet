@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
     from scenarionet.converter.utils import write_to_directory
-    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios
+    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, preprocess_waymo_scenarios
 
     logger = logging.getLogger(__name__)
 
@@ -63,16 +63,15 @@ if __name__ == '__main__':
             shutil.rmtree(output_path)
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
-    scenarios = get_waymo_scenarios(
-        waymo_data_directory, args.start_file_index, args.num_files, num_workers=8
-    )  # do not use too much worker to read data
+    files = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files)
 
     write_to_directory(
         convert_func=convert_waymo_scenario,
-        scenarios=scenarios,
+        scenarios=files,
         output_path=output_path,
         dataset_version=version,
         dataset_name=dataset_name,
         overwrite=overwrite,
-        num_workers=args.num_workers
+        num_workers=args.num_workers,
+        preprocess=preprocess_waymo_scenarios,
     )
