@@ -60,7 +60,9 @@ Secondly, all files should be organized to the following structure::
     ├── maps/
     |   ├──basemap/
     |   ├──prediction/
-    |   ├──expansion/
+    |   └──expansion/
+    ├── can_bus/
+    |   ├──scene-1110_meta.json
     |   └──...
     ├── samples/
     |   ├──CAM_BACK
