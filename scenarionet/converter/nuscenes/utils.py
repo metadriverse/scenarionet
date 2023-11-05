@@ -203,7 +203,8 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
             # We can get it from canbus
             canbus = NuScenesCanBus(dataroot=nuscenes.dataroot)
             imu_pos = np.asarray([state["pos"] for state in canbus.get_messages(scene_info["name"], "pose")[::5]])
-            interpolate_tracks[id]["state"]["position"][:len(imu_pos)] = imu_pos
+            min_len = min(len(imu_pos), new_episode_len)
+            interpolate_tracks[id]["state"]["position"][:min_len] = imu_pos[:min_len]
 
         # velocity
         interpolate_tracks[id]["state"]["velocity"] = interpolate(
