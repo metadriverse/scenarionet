@@ -1,5 +1,9 @@
 # ScenarioNet
 
+[![Documentation Status](https://readthedocs.org/projects/scenarionet/badge/?version=latest)](https://scenarionet.readthedocs.io/en/latest/?badge=latest)
+[![build](https://github.com/metadriverse/scenarionet/workflows/test/badge.svg)](http://github.com/metadriverse/scenarionet/actions)
+[![GitHub license](https://img.shields.io/github/license/metadriverse/scenarionet)](https://github.com/metadriverse/scenarionet/blob/main/LICENSE.txt)
+
 **Open-Source Platform for Large-Scale Traffic Scenario Simulation and Modeling**
 
 [
