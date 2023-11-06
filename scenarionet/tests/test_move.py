@@ -19,9 +19,16 @@ def test_copy_database():
     # move
     for k, from_path in enumerate(dataset_paths):
         to = os.path.join(TMP_PATH, str(k))
-        copy_database(from_path, to, force_move=True, exist_ok=True, overwrite=True)
+        copy_database(from_path, to, exist_ok=True, overwrite=True)
         moved_path.append(to)
         assert os.path.exists(from_path)
+        success = False
+        try:
+            copy_database(from_path, to, exist_ok=True, overwrite=True, remove_source=True)
+        except RuntimeError:
+            success = True
+        assert success
+        assert os.path.exists(to)
     merge_database(output_path, *moved_path, exist_ok=True, overwrite=True, try_generate_missing_file=True)
     # verify
     summary, sorted_scenarios, mapping = read_dataset_summary(output_path)
