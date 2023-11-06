@@ -27,6 +27,9 @@ First of all, we have to install the ``nuplan-devkit``.
     pip install -r requirements.txt
     pip install -e .
 
+    # additional requirements
+    pip install pytorch-lightning
+
     # 2. or install from PyPI
     pip install nuplan-devkit
 

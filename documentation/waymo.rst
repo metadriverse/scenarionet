@@ -35,7 +35,7 @@ First of all, we have to install tensorflow and Protobuf::
     conda install protobuf==3.20
 
 .. note::
-    You mat fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
+    You may fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
 
 
 2. Download TFRecord
