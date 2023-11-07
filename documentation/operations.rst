@@ -114,12 +114,13 @@ Convert nuScenes (Lyft)
 
     python -m scenarionet.convert_nuscenes [-h] [--database_path DATABASE_PATH]
                                [--dataset_name DATASET_NAME]
-                               [--split {v1.0-mini,v1.0-trainval,v1.0-test,mini_trai
-                               [--dataroot DATAROOT] [--future FUTURE]
-                               [--past PAST] [--overwrite]
+                               [--split
+    {v1.0-mini,mini_val,v1.0-test,train,train_val,val,mini_train,v1.0-trainval}]
+                               [--dataroot DATAROOT] [--map_radius MAP_RADIUS]
+                               [--future FUTURE] [--past PAST] [--overwrite]
                                [--num_workers NUM_WORKERS]
 
-    Build database from nuScenes/Lyft scenarios/splits
+    Build database from nuScenes/Lyft scenarios
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -127,7 +128,8 @@ Convert nuScenes (Lyft)
                             directory, The path to place the data
       --dataset_name DATASET_NAME, -n DATASET_NAME
                             Dataset name, will be used to generate scenario files
-      --split {v1.0-mini,v1.0-trainval,v1.0-test,mini_train,mini_val,train,train_val
+      --split
+        {v1.0-mini,mini_val,v1.0-test,train,train_val,val,mini_train,v1.0-trainval}
                             Which splits of nuScenes data should be sued. If set
                             to ['v1.0-mini', 'v1.0-trainval', 'v1.0-test'], it
                             will convert the full log into scenarios with 20
@@ -140,15 +142,17 @@ Convert nuScenes (Lyft)
                             get complete scenarios for planning unless you want to
                             use the converted scenario files for prediction task.
       --dataroot DATAROOT   The path of nuscenes data
-      --future FUTURE       Only available if split is chosen from ['mini_train',
-                            'mini_val', 'train', 'train_val', 'val']
-      --past PAST           Only available if split is chosen from ['mini_train',
-                            'mini_val', 'train', 'train_val', 'val']
+      --map_radius MAP_RADIUS The size of map
+      --future FUTURE       6 seconds by default. How many future seconds to
+                            predict. Only available if split is chosen from
+                            ['mini_train', 'mini_val', 'train', 'train_val',
+                            'val']
+      --past PAST           2 seconds by default. How many past seconds are used
+                            for prediction. Only available if split is chosen from
+                            ['mini_train', 'mini_val', 'train', 'train_val',
+                            'val']
       --overwrite           If the database_path exists, whether to overwrite it
       --num_workers NUM_WORKERS
-                            number of workers to use
-
-
 
 
 This script converted the recorded nuScenes scenario into our scenario descriptions.
