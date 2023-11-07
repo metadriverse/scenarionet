@@ -477,7 +477,7 @@ def get_nuscenes_scenarios(dataroot, version, num_workers=2):
 
 def get_nuscenes_prediction_split(dataroot, version, past, future, num_workers=2):
     def _get_nusc():
-        return NuScenes(version="v1.0-mini" if "mini" in version else "v-1.0-trainval", dataroot=dataroot)
+        return NuScenes(version="v1.0-mini" if "mini" in version else "v1.0-trainval", dataroot=dataroot)
 
     nusc = _get_nusc()
     scenarios = []
