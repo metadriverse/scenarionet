@@ -1,6 +1,9 @@
 desc = "Build database from nuScenes/Lyft scenarios"
 
-if __name__ == '__main__':
+prediction_split = ["mini_train", "mini_val", "train", "train_val", "val"]
+scene_split = ["v1.0-mini", "v1.0-trainval", "v1.0-test"]
+
+if __name__ == "__main__":
     import pkg_resources  # for suppress warning
     import argparse
     import os.path
@@ -19,12 +22,20 @@ if __name__ == '__main__':
         "--dataset_name", "-n", default="nuscenes", help="Dataset name, will be used to generate scenario files"
     )
     parser.add_argument(
-        "--version",
-        "-v",
-        default='v1.0-mini',
-        help="version of nuscenes data, scenario of this version will be converted "
+        "--split",
+        default="v1.0-mini",
+        choices=scene_split + prediction_split,
+        help="Which splits of nuScenes data should be sued. If set to {}, it will convert the full log into scenarios"
+             " with 20 second episode length. If set to {}, it will convert segments used for nuScenes prediction"
+             " challenge to scenarios, resulting in more converted scenarios. Generally, you should choose this "
+             " parameter from {} to get complete scenarios for planning unless you want to use the converted scenario "
+             " files for prediction task.".format(scene_split, prediction_split, scene_split)
     )
     parser.add_argument("--dataroot", default="/data/sets/nuscenes", help="The path of nuscenes data")
+    parser.add_argument("--future", default=6, help="6 seconds by default. How many future seconds to predict. Only "
+                                                    "available if split is chosen from {}".format(prediction_split))
+    parser.add_argument("--past", default=2, help="2 seconds by default. How many past seconds are used for prediction."
+                                                  " Only available if split is chosen from {}".format(prediction_split))
     parser.add_argument("--overwrite", action="store_true", help="If the database_path exists, whether to overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()
@@ -32,7 +43,8 @@ if __name__ == '__main__':
     overwrite = args.overwrite
     dataset_name = args.dataset_name
     output_path = args.database_path
-    version = args.version
+    version = args.split
+
 
     scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
 

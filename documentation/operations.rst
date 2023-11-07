@@ -113,10 +113,13 @@ Convert nuScenes (Lyft)
 .. code-block:: text
 
     python -m scenarionet.convert_nuscenes [-h] [--database_path DATABASE_PATH]
-                               [--dataset_name DATASET_NAME] [--version VERSION]
-                               [--overwrite] [--num_workers NUM_WORKERS]
+                               [--dataset_name DATASET_NAME]
+                               [--split {v1.0-mini,v1.0-trainval,v1.0-test,mini_trai
+                               [--dataroot DATAROOT] [--future FUTURE]
+                               [--past PAST] [--overwrite]
+                               [--num_workers NUM_WORKERS]
 
-    Build database from nuScenes/Lyft scenarios
+    Build database from nuScenes/Lyft scenarios/splits
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -124,12 +127,27 @@ Convert nuScenes (Lyft)
                             directory, The path to place the data
       --dataset_name DATASET_NAME, -n DATASET_NAME
                             Dataset name, will be used to generate scenario files
-      --version VERSION, -v VERSION
-                            version of nuscenes data, scenario of this version
-                            will be converted
+      --split {v1.0-mini,v1.0-trainval,v1.0-test,mini_train,mini_val,train,train_val
+                            Which splits of nuScenes data should be sued. If set
+                            to ['v1.0-mini', 'v1.0-trainval', 'v1.0-test'], it
+                            will convert the full log into scenarios with 20
+                            second episode length. If set to ['mini_train',
+                            'mini_val', 'train', 'train_val', 'val'], it will
+                            convert segments used for nuScenes prediction
+                            challenge to scenarios, resulting in more converted
+                            scenarios. Generally, you should choose this parameter
+                            from ['v1.0-mini', 'v1.0-trainval', 'v1.0-test'] to
+                            get complete scenarios for planning unless you want to
+                            use the converted scenario files for prediction task.
+      --dataroot DATAROOT   The path of nuscenes data
+      --future FUTURE       Only available if split is chosen from ['mini_train',
+                            'mini_val', 'train', 'train_val', 'val']
+      --past PAST           Only available if split is chosen from ['mini_train',
+                            'mini_val', 'train', 'train_val', 'val']
       --overwrite           If the database_path exists, whether to overwrite it
       --num_workers NUM_WORKERS
                             number of workers to use
+
 
 
 
