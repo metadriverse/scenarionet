@@ -13,6 +13,7 @@ from scenarionet.converter.nuscenes.type import ALL_TYPE, HUMAN_TYPE, BICYCLE_TY
 logger = logging.getLogger(__name__)
 try:
     import logging
+
     logging.getLogger('shapely.geos').setLevel(logging.CRITICAL)
     from nuscenes import NuScenes
     from nuscenes.can_bus.can_bus_api import NuScenesCanBus
@@ -202,7 +203,8 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         interpolate_tracks[id]["state"]["position"] = interpolate(
             track["state"]["position"], track["state"]["valid"], new_valid
         )
-        if id == "ego":
+        if id == "ego" and not scene_info.get("prediction", False):
+            assert "prediction" not in scene_info
             # We can get it from canbus
             try:
                 canbus = NuScenesCanBus(dataroot=nuscenes.dataroot)
@@ -231,7 +233,8 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         # then update position
         new_heading = interpolate_heading(track["state"]["heading"], track["state"]["valid"], new_valid)
         interpolate_tracks[id]["state"]["heading"] = new_heading
-        if id == "ego":
+        if id == "ego" and not scene_info.get("prediction", False):
+            assert "prediction" not in scene_info
             # We can get it from canbus
             try:
                 canbus = NuScenesCanBus(dataroot=nuscenes.dataroot)
@@ -500,5 +503,6 @@ def get_nuscenes_prediction_split(dataroot, version, past, future, num_workers=2
         frames = past_samples[::-1] + [parse_frame(current_sample, nusc)] + future_samples
         scene_info = copy.copy(nusc.get("scene", current_sample["scene_token"]))
         scene_info["scene_id"] = scene_info["name"] + "_" + sample_token
+        scene_info["prediction"] = True
         scenarios.append([frames, scene_info])
     return scenarios, [nusc for _ in range(num_workers)]

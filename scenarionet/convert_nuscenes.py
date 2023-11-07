@@ -4,8 +4,10 @@ prediction_split = ["mini_train", "mini_val", "train", "train_val", "val"]
 scene_split = ["v1.0-mini", "v1.0-trainval", "v1.0-test"]
 
 if __name__ == "__main__":
+    import pkg_resources  # for suppress warning
     import argparse
     import os.path
+    from functools import partial
     from scenarionet import SCENARIONET_DATASET_PATH
     from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios, \
         get_nuscenes_prediction_split
