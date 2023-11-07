@@ -29,13 +29,13 @@ def try_generating_summary(file_folder):
 
 
 def merge_database(
-        output_path,
-        *dataset_paths,
-        exist_ok=False,
-        overwrite=False,
-        try_generate_missing_file=True,
-        filters: List[Callable] = None,
-        save=True,
+    output_path,
+    *dataset_paths,
+    exist_ok=False,
+    overwrite=False,
+    try_generate_missing_file=True,
+    filters: List[Callable] = None,
+    save=True,
 ):
     """
     Combine multiple datasets. Each database should have a dataset_summary.pkl
@@ -115,9 +115,7 @@ def merge_database(
     return summaries, mappings
 
 
-def copy_database(
-        from_path, to_path, exist_ok=False, overwrite=False, copy_raw_data=False, remove_source=False
-):
+def copy_database(from_path, to_path, exist_ok=False, overwrite=False, copy_raw_data=False, remove_source=False):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))
     if os.path.exists(to_path):
@@ -125,7 +123,8 @@ def copy_database(
         assert not os.path.samefile(from_path, to_path), "to_directory is the same as from_directory. Abort!"
     files = os.listdir(from_path)
     official_file_num = sum(
-        [ScenarioDescription.DATASET.MAPPING_FILE in files, ScenarioDescription.DATASET.SUMMARY_FILE in files])
+        [ScenarioDescription.DATASET.MAPPING_FILE in files, ScenarioDescription.DATASET.SUMMARY_FILE in files]
+    )
     if remove_source and len(files) > official_file_num:
         raise RuntimeError(
             "The source database is not allowed to move! "
@@ -153,18 +152,20 @@ def copy_database(
             shutil.rmtree(from_path)
             logger.info("Successfully remove: {}".format(from_path))
         else:
-            logger.info("Failed to remove: {}, as it might contain scenario files "
-                        "or has no summary file or mapping file".format(from_path))
+            logger.info(
+                "Failed to remove: {}, as it might contain scenario files "
+                "or has no summary file or mapping file".format(from_path)
+            )
 
 
 def split_database(
-        from_path,
-        to_path,
-        start_index,
-        num_scenarios,
-        exist_ok=False,
-        overwrite=False,
-        random=False,
+    from_path,
+    to_path,
+    start_index,
+    num_scenarios,
+    exist_ok=False,
+    overwrite=False,
+    random=False,
 ):
     if not os.path.exists(from_path):
         raise FileNotFoundError("Can not find database: {}".format(from_path))

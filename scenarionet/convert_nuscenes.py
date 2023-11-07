@@ -28,17 +28,25 @@ if __name__ == "__main__":
         default="v1.0-mini",
         choices=scene_split + prediction_split,
         help="Which splits of nuScenes data should be sued. If set to {}, it will convert the full log into scenarios"
-             " with 20 second episode length. If set to {}, it will convert segments used for nuScenes prediction"
-             " challenge to scenarios, resulting in more converted scenarios. Generally, you should choose this "
-             " parameter from {} to get complete scenarios for planning unless you want to use the converted scenario "
-             " files for prediction task.".format(scene_split, prediction_split, scene_split)
+        " with 20 second episode length. If set to {}, it will convert segments used for nuScenes prediction"
+        " challenge to scenarios, resulting in more converted scenarios. Generally, you should choose this "
+        " parameter from {} to get complete scenarios for planning unless you want to use the converted scenario "
+        " files for prediction task.".format(scene_split, prediction_split, scene_split)
     )
     parser.add_argument("--dataroot", default="/data/sets/nuscenes", help="The path of nuscenes data")
     parser.add_argument("--map_radius", default=500, help="The size of map")
-    parser.add_argument("--future", default=6, help="6 seconds by default. How many future seconds to predict. Only "
-                                                    "available if split is chosen from {}".format(prediction_split))
-    parser.add_argument("--past", default=2, help="2 seconds by default. How many past seconds are used for prediction."
-                                                  " Only available if split is chosen from {}".format(prediction_split))
+    parser.add_argument(
+        "--future",
+        default=6,
+        help="6 seconds by default. How many future seconds to predict. Only "
+        "available if split is chosen from {}".format(prediction_split)
+    )
+    parser.add_argument(
+        "--past",
+        default=2,
+        help="2 seconds by default. How many past seconds are used for prediction."
+        " Only available if split is chosen from {}".format(prediction_split)
+    )
     parser.add_argument("--overwrite", action="store_true", help="If the database_path exists, whether to overwrite it")
     parser.add_argument("--num_workers", type=int, default=8, help="number of workers to use")
     args = parser.parse_args()
@@ -51,8 +59,9 @@ if __name__ == "__main__":
     if version in scene_split:
         scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
     else:
-        scenarios, nuscs = get_nuscenes_prediction_split(args.dataroot, version, args.past, args.future,
-                                                         args.num_workers)
+        scenarios, nuscs = get_nuscenes_prediction_split(
+            args.dataroot, version, args.past, args.future, args.num_workers
+        )
     write_to_directory(
         convert_func=convert_nuscenes_scenario,
         scenarios=scenarios,
