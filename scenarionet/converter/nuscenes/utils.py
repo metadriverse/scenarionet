@@ -269,7 +269,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
     return normalized_ret, map_center
 
 
-def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, points_distance=1):
+def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, points_distance=1, only_lane=False):
     """
     Extract map features from nuscenes data. The objects in specified region will be returned. Sampling rate determines
     the distance between 2 points when extracting lane center line.
@@ -299,49 +299,72 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
 
     map_objs = map_api.get_records_in_radius(map_center[0], map_center[1], radius, layer_names)
 
-    # build map boundary
-    polygons = []
-    for id in map_objs["drivable_area"]:
-        seg_info = map_api.get("drivable_area", id)
-        assert seg_info["token"] == id
-        for polygon_token in seg_info["polygon_tokens"]:
-            polygon = map_api.extract_polygon(polygon_token)
-            polygons.append(polygon)
-    # for id in map_objs["road_segment"]:
-    #     seg_info = map_api.get("road_segment", id)
-    #     assert seg_info["token"] == id
-    #     polygon = map_api.extract_polygon(seg_info["polygon_token"])
-    #     polygons.append(polygon)
-    # for id in map_objs["road_block"]:
-    #     seg_info = map_api.get("road_block", id)
-    #     assert seg_info["token"] == id
-    #     polygon = map_api.extract_polygon(seg_info["polygon_token"])
-    #     polygons.append(polygon)
-    polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
-    boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
-    for idx, boundary in enumerate(boundaries[0]):
-        block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
-        id = "boundary_{}".format(idx)
-        ret[id] = {
-            SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE,
-            SD.POLYLINE: block_points - np.asarray(map_center)[:2]
-        }
+    if not only_lane:
+        # build map boundary
+        polygons = []
+        for id in map_objs["drivable_area"]:
+            seg_info = map_api.get("drivable_area", id)
+            assert seg_info["token"] == id
+            for polygon_token in seg_info["polygon_tokens"]:
+                polygon = map_api.extract_polygon(polygon_token)
+                polygons.append(polygon)
+        # for id in map_objs["road_segment"]:
+        #     seg_info = map_api.get("road_segment", id)
+        #     assert seg_info["token"] == id
+        #     polygon = map_api.extract_polygon(seg_info["polygon_token"])
+        #     polygons.append(polygon)
+        # for id in map_objs["road_block"]:
+        #     seg_info = map_api.get("road_block", id)
+        #     assert seg_info["token"] == id
+        #     polygon = map_api.extract_polygon(seg_info["polygon_token"])
+        #     polygons.append(polygon)
+        polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
+        boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
+        for idx, boundary in enumerate(boundaries[0]):
+            block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
+            id = "boundary_{}".format(idx)
+            ret[id] = {
+                SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE,
+                SD.POLYLINE: block_points - np.asarray(map_center)[:2]
+            }
 
-    # broken line
-    for id in map_objs["lane_divider"]:
-        line_info = map_api.get("lane_divider", id)
-        assert line_info["token"] == id
-        line = map_api.extract_line(line_info["line_token"]).coords.xy
-        line = np.asarray([[line[0][i], line[1][i]] for i in range(len(line[0]))])
-        ret[id] = {SD.TYPE: MetaDriveType.LINE_BROKEN_SINGLE_WHITE, SD.POLYLINE: line - np.asarray(map_center)[:2]}
+        # broken line
+        for id in map_objs["lane_divider"]:
+            line_info = map_api.get("lane_divider", id)
+            assert line_info["token"] == id
+            line = map_api.extract_line(line_info["line_token"]).coords.xy
+            line = np.asarray([[line[0][i], line[1][i]] for i in range(len(line[0]))])
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_BROKEN_SINGLE_WHITE, SD.POLYLINE: line - np.asarray(map_center)[:2]}
 
-    # solid line
-    for id in map_objs["road_divider"]:
-        line_info = map_api.get("road_divider", id)
-        assert line_info["token"] == id
-        line = map_api.extract_line(line_info["line_token"]).coords.xy
-        line = np.asarray([[line[0][i], line[1][i]] for i in range(len(line[0]))])
-        ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_YELLOW, SD.POLYLINE: line - np.asarray(map_center)[:2]}
+        # solid line
+        for id in map_objs["road_divider"]:
+            line_info = map_api.get("road_divider", id)
+            assert line_info["token"] == id
+            line = map_api.extract_line(line_info["line_token"]).coords.xy
+            line = np.asarray([[line[0][i], line[1][i]] for i in range(len(line[0]))])
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_YELLOW, SD.POLYLINE: line - np.asarray(map_center)[:2]}
+
+        # crosswalk
+        for id in map_objs["ped_crossing"]:
+            info = map_api.get("ped_crossing", id)
+            assert info["token"] == id
+            boundary = map_api.extract_polygon(info["polygon_token"]).exterior.xy
+            boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
+            ret[id] = {
+                SD.TYPE: MetaDriveType.CROSSWALK,
+                SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
+            }
+
+        # walkway
+        for id in map_objs["walkway"]:
+            info = map_api.get("walkway", id)
+            assert info["token"] == id
+            boundary = map_api.extract_polygon(info["polygon_token"]).exterior.xy
+            boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
+            ret[id] = {
+                SD.TYPE: MetaDriveType.BOUNDARY_SIDEWALK,
+                SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
+            }
 
     # normal lane
     for id in map_objs["lane"]:
@@ -378,27 +401,6 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             SD.EXIT: map_api.get_outgoing_lane_ids(id)
         }
 
-    # crosswalk
-    for id in map_objs["ped_crossing"]:
-        info = map_api.get("ped_crossing", id)
-        assert info["token"] == id
-        boundary = map_api.extract_polygon(info["polygon_token"]).exterior.xy
-        boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
-        ret[id] = {
-            SD.TYPE: MetaDriveType.CROSSWALK,
-            SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
-        }
-
-    # walkway
-    for id in map_objs["walkway"]:
-        info = map_api.get("walkway", id)
-        assert info["token"] == id
-        boundary = map_api.extract_polygon(info["polygon_token"]).exterior.xy
-        boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
-        ret[id] = {
-            SD.TYPE: MetaDriveType.BOUNDARY_SIDEWALK,
-            SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
-        }
 
     # # stop_line
     # for id in map_objs["stop_line"]:
@@ -417,7 +419,14 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
     return ret
 
 
-def convert_nuscenes_scenario(token, version, nuscenes: NuScenes, map_radius=500, prediction=False, past=2, future=6):
+def convert_nuscenes_scenario(token,
+                              version,
+                              nuscenes: NuScenes,
+                              map_radius=500,
+                              prediction=False,
+                              past=2,
+                              future=6,
+                              only_lane=False):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
@@ -473,7 +482,7 @@ def convert_nuscenes_scenario(token, version, nuscenes: NuScenes, map_radius=500
     result[SD.DYNAMIC_MAP_STATES] = {}
 
     # map
-    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius)
+    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius, only_lane=only_lane)
     del frames_scene_info
     del frames
     del scene_info
