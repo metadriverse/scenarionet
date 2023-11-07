@@ -209,7 +209,7 @@ we can aggregate them freely and enlarge the database.
 
 .. code-block:: text
 
-    python -m scenarionet.merge [-h] --database_path DATABASE_PATH --from FROM [FROM ...]
+    python -m scenarionet.merge [-h] --to DATABASE_PATH --from FROM [FROM ...]
                     [--exist_ok] [--overwrite] [--filter_moving_dist]
                     [--sdc_moving_dist_min SDC_MOVING_DIST_MIN]
 
@@ -218,7 +218,7 @@ we can aggregate them freely and enlarge the database.
 
     optional arguments:
     -h, --help            show this help message and exit
-    --database_path DATABASE_PATH, -d DATABASE_PATH
+    --database_path DATABASE_PATH, -d DATABASE_PATH, --to DATABASE_PATH
                         The name of the new combined database. It will create
                         a new directory to store dataset_summary.pkl and
                         dataset_mapping.pkl. If exists_ok=True, those two .pkl
