@@ -5,12 +5,15 @@ import geopandas as gpd
 import numpy as np
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
+from nuscenes.eval.prediction.splits import get_prediction_challenge_split
 from shapely.ops import unary_union
 
 from scenarionet.converter.nuscenes.type import ALL_TYPE, HUMAN_TYPE, BICYCLE_TYPE, VEHICLE_TYPE
 
 logger = logging.getLogger(__name__)
 try:
+    import logging
+    logging.getLogger('shapely.geos').setLevel(logging.CRITICAL)
     from nuscenes import NuScenes
     from nuscenes.can_bus.can_bus_api import NuScenesCanBus
     from nuscenes.eval.common.utils import quaternion_yaw
@@ -128,9 +131,9 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -183,7 +186,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         interpolate_tracks[id]["metadata"]["track_length"] = new_episode_len
 
         # valid first
-        new_valid = np.zeros(shape=(new_episode_len, ))
+        new_valid = np.zeros(shape=(new_episode_len,))
         if track["state"]["valid"][0]:
             new_valid[0] = 1
         for k, valid in enumerate(track["state"]["valid"][1:], start=1):
@@ -347,7 +350,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         ret[id] = {
             SD.TYPE: MetaDriveType.LANE_SURFACE_STREET,
             SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)) -
-            np.asarray(map_center),
+                         np.asarray(map_center),
             SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
             SD.EXIT: map_api.get_outgoing_lane_ids(id),
@@ -365,7 +368,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         ret[id] = {
             SD.TYPE: MetaDriveType.LANE_SURFACE_UNSTRUCTURE,
             SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)) -
-            np.asarray(map_center),
+                         np.asarray(map_center),
             # SD.POLYGON: boundary_polygon,
             "speed_limit_kmh": 100,
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
@@ -411,24 +414,14 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
     return ret
 
 
-def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
+def convert_nuscenes_scenario(frames_scene_info, version, nuscenes: NuScenes, map_radius=500):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
-    scene_token = scene["token"]
     scenario_log_interval = 0.1
-    scene_info = nuscenes.get("scene", scene_token)
-    frames = []
-    current_frame = nuscenes.get("sample", scene_info["first_sample_token"])
-    while current_frame["token"] != scene_info["last_sample_token"]:
-        frames.append(parse_frame(current_frame, nuscenes))
-        current_frame = nuscenes.get("sample", current_frame["next"])
-    frames.append(parse_frame(current_frame, nuscenes))
-    assert current_frame["next"] == ""
-    assert len(frames) == scene_info["nbr_samples"], "Number of sample mismatches! "
-
+    frames, scene_info = frames_scene_info
     result = SD()
-    result[SD.ID] = scene_info["name"]
+    result[SD.ID] = scene_info.get("scene_id", scene_info["name"])
     result[SD.VERSION] = "nuscenes" + version
     result[SD.LENGTH] = (len(frames) - 1) * 5 + 1
     result[SD.METADATA] = {}
@@ -437,7 +430,7 @@ def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
     result[SD.METADATA]["map"] = nuscenes.get("log", scene_info["log_token"])["location"]
     result[SD.METADATA]["date"] = nuscenes.get("log", scene_info["log_token"])["date_captured"]
     result[SD.METADATA]["coordinate"] = "right-handed"
-    result[SD.METADATA]["scenario_token"] = scene_token
+    # result[SD.METADATA]["dscenario_token"] = scene_token
     result[SD.METADATA][SD.ID] = scene_info["name"]
     result[SD.METADATA]["scenario_id"] = scene_info["name"]
     result[SD.METADATA]["sample_rate"] = scenario_log_interval
@@ -450,16 +443,62 @@ def convert_nuscenes_scenario(scene, version, nuscenes: NuScenes):
     result[SD.DYNAMIC_MAP_STATES] = {}
 
     # map
-    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, 500)
+    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius)
 
     return result
 
 
+def extract_frames_scene_info(scene, nuscenes):
+    scene_token = scene["token"]
+    scene_info = nuscenes.get("scene", scene_token)
+    frames = []
+    current_frame = nuscenes.get("sample", scene_info["first_sample_token"])
+    while current_frame["token"] != scene_info["last_sample_token"]:
+        frames.append(parse_frame(current_frame, nuscenes))
+        current_frame = nuscenes.get("sample", current_frame["next"])
+    frames.append(parse_frame(current_frame, nuscenes))
+    assert current_frame["next"] == ""
+    assert len(frames) == scene_info["nbr_samples"], "Number of sample mismatches! "
+    return frames, scene_info
+
+
 def get_nuscenes_scenarios(dataroot, version, num_workers=2):
     nusc = NuScenes(version=version, dataroot=dataroot)
-    scenarios = nusc.scene
+    scenarios = [extract_frames_scene_info(scene, nusc) for scene in nusc.scene]
 
     def _get_nusc():
         return NuScenes(version=version, dataroot=dataroot)
 
+    return scenarios, [nusc for _ in range(num_workers)]
+
+
+def get_nuscenes_prediction_split(dataroot, version, past, future, num_workers=2):
+    def _get_nusc():
+        return NuScenes(version="v1.0-mini" if "mini" in version else "v-1.0-trainval", dataroot=dataroot)
+
+    nusc = _get_nusc()
+    scenarios = []
+    past_num = int(past / 0.5)
+    future_num = int(future / 0.5)
+
+    for instance_sample in get_prediction_challenge_split(version, dataroot=dataroot):
+        instance_token, sample_token = instance_sample.split("_")
+        current_sample = last_sample = next_sample = nusc.get("sample", sample_token)
+        past_samples = []
+        future_samples = []
+        for _ in range(past_num):
+            if last_sample["prev"] == "":
+                break
+            last_sample = nusc.get("sample", last_sample["prev"])
+            past_samples.append(parse_frame(last_sample, nusc))
+
+        for _ in range(future_num):
+            if next_sample["next"] == "":
+                break
+            next_sample = nusc.get("sample", next_sample["next"])
+            future_samples.append(parse_frame(next_sample, nusc))
+        frames = past_samples[::-1] + [parse_frame(current_sample, nusc)] + future_samples
+        scene_info = copy.copy(nusc.get("scene", current_sample["scene_token"]))
+        scene_info["scene_id"] = scene_info["name"] + "_" + sample_token
+        scenarios.append([frames, scene_info])
     return scenarios, [nusc for _ in range(num_workers)]

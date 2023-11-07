@@ -4,11 +4,11 @@ prediction_split = ["mini_train", "mini_val", "train", "train_val", "val"]
 scene_split = ["v1.0-mini", "v1.0-trainval", "v1.0-test"]
 
 if __name__ == "__main__":
-    import pkg_resources  # for suppress warning
     import argparse
     import os.path
     from scenarionet import SCENARIONET_DATASET_PATH
-    from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios
+    from scenarionet.converter.nuscenes.utils import convert_nuscenes_scenario, get_nuscenes_scenarios, \
+        get_nuscenes_prediction_split
     from scenarionet.converter.utils import write_to_directory
 
     parser = argparse.ArgumentParser(description=desc)
@@ -32,6 +32,7 @@ if __name__ == "__main__":
              " files for prediction task.".format(scene_split, prediction_split, scene_split)
     )
     parser.add_argument("--dataroot", default="/data/sets/nuscenes", help="The path of nuscenes data")
+    parser.add_argument("--map_radius", default=500, help="The size of map")
     parser.add_argument("--future", default=6, help="6 seconds by default. How many future seconds to predict. Only "
                                                     "available if split is chosen from {}".format(prediction_split))
     parser.add_argument("--past", default=2, help="2 seconds by default. How many past seconds are used for prediction."
@@ -45,9 +46,11 @@ if __name__ == "__main__":
     output_path = args.database_path
     version = args.split
 
-
-    scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
-
+    if version in scene_split:
+        scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
+    else:
+        scenarios, nuscs = get_nuscenes_prediction_split(args.dataroot, version, args.past, args.future,
+                                                         args.num_workers)
     write_to_directory(
         convert_func=convert_nuscenes_scenario,
         scenarios=scenarios,
@@ -57,4 +60,5 @@ if __name__ == "__main__":
         overwrite=overwrite,
         num_workers=args.num_workers,
         nuscenes=nuscs,
+        map_radius=[args.map_radius for _ in range(args.num_workers)],
     )
