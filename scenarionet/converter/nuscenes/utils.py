@@ -474,7 +474,7 @@ def convert_nuscenes_scenario(token, version, nuscenes: NuScenes, map_radius=500
 
     # map
     result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius)
-
+    del frames_scene_info
     return result
 
 
