@@ -132,9 +132,9 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -187,7 +187,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         interpolate_tracks[id]["metadata"]["track_length"] = new_episode_len
 
         # valid first
-        new_valid = np.zeros(shape=(new_episode_len, ))
+        new_valid = np.zeros(shape=(new_episode_len,))
         if track["state"]["valid"][0]:
             new_valid[0] = 1
         for k, valid in enumerate(track["state"]["valid"][1:], start=1):
@@ -353,7 +353,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         ret[id] = {
             SD.TYPE: MetaDriveType.LANE_SURFACE_STREET,
             SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)) -
-            np.asarray(map_center),
+                         np.asarray(map_center),
             SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
             SD.EXIT: map_api.get_outgoing_lane_ids(id),
@@ -371,7 +371,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         ret[id] = {
             SD.TYPE: MetaDriveType.LANE_SURFACE_UNSTRUCTURE,
             SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)) -
-            np.asarray(map_center),
+                         np.asarray(map_center),
             # SD.POLYGON: boundary_polygon,
             "speed_limit_kmh": 100,
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
@@ -417,10 +417,37 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
     return ret
 
 
-def convert_nuscenes_scenario(frames_scene_info, version, nuscenes: NuScenes, map_radius=500):
+def convert_nuscenes_scenario(token, version, nuscenes: NuScenes, map_radius=500, prediction=False, past=2, future=6):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
     """
+    if prediction:
+        past_num = int(past / 0.5)
+        future_num = int(future / 0.5)
+        nusc = nuscenes
+        instance_token, sample_token = token.split("_")
+        current_sample = last_sample = next_sample = nusc.get("sample", sample_token)
+        past_samples = []
+        future_samples = []
+        for _ in range(past_num):
+            if last_sample["prev"] == "":
+                break
+            last_sample = nusc.get("sample", last_sample["prev"])
+            past_samples.append(parse_frame(last_sample, nusc))
+
+        for _ in range(future_num):
+            if next_sample["next"] == "":
+                break
+            next_sample = nusc.get("sample", next_sample["next"])
+            future_samples.append(parse_frame(next_sample, nusc))
+        frames = past_samples[::-1] + [parse_frame(current_sample, nusc)] + future_samples
+        scene_info = copy.copy(nusc.get("scene", current_sample["scene_token"]))
+        scene_info["scene_id"] = scene_info["name"] + "_" + sample_token
+        scene_info["prediction"] = True
+        frames_scene_info = [frames, scene_info]
+    else:
+        frames_scene_info = extract_frames_scene_info(token, nuscenes)
+
     scenario_log_interval = 0.1
     frames, scene_info = frames_scene_info
     result = SD()
@@ -467,12 +494,11 @@ def extract_frames_scene_info(scene, nuscenes):
 
 def get_nuscenes_scenarios(dataroot, version, num_workers=2):
     nusc = NuScenes(version=version, dataroot=dataroot)
-    scenarios = [extract_frames_scene_info(scene, nusc) for scene in nusc.scene]
 
     def _get_nusc():
         return NuScenes(version=version, dataroot=dataroot)
 
-    return scenarios, [nusc for _ in range(num_workers)]
+    return nusc.scene, [nusc for _ in range(num_workers)]
 
 
 def get_nuscenes_prediction_split(dataroot, version, past, future, num_workers=2):
@@ -480,29 +506,4 @@ def get_nuscenes_prediction_split(dataroot, version, past, future, num_workers=2
         return NuScenes(version="v1.0-mini" if "mini" in version else "v1.0-trainval", dataroot=dataroot)
 
     nusc = _get_nusc()
-    scenarios = []
-    past_num = int(past / 0.5)
-    future_num = int(future / 0.5)
-
-    for instance_sample in get_prediction_challenge_split(version, dataroot=dataroot):
-        instance_token, sample_token = instance_sample.split("_")
-        current_sample = last_sample = next_sample = nusc.get("sample", sample_token)
-        past_samples = []
-        future_samples = []
-        for _ in range(past_num):
-            if last_sample["prev"] == "":
-                break
-            last_sample = nusc.get("sample", last_sample["prev"])
-            past_samples.append(parse_frame(last_sample, nusc))
-
-        for _ in range(future_num):
-            if next_sample["next"] == "":
-                break
-            next_sample = nusc.get("sample", next_sample["next"])
-            future_samples.append(parse_frame(next_sample, nusc))
-        frames = past_samples[::-1] + [parse_frame(current_sample, nusc)] + future_samples
-        scene_info = copy.copy(nusc.get("scene", current_sample["scene_token"]))
-        scene_info["scene_id"] = scene_info["name"] + "_" + sample_token
-        scene_info["prediction"] = True
-        scenarios.append([frames, scene_info])
-    return scenarios, [nusc for _ in range(num_workers)]
+    return get_prediction_challenge_split(version, dataroot=dataroot), [nusc for _ in range(num_workers)]

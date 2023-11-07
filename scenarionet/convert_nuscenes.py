@@ -59,9 +59,11 @@ if __name__ == "__main__":
     if version in scene_split:
         scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
     else:
-        scenarios, nuscs = get_nuscenes_prediction_split(
-            args.dataroot, version, args.past, args.future, args.num_workers
-        )
+        scenarios, nuscs = get_nuscenes_prediction_split(args.dataroot,
+                                                         version,
+                                                         args.past,
+                                                         args.future,
+                                                         args.num_workers)
     write_to_directory(
         convert_func=convert_nuscenes_scenario,
         scenarios=scenarios,
@@ -71,5 +73,8 @@ if __name__ == "__main__":
         overwrite=overwrite,
         num_workers=args.num_workers,
         nuscenes=nuscs,
+        past=[args.past for _ in range(args.num_workers)],
+        future=[args.future for _ in range(args.num_workers)],
+        prediction=[version in prediction_split for _ in range(args.num_workers)],
         map_radius=[args.map_radius for _ in range(args.num_workers)],
     )
