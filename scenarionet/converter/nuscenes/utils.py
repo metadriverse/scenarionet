@@ -451,7 +451,7 @@ def convert_nuscenes_scenario(token,
             future_samples.append(parse_frame(next_sample, nusc))
         frames = past_samples[::-1] + [parse_frame(current_sample, nusc)] + future_samples
         scene_info = copy.copy(nusc.get("scene", current_sample["scene_token"]))
-        scene_info["scene_id"] = scene_info["name"] + "_" + sample_token
+        scene_info["name"] = scene_info["name"] + "_" + token
         scene_info["prediction"] = True
         frames_scene_info = [frames, scene_info]
     else:
@@ -460,7 +460,7 @@ def convert_nuscenes_scenario(token,
     scenario_log_interval = 0.1
     frames, scene_info = frames_scene_info
     result = SD()
-    result[SD.ID] = scene_info.get("scene_id", scene_info["name"])
+    result[SD.ID] = scene_info["name"]
     result[SD.VERSION] = "nuscenes" + version
     result[SD.LENGTH] = (len(frames) - 1) * 5 + 1
     result[SD.METADATA] = {}

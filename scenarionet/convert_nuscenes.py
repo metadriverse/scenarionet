@@ -34,7 +34,7 @@ if __name__ == "__main__":
         " files for prediction task.".format(scene_split, prediction_split, scene_split)
     )
     parser.add_argument("--dataroot", default="/data/sets/nuscenes", help="The path of nuscenes data")
-    parser.add_argument("--map_radius", default=500, help="The size of map")
+    parser.add_argument("--map_radius", default=500, type=float, help="The size of map")
     parser.add_argument(
         "--future",
         default=6,
