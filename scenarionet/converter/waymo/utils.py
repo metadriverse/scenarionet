@@ -438,7 +438,7 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num):
     logger.info("\nFind {} waymo files".format(num_files))
     return all_result
 
-  
+
 def preprocess_waymo_scenarios(files, worker_index):
     """
     Convert the waymo files into scenario_pb2. This happens in each worker.

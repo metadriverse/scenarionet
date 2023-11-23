@@ -9,7 +9,7 @@ if __name__ == "__main__":
     initialize_ray(test_mode=False, num_gpus=1)
     env = createGymWrapper(ScenarioEnv)(
         {
-            # "data_directory": AssetLoader.file_path("nuscenes", return_raw_style=False),
+            # "data_directory": AssetLoader.file_path("nuscenes", unix_style=False),
             "data_directory": "D:\\scenarionet_testset\\nuplan_test\\nuplan_test_w_raw",
             "use_render": True,
             # "agent_policy": ReplayEgoCarPolicy,
