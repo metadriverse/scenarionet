@@ -10,7 +10,7 @@ from scenarionet.builder.utils import merge_database
 
 def test_filter_overpass():
     overpass_1 = os.path.join(SCENARIONET_PACKAGE_PATH, "tests", "test_dataset", "overpass")
-    overpass_in_md = AssetLoader.file_path("waymo", return_raw_style=False)
+    overpass_in_md = AssetLoader.file_path("waymo", unix_style=False)
     dataset_paths = [overpass_1, overpass_in_md]
 
     output_path = os.path.join(TMP_PATH, "combine")
