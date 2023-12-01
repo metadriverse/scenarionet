@@ -59,11 +59,9 @@ if __name__ == "__main__":
     if version in scene_split:
         scenarios, nuscs = get_nuscenes_scenarios(args.dataroot, version, args.num_workers)
     else:
-        scenarios, nuscs = get_nuscenes_prediction_split(args.dataroot,
-                                                         version,
-                                                         args.past,
-                                                         args.future,
-                                                         args.num_workers)
+        scenarios, nuscs = get_nuscenes_prediction_split(
+            args.dataroot, version, args.past, args.future, args.num_workers
+        )
     write_to_directory(
         convert_func=convert_nuscenes_scenario,
         scenarios=scenarios,
