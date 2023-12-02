@@ -26,18 +26,17 @@ The dataset includes:
 - Adjusted some road edge boundary height estimates
 
 
-1. Install Waymo Toolkit
+1. Install Requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First of all, we have to install the waymo toolkit and tensorflow::
+First of all, we have to install tensorflow and Protobuf::
 
-    pip install waymo-open-dataset-tf-2-11-0
     pip install tensorflow==2.11.0
+    conda install protobuf==3.20
 
 .. note::
-    This package is only supported on Linux platform.
-    `waymo-open-dataset` may degrade numpy, causing conflicts with cv2.
-    A workaround is ``pip install numpy==1.24.2``
+    You may fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
+
 
 2. Download TFRecord
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

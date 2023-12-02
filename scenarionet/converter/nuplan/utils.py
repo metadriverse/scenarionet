@@ -35,7 +35,7 @@ try:
 
     NUPLAN_PACKAGE_PATH = os.path.dirname(nuplan.__file__)
 except ImportError as e:
-    logger.warning("Can not import nuplan-devkit: {}".format(e))
+    raise RuntimeError(e)
 
 EGO = "ego"
 

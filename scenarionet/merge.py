@@ -10,6 +10,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--database_path",
         "-d",
+        "--to",
         required=True,
         help="The name of the new combined database. "
         "It will create a new directory to store dataset_summary.pkl and dataset_mapping.pkl. "

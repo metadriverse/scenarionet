@@ -113,8 +113,12 @@ Convert nuScenes (Lyft)
 .. code-block:: text
 
     python -m scenarionet.convert_nuscenes [-h] [--database_path DATABASE_PATH]
-                               [--dataset_name DATASET_NAME] [--version VERSION]
-                               [--overwrite] [--num_workers NUM_WORKERS]
+                               [--dataset_name DATASET_NAME]
+                               [--split
+    {v1.0-mini,mini_val,v1.0-test,train,train_val,val,mini_train,v1.0-trainval}]
+                               [--dataroot DATAROOT] [--map_radius MAP_RADIUS]
+                               [--future FUTURE] [--past PAST] [--overwrite]
+                               [--num_workers NUM_WORKERS]
 
     Build database from nuScenes/Lyft scenarios
 
@@ -124,13 +128,31 @@ Convert nuScenes (Lyft)
                             directory, The path to place the data
       --dataset_name DATASET_NAME, -n DATASET_NAME
                             Dataset name, will be used to generate scenario files
-      --version VERSION, -v VERSION
-                            version of nuscenes data, scenario of this version
-                            will be converted
+      --split
+        {v1.0-mini,mini_val,v1.0-test,train,train_val,val,mini_train,v1.0-trainval}
+                            Which splits of nuScenes data should be sued. If set
+                            to ['v1.0-mini', 'v1.0-trainval', 'v1.0-test'], it
+                            will convert the full log into scenarios with 20
+                            second episode length. If set to ['mini_train',
+                            'mini_val', 'train', 'train_val', 'val'], it will
+                            convert segments used for nuScenes prediction
+                            challenge to scenarios, resulting in more converted
+                            scenarios. Generally, you should choose this parameter
+                            from ['v1.0-mini', 'v1.0-trainval', 'v1.0-test'] to
+                            get complete scenarios for planning unless you want to
+                            use the converted scenario files for prediction task.
+      --dataroot DATAROOT   The path of nuscenes data
+      --map_radius MAP_RADIUS The size of map
+      --future FUTURE       6 seconds by default. How many future seconds to
+                            predict. Only available if split is chosen from
+                            ['mini_train', 'mini_val', 'train', 'train_val',
+                            'val']
+      --past PAST           2 seconds by default. How many past seconds are used
+                            for prediction. Only available if split is chosen from
+                            ['mini_train', 'mini_val', 'train', 'train_val',
+                            'val']
       --overwrite           If the database_path exists, whether to overwrite it
       --num_workers NUM_WORKERS
-                            number of workers to use
-
 
 
 This script converted the recorded nuScenes scenario into our scenario descriptions.
@@ -187,7 +209,7 @@ we can aggregate them freely and enlarge the database.
 
 .. code-block:: text
 
-    python -m scenarionet.merge [-h] --database_path DATABASE_PATH --from FROM [FROM ...]
+    python -m scenarionet.merge [-h] --to DATABASE_PATH --from FROM [FROM ...]
                     [--exist_ok] [--overwrite] [--filter_moving_dist]
                     [--sdc_moving_dist_min SDC_MOVING_DIST_MIN]
 
@@ -196,7 +218,7 @@ we can aggregate them freely and enlarge the database.
 
     optional arguments:
     -h, --help            show this help message and exit
-    --database_path DATABASE_PATH, -d DATABASE_PATH
+    --database_path DATABASE_PATH, -d DATABASE_PATH, --to DATABASE_PATH
                         The name of the new combined database. It will create
                         a new directory to store dataset_summary.pkl and
                         dataset_mapping.pkl. If exists_ok=True, those two .pkl

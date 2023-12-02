@@ -60,7 +60,9 @@ Secondly, all files should be organized to the following structure::
     ├── maps/
     |   ├──basemap/
     |   ├──prediction/
-    |   ├──expansion/
+    |   └──expansion/
+    ├── can_bus/
+    |   ├──scene-1110_meta.json
     |   └──...
     ├── samples/
     |   ├──CAM_BACK
@@ -95,9 +97,9 @@ Please try ``nuscenes-devkit/python-sdk/tutorials/nuscenes_tutorial.ipynb`` and 
 After setup the raw data, convertors in ScenarioNet can read the raw data, convert scenario format and build the database.
 Here we take converting raw data in ``nuscenes-mini`` as an example::
 
-    python -m scenarionet.convert_nuscenes -d /path/to/your/database --version v1.0-mini --dataroot /nuscens/data/path
+    python -m scenarionet.convert_nuscenes -d /path/to/your/database --split v1.0-mini --dataroot /nuscens/data/path
 
-The ``version`` is to determine which split to convert. ``dataroot`` is set to ``/data/sets/nuscenes`` by default,
+The ``split`` is to determine which split to convert. ``dataroot`` is set to ``/data/sets/nuscenes`` by default,
 but you need to specify it if your data is stored in any other directory.
 Now all converted scenarios will be placed at ``/path/to/your/database`` and are ready to be used in your work.
 

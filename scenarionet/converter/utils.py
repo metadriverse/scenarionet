@@ -234,6 +234,8 @@ def write_to_directory_single_worker(
         sd_scenario[SD.METADATA][SD.SUMMARY.NUMBER_SUMMARY] = SD.get_number_summary(sd_scenario)
 
         # update summary/mapping dicy
+        if export_file_name in summary:
+            logger.warning("Scenario {} already exists and will be overwritten!".format(export_file_name))
         summary[export_file_name] = copy.deepcopy(sd_scenario[SD.METADATA])
         mapping[export_file_name] = ""  # in the same dir
 
