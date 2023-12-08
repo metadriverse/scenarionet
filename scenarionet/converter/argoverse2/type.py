@@ -46,9 +46,9 @@ def get_lane_type(av2_lane_type):
         raise ValueError("Unknown nuplan lane type: {}".format(av2_lane_type))
 
 
-
 def get_lane_mark_type(av2_mark_type):
-    conversion_dict = {LaneMarkType.DOUBLE_SOLID_YELLOW: "ROAD_LINE_SOLID_DOUBLE_YELLOW",
+    conversion_dict = {
+        LaneMarkType.DOUBLE_SOLID_YELLOW: "ROAD_LINE_SOLID_DOUBLE_YELLOW",
         LaneMarkType.DOUBLE_SOLID_WHITE: "ROAD_LINE_SOLID_DOUBLE_WHITE",
         LaneMarkType.SOLID_YELLOW: "ROAD_LINE_SOLID_SINGLE_YELLOW",
         LaneMarkType.SOLID_WHITE: "ROAD_LINE_SOLID_SINGLE_WHITE",
@@ -56,11 +56,13 @@ def get_lane_mark_type(av2_mark_type):
         LaneMarkType.DASHED_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW",
         LaneMarkType.DASH_SOLID_YELLOW: "ROAD_LINE_SOLID_DOUBLE_YELLOW",
         LaneMarkType.DASH_SOLID_WHITE: "ROAD_LINE_SOLID_DOUBLE_WHITE",
-
         LaneMarkType.DOUBLE_DASH_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW",
         LaneMarkType.DOUBLE_DASH_WHITE: "ROAD_LINE_BROKEN_SINGLE_WHITE",
         LaneMarkType.SOLID_DASH_WHITE: "ROAD_LINE_BROKEN_SINGLE_WHITE",
-        LaneMarkType.SOLID_DASH_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW", LaneMarkType.SOLID_BLUE: "UNKNOWN_LINE",
-        LaneMarkType.NONE: "UNKNOWN_LINE", LaneMarkType.UNKNOWN: "UNKNOWN_LINE"}
+        LaneMarkType.SOLID_DASH_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW",
+        LaneMarkType.SOLID_BLUE: "UNKNOWN_LINE",
+        LaneMarkType.NONE: "UNKNOWN_LINE",
+        LaneMarkType.UNKNOWN: "UNKNOWN_LINE"
+    }
 
     return conversion_dict.get(av2_mark_type, "UNKNOWN_LINE")

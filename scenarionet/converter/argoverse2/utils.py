@@ -225,8 +225,14 @@ def convert_av2_scenario(scenario, version):
     track_difficulty = [0]
     track_obj_type = [tracks[id]["type"] for id in track_id]
     md_scenario[SD.METADATA]["tracks_to_predict"] = {
-        id: {"track_index": track_index[count], "track_id": id, "difficulty": track_difficulty[count],
-            "object_type": track_obj_type[count]} for count, id in enumerate(track_id)}
+        id: {
+            "track_index": track_index[count],
+            "track_id": id,
+            "difficulty": track_difficulty[count],
+            "object_type": track_obj_type[count]
+        }
+        for count, id in enumerate(track_id)
+    }
     # clean memory
     del scenario
     return md_scenario
