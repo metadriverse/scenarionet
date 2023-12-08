@@ -75,15 +75,15 @@ def contains_explicit_return(f):
 
 
 def write_to_directory(
-    convert_func,
-    scenarios,
-    output_path,
-    dataset_version,
-    dataset_name,
-    overwrite=False,
-    num_workers=8,
-    preprocess=single_worker_preprocess,
-    **kwargs
+        convert_func,
+        scenarios,
+        output_path,
+        dataset_version,
+        dataset_name,
+        overwrite=False,
+        num_workers=8,
+        preprocess=single_worker_preprocess,
+        **kwargs
 ):
     # make sure dir not exist
     kwargs_for_workers = [{} for _ in range(num_workers)]
@@ -149,7 +149,7 @@ def write_to_directory(
 
 
 def writing_to_directory_wrapper(
-    args, convert_func, dataset_version, dataset_name, overwrite=False, preprocess=single_worker_preprocess
+        args, convert_func, dataset_version, dataset_name, overwrite=False, preprocess=single_worker_preprocess
 ):
     return write_to_directory_single_worker(
         convert_func=convert_func,
@@ -165,16 +165,16 @@ def writing_to_directory_wrapper(
 
 
 def write_to_directory_single_worker(
-    convert_func,
-    scenarios,
-    output_path,
-    dataset_version,
-    dataset_name,
-    worker_index=0,
-    overwrite=False,
-    report_memory_freq=None,
-    preprocess=single_worker_preprocess,
-    **kwargs
+        convert_func,
+        scenarios,
+        output_path,
+        dataset_version,
+        dataset_name,
+        worker_index=0,
+        overwrite=False,
+        report_memory_freq=None,
+        preprocess=single_worker_preprocess,
+        **kwargs
 ):
     """
     Convert a batch of scenarios.

@@ -1,12 +1,8 @@
 import logging
-import multiprocessing
-import os
-import pickle
-import json
+
 import tqdm
-import pandas as pd
+
 from scenarionet.converter.utils import mph_to_kmh
-from scenarionet.converter.waymo.type import WaymoLaneType, WaymoAgentType, WaymoRoadLineType, WaymoRoadEdgeType
 
 logger = logging.getLogger(__name__)
 import numpy as np
@@ -16,7 +12,7 @@ from tqdm import tqdm
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
 
-from scenarionet.converter.argoverse2.type import get_traffic_obj_type,get_lane_type,get_lane_mark_type
+from scenarionet.converter.argoverse2.type import get_traffic_obj_type, get_lane_type, get_lane_mark_type
 from av2.datasets.motion_forecasting import scenario_serialization
 from av2.map.map_api import ArgoverseStaticMap
 from typing import Final
@@ -37,27 +33,20 @@ def extract_tracks(tracks, sdc_idx, track_length):
     ret = dict()
 
     def _object_state_template(object_id):
-        return dict(
-            type=None,
-            state=dict(
-                # Never add extra dim if the value is scalar.
-                position=np.zeros([track_length, 3], dtype=np.float32),
-                length=np.zeros([track_length], dtype=np.float32),
-                width=np.zeros([track_length], dtype=np.float32),
-                height=np.zeros([track_length], dtype=np.float32),
-                heading=np.zeros([track_length], dtype=np.float32),
-                velocity=np.zeros([track_length, 2], dtype=np.float32),
-                valid=np.zeros([track_length], dtype=bool),
-            ),
-            metadata=dict(track_length=track_length, type=None, object_id=object_id, dataset="av2")
-        )
+        return dict(type=None, state=dict(# Never add extra dim if the value is scalar.
+            position=np.zeros([track_length, 3], dtype=np.float32), length=np.zeros([track_length], dtype=np.float32),
+            width=np.zeros([track_length], dtype=np.float32), height=np.zeros([track_length], dtype=np.float32),
+            heading=np.zeros([track_length], dtype=np.float32), velocity=np.zeros([track_length, 2], dtype=np.float32),
+            valid=np.zeros([track_length], dtype=bool), ),
+            metadata=dict(track_length=track_length, type=None, object_id=object_id, dataset="av2"))
+
     track_category = []
 
     for obj in tracks:
         object_id = obj.track_id
         track_category.append(obj.category.value)
         obj_state = _object_state_template(object_id)
- # Transform it to Waymo type string
+        # Transform it to Waymo type string
         obj_state["type"] = get_traffic_obj_type(obj.object_type)
         if obj_state["type"] == MetaDriveType.VEHICLE:
             length = _ESTIMATED_VEHICLE_LENGTH_M
@@ -101,7 +90,8 @@ def extract_tracks(tracks, sdc_idx, track_length):
 
         ret[object_id] = obj_state
 
-    return ret,track_category
+    return ret, track_category
+
 
 def extract_lane_mark(lane_mark):
     line = dict()
@@ -109,8 +99,8 @@ def extract_lane_mark(lane_mark):
     line["polyline"] = lane_mark.polyline.astype(np.float32)
     return line
 
-def extract_map_features(map_features):
 
+def extract_map_features(map_features):
     # with open(
     #         "/Users/fenglan/Desktop/vita-group/code/mdsn/scenarionet/data_sample/waymo_converted_0/sd_waymo_v1.2_7e8422433c66cc13.pkl",
     #         'rb') as f:
@@ -127,8 +117,8 @@ def extract_map_features(map_features):
         center = {}
         lane_id = str(seg.id)
 
-        left_id = str(seg.id+max_id+1)
-        right_id = str(seg.id+max_id+2)
+        left_id = str(seg.id + max_id + 1)
+        right_id = str(seg.id + max_id + 2)
         left_marking = extract_lane_mark(seg.left_lane_marking)
         right_marking = extract_lane_mark(seg.right_lane_marking)
 
@@ -157,7 +147,7 @@ def extract_map_features(map_features):
         center["left_neighbor"] = []
 
         center["right_neighbor"] = []
-        center['width'] = np.zeros([len(polyline),2], dtype=np.float32)
+        center['width'] = np.zeros([len(polyline), 2], dtype=np.float32)
 
         ret[lane_id] = center
 
@@ -186,10 +176,7 @@ def get_av2_scenarios(av2_data_directory, start_index, num):
     return all_scenario_files
 
 
-
-
 def convert_av2_scenario(scenario, version):
-
     md_scenario = SD()
 
     md_scenario[SD.ID] = scenario.scenario_id
@@ -212,12 +199,12 @@ def convert_av2_scenario(scenario, version):
     map_features = extract_map_features(scenario.static_map)
     md_scenario[SD.MAP_FEATURES] = map_features
 
-    #compute_width(md_scenario[SD.MAP_FEATURES])
+    # compute_width(md_scenario[SD.MAP_FEATURES])
 
     md_scenario[SD.METADATA] = {}
     md_scenario[SD.METADATA][SD.ID] = md_scenario[SD.ID]
     md_scenario[SD.METADATA][SD.COORDINATE] = MetaDriveType.COORDINATE_WAYMO
-    md_scenario[SD.METADATA][SD.TIMESTEP] = np.array(list(range(track_length)))/10
+    md_scenario[SD.METADATA][SD.TIMESTEP] = np.array(list(range(track_length))) / 10
     md_scenario[SD.METADATA][SD.METADRIVE_PROCESSED] = False
     md_scenario[SD.METADATA][SD.SDC_ID] = 'AV'
     md_scenario[SD.METADATA]["dataset"] = "av2"
@@ -231,21 +218,15 @@ def convert_av2_scenario(scenario, version):
 
     # obj id
     obj_keys = list(tracks.keys())
-    md_scenario[SD.METADATA]["objects_of_interest"] = [obj_keys[idx] for idx,cat in enumerate(category) if cat==2]
+    md_scenario[SD.METADATA]["objects_of_interest"] = [obj_keys[idx] for idx, cat in enumerate(category) if cat == 2]
 
     track_index = [obj_keys.index(scenario.focal_track_id)]
     track_id = [scenario.focal_track_id]
     track_difficulty = [0]
     track_obj_type = [tracks[id]["type"] for id in track_id]
     md_scenario[SD.METADATA]["tracks_to_predict"] = {
-        id: {
-            "track_index": track_index[count],
-            "track_id": id,
-            "difficulty": track_difficulty[count],
-            "object_type": track_obj_type[count]
-        }
-        for count, id in enumerate(track_id)
-    }
+        id: {"track_index": track_index[count], "track_id": id, "difficulty": track_difficulty[count],
+            "object_type": track_obj_type[count]} for count, id in enumerate(track_id)}
     # clean memory
     del scenario
     return md_scenario
@@ -261,13 +242,10 @@ def preprocess_av2_scenarios(files, worker_index):
 
     for scenario_path in tqdm(files, desc="Process av2 scenarios for worker {}".format(worker_index)):
         scenario_id = scenario_path.stem.split("_")[-1]
-        static_map_path = (
-                scenario_path.parents[0] / f"log_map_archive_{scenario_id}.json"
-        )
+        static_map_path = (scenario_path.parents[0] / f"log_map_archive_{scenario_id}.json")
         scenario = scenario_serialization.load_argoverse_scenario_parquet(scenario_path)
         static_map = ArgoverseStaticMap.from_json(static_map_path)
         scenario.static_map = static_map
         yield scenario
 
-    # logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))
-    # return scenarios
+    # logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))  # return scenarios

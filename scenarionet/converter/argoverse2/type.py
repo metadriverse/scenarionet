@@ -1,4 +1,5 @@
 import logging
+
 from metadrive.type import MetaDriveType
 
 logging.basicConfig(level=logging.INFO)
@@ -35,6 +36,7 @@ def get_traffic_obj_type(av2_obj_type):
     else:
         return MetaDriveType.OTHER
 
+
 def get_lane_type(av2_lane_type):
     if av2_lane_type == LaneType.VEHICLE or av2_lane_type == LaneType.BUS:
         return MetaDriveType.LANE_SURFACE_STREET
@@ -43,25 +45,10 @@ def get_lane_type(av2_lane_type):
     else:
         raise ValueError("Unknown nuplan lane type: {}".format(av2_lane_type))
 
-    # DASH_SOLID_YELLOW: str = "DASH_SOLID_YELLOW"
-    # DASH_SOLID_WHITE: str = "DASH_SOLID_WHITE"
-    # DASHED_WHITE: str = "DASHED_WHITE"
-    # DASHED_YELLOW: str = "DASHED_YELLOW"
-    # DOUBLE_SOLID_YELLOW: str = "DOUBLE_SOLID_YELLOW"
-    # DOUBLE_SOLID_WHITE: str = "DOUBLE_SOLID_WHITE"
-    # DOUBLE_DASH_YELLOW: str = "DOUBLE_DASH_YELLOW"
-    # DOUBLE_DASH_WHITE: str = "DOUBLE_DASH_WHITE"
-    # SOLID_YELLOW: str = "SOLID_YELLOW"
-    # SOLID_WHITE: str = "SOLID_WHITE"
-    # SOLID_DASH_WHITE: str = "SOLID_DASH_WHITE"
-    # SOLID_DASH_YELLOW: str = "SOLID_DASH_YELLOW"
-    # SOLID_BLUE: str = "SOLID_BLUE"
-    # NONE: str = "NONE"
-    # UNKNOWN: str = "UNKNOWN"
+
 
 def get_lane_mark_type(av2_mark_type):
-    conversion_dict = {
-        LaneMarkType.DOUBLE_SOLID_YELLOW: "ROAD_LINE_SOLID_DOUBLE_YELLOW",
+    conversion_dict = {LaneMarkType.DOUBLE_SOLID_YELLOW: "ROAD_LINE_SOLID_DOUBLE_YELLOW",
         LaneMarkType.DOUBLE_SOLID_WHITE: "ROAD_LINE_SOLID_DOUBLE_WHITE",
         LaneMarkType.SOLID_YELLOW: "ROAD_LINE_SOLID_SINGLE_YELLOW",
         LaneMarkType.SOLID_WHITE: "ROAD_LINE_SOLID_SINGLE_WHITE",
@@ -73,10 +60,7 @@ def get_lane_mark_type(av2_mark_type):
         LaneMarkType.DOUBLE_DASH_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW",
         LaneMarkType.DOUBLE_DASH_WHITE: "ROAD_LINE_BROKEN_SINGLE_WHITE",
         LaneMarkType.SOLID_DASH_WHITE: "ROAD_LINE_BROKEN_SINGLE_WHITE",
-        LaneMarkType.SOLID_DASH_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW",
-        LaneMarkType.SOLID_BLUE: "UNKNOWN_LINE",
-        LaneMarkType.NONE: "UNKNOWN_LINE",
-        LaneMarkType.UNKNOWN: "UNKNOWN_LINE"
-    }
+        LaneMarkType.SOLID_DASH_YELLOW: "ROAD_LINE_BROKEN_SINGLE_YELLOW", LaneMarkType.SOLID_BLUE: "UNKNOWN_LINE",
+        LaneMarkType.NONE: "UNKNOWN_LINE", LaneMarkType.UNKNOWN: "UNKNOWN_LINE"}
 
     return conversion_dict.get(av2_mark_type, "UNKNOWN_LINE")

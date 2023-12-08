@@ -1,7 +1,6 @@
 desc = "Build database from Argoverse scenarios"
 
 if __name__ == '__main__':
-    import pkg_resources  # for suppress warning
     import shutil
     import argparse
     import logging
@@ -9,7 +8,7 @@ if __name__ == '__main__':
 
     from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
     from scenarionet.converter.utils import write_to_directory
-    from scenarionet.converter.argoverse2.utils import convert_av2_scenario,get_av2_scenarios,preprocess_av2_scenarios
+    from scenarionet.converter.argoverse2.utils import convert_av2_scenario, get_av2_scenarios, preprocess_av2_scenarios
 
     logger = logging.getLogger(__name__)
 
@@ -36,14 +35,14 @@ if __name__ == '__main__':
         default=0,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]"
+             "and select files[start_file_index: start_file_index+num_files]"
     )
     parser.add_argument(
         "--num_files",
         default=1000,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]"
+             "and select files[start_file_index: start_file_index+num_files]"
     )
     args = parser.parse_args()
 
