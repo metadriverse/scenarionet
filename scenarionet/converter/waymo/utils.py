@@ -437,7 +437,7 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num):
     logger.info("\nFind {} waymo files".format(num_files))
     return all_result
 
-  
+
 def preprocess_waymo_scenarios(files, worker_index):
     """
     Convert the waymo files into scenario_pb2. This happens in each worker.
@@ -445,10 +445,7 @@ def preprocess_waymo_scenarios(files, worker_index):
     :param worker_index, the index for the worker
     :return: a list of scenario_pb2
     """
-    try:
-        scenario_pb2
-    except NameError:
-        raise ImportError("Please install waymo_open_dataset package: pip install waymo-open-dataset-tf-2-11-0")
+    from scenarionet.converter.waymo.waymo_protos import scenario_pb2
 
     for file in tqdm.tqdm(files, desc="Process Waymo scenarios for worker {}".format(worker_index)):
         file_path = os.path.join(file)
