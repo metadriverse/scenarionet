@@ -19,7 +19,7 @@ try:
 except ImportError as e:
     logger.info(e)
 
-import scenarionet.converter.waymo.waymo_protos.scenario_pb2
+import scenarionet.converter.waymo.waymo_protos.scenario_pb2 as scenario_pb2
 
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
@@ -453,7 +453,7 @@ def preprocess_waymo_scenarios(files, worker_index):
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
         for data in tf.data.TFRecordDataset(file_path, compression_type="").as_numpy_iterator():
-            scenario = scenarionet.converter.waymo.waymo_protos.scenario_pb2.Scenario()
+            scenario = scenario_pb2.Scenario()
             scenario.ParseFromString(data)
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
