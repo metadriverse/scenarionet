@@ -419,6 +419,7 @@ def convert_waymo_scenario(scenario, version):
         for count, id in enumerate(track_id)
     }
     # clean memory
+    scenario.Clear()
     del scenario
     scenario = None
     return md_scenario
