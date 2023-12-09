@@ -3,7 +3,8 @@ import logging
 import tqdm
 
 from scenarionet.converter.utils import mph_to_kmh
-
+import geopandas as gpd
+from shapely.ops import unary_union
 logger = logging.getLogger(__name__)
 import numpy as np
 
@@ -16,6 +17,7 @@ from scenarionet.converter.argoverse2.type import get_traffic_obj_type, get_lane
 from av2.datasets.motion_forecasting import scenario_serialization
 from av2.map.map_api import ArgoverseStaticMap
 from typing import Final
+from shapely.geometry import Point, Polygon
 
 _ESTIMATED_VEHICLE_LENGTH_M: Final[float] = 4.0
 _ESTIMATED_VEHICLE_WIDTH_M: Final[float] = 2.0
