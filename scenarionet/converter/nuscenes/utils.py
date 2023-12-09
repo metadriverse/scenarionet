@@ -474,7 +474,15 @@ def convert_nuscenes_scenario(
 
     # No traffic light in nuscenes at this stage
     result[SD.DYNAMIC_MAP_STATES] = {}
-
+    track_to_predict = result[SD.TRACKS][instance_token]
+    result[SD.METADATA]["tracks_to_predict"] = {
+        instance_token: {
+            "track_index": list(result[SD.TRACKS].keys()).index(instance_token),
+            "track_id": instance_token,
+            "difficulty": 0,
+            "object_type": track_to_predict['type']
+        }
+    }
     # map
     result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius, only_lane=only_lane)
     del frames_scene_info
