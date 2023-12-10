@@ -3,7 +3,8 @@ import logging
 import tqdm
 
 from scenarionet.converter.utils import mph_to_kmh
-
+import geopandas as gpd
+from shapely.ops import unary_union
 logger = logging.getLogger(__name__)
 import numpy as np
 
@@ -16,6 +17,7 @@ from scenarionet.converter.argoverse2.type import get_traffic_obj_type, get_lane
 from av2.datasets.motion_forecasting import scenario_serialization
 from av2.map.map_api import ArgoverseStaticMap
 from typing import Final
+from shapely.geometry import Point, Polygon
 
 _ESTIMATED_VEHICLE_LENGTH_M: Final[float] = 4.0
 _ESTIMATED_VEHICLE_WIDTH_M: Final[float] = 2.0
@@ -151,11 +153,19 @@ def extract_map_features(map_features):
 
         ret[lane_id] = center
 
-    # for edge in vector_drivable_areas:
-    #     bound = dict()
-    #     bound["type"] = MetaDriveType.BOUNDARY_LINE
-    #     bound["polyline"] = edge.xyz.astype(np.float32)
-    #     ret[str(edge.id)] = bound
+    polygons = []
+    for polygon in vector_drivable_areas:
+        # convert to shapely polygon
+        points = polygon.area_boundary
+        polygons.append(Polygon([(p.x, p.y) for p in points]))
+
+    polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
+    boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
+    for idx, boundary in enumerate(boundaries[0]):
+        block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
+        for i in range(0, len(block_points), 20):
+            id = f'boundary_{idx}{i}'
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE, SD.POLYLINE: block_points[i:i + 20]}
 
     for cross in ped_crossings:
         bound = dict()
