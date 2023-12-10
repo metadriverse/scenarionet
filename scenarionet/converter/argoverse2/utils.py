@@ -153,19 +153,19 @@ def extract_map_features(map_features):
 
         ret[lane_id] = center
 
-    # polygons = []
-    # for polygon in vector_drivable_areas:
-    #     # convert to shapely polygon
-    #     points = polygon.area_boundary
-    #     polygons.append(Polygon([(p.x, p.y) for p in points]))
-    #
-    # polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
-    # boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
-    # for idx, boundary in enumerate(boundaries[0]):
-    #     block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
-    #     for i in range(0, len(block_points), 20):
-    #         id = f'boundary_{idx}_{i}'
-    #         ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE, SD.POLYLINE: block_points[i:i + 20]}
+    polygons = []
+    for polygon in vector_drivable_areas:
+        # convert to shapely polygon
+        points = polygon.area_boundary
+        polygons.append(Polygon([(p.x, p.y) for p in points]))
+
+    polygons = [geom if geom.is_valid else geom.buffer(0) for geom in polygons]
+    boundaries = gpd.GeoSeries(unary_union(polygons)).boundary.explode(index_parts=True)
+    for idx, boundary in enumerate(boundaries[0]):
+        block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
+        for i in range(0, len(block_points), 20):
+            id = f'boundary_{idx}{i}'
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE, SD.POLYLINE: block_points[i:i + 20]}
 
     for cross in ped_crossings:
         bound = dict()
