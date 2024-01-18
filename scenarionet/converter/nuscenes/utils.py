@@ -487,14 +487,14 @@ def convert_nuscenes_scenario(
     result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius, only_lane=only_lane)
     # add back map center
     map_center = map_center[np.newaxis]
-    for k,v in result[SD.TRACKS].items():
+    for k, v in result[SD.TRACKS].items():
         v['state']['position'] += map_center
 
-    for k,v in result[SD.MAP_FEATURES].items():
+    for k, v in result[SD.MAP_FEATURES].items():
         if 'polygon' in v:
-            v['polygon'] += map_center[:,:v['polygon'].shape[-1]]
+            v['polygon'] += map_center[:, :v['polygon'].shape[-1]]
         else:
-            v['polyline'] += map_center[:,:v['polyline'].shape[-1]]
+            v['polyline'] += map_center[:, :v['polyline'].shape[-1]]
     del frames_scene_info
     del frames
     del scene_info
