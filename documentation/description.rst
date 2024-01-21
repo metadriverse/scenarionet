@@ -4,5 +4,6 @@
 Scenario Description
 ########################
 
-Please visit MetaDrive documentation
+Please visit the
 `Scenario Description section <https://metadrive-simulator.readthedocs.io/en/latest/scenario_description.html>`_
+in MetaDrive documentation.
