@@ -224,16 +224,12 @@ def write_to_directory_single_worker(
         scenario_id = sd_scenario[SD.ID]
         export_file_name = SD.get_export_file_name(dataset_name, dataset_version, scenario_id)
 
-        # add agents summary
-        summary_dict = {}
-        for track_id, track in sd_scenario[SD.TRACKS].items():
-            summary_dict[track_id] = SD.get_object_summary(state_dict=track, id=track_id)
-        sd_scenario[SD.METADATA][SD.SUMMARY.OBJECT_SUMMARY] = summary_dict
+        if hasattr(SD, "update_summaries"):
+            SD.update_summaries(sd_scenario)
+        else:
+            raise ValueError("Please update MetaDrive to latest version.")
 
-        # count some objects occurrence
-        sd_scenario[SD.METADATA][SD.SUMMARY.NUMBER_SUMMARY] = SD.get_number_summary(sd_scenario)
-
-        # update summary/mapping dicy
+        # update summary/mapping dict
         if export_file_name in summary:
             logger.warning("Scenario {} already exists and will be overwritten!".format(export_file_name))
         summary[export_file_name] = copy.deepcopy(sd_scenario[SD.METADATA])

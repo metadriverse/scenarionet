@@ -66,6 +66,11 @@ All operations and API reference is available at
 our [documentation](https://scenarionet.readthedocs.io/en/latest/operations.html).
 If you already have ScenarioNet installed, you can check all operations by `python -m scenarionet.list`.
 
+## ScenarioNet dataset and Scenario Description
+
+Please refer to the [Scenario Description section](https://metadrive-simulator.readthedocs.io/en/latest/scenario_description.html
+) in MetaDrive documentation for a walk-through.
+
 ## Citation
 
 If you used this project in your research, please cite:
