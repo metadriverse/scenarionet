@@ -1,14 +1,16 @@
+import pathlib
+
 import pygame
-from metadrive.component.sensors.semantic_camera import SemanticCamera
 from metadrive.component.sensors.depth_camera import DepthCamera
 from metadrive.component.sensors.rgb_camera import RGBCamera
+from metadrive.component.sensors.semantic_camera import SemanticCamera
 from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
-import pathlib
 
-if __name__ == "__main__":
 
+def _quick_fix():
+    """A little workaround to fix issues in offscreen rendering."""
     from metadrive.envs.base_env import BASE_DEFAULT_CONFIG
     from metadrive.engine.engine_utils import initialize_engine, close_engine
     config = BASE_DEFAULT_CONFIG.copy()
@@ -17,6 +19,9 @@ if __name__ == "__main__":
     close_engine()
 
 
+if __name__ == "__main__":
+
+    _quick_fix()
 
     env = ScenarioEnv(
         {
@@ -96,6 +101,7 @@ if __name__ == "__main__":
             env.engine.get_sensor("depth_camera").save_image(env.agent, str(file_dir / "depth_{}.jpg".format(t)))
             env.engine.get_sensor("rgb_camera").save_image(env.agent, str(file_dir / "rgb_{}.jpg".format(t)))
             env.engine.get_sensor("semantic_camera").save_image(env.agent, str(file_dir / "semantic_{}.jpg".format(t)))
+            print("Image at step {} is saved at: {}".format(t, file_dir))
             if t == 100:
                 break
             env.step([1, 0.88])
