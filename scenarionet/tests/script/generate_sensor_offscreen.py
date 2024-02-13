@@ -8,6 +8,16 @@ from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 import pathlib
 
 if __name__ == "__main__":
+
+    from metadrive.envs.base_env import BASE_DEFAULT_CONFIG
+    from metadrive.engine.engine_utils import initialize_engine, close_engine
+    config = BASE_DEFAULT_CONFIG.copy()
+    config["debug"] = True
+    initialize_engine(config)
+    close_engine()
+
+
+
     env = ScenarioEnv(
         {
             # To enable onscreen rendering, set this config to True.
