@@ -97,7 +97,7 @@ if __name__ == "__main__":
                 target_vehicle_heading_up=True,
                 to_image=False
             )
-            pygame.image.save(ret, str(file_dir / "top_down_{}_{}.png".format(env.current_seed, t)))
+            pygame.image.save(ret, str(file_dir / "bev_{}.png".format(t)))
             env.engine.get_sensor("depth_camera").save_image(env.agent, str(file_dir / "depth_{}.jpg".format(t)))
             env.engine.get_sensor("rgb_camera").save_image(env.agent, str(file_dir / "rgb_{}.jpg".format(t)))
             env.engine.get_sensor("semantic_camera").save_image(env.agent, str(file_dir / "semantic_{}.jpg".format(t)))
