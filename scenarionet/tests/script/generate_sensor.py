@@ -83,6 +83,6 @@ if __name__ == "__main__":
             env.engine.get_sensor("depth_camera").save_image(env.agent, str(file_dir / "depth_{}.jpg".format(t)))
             env.engine.get_sensor("rgb_camera").save_image(env.agent, str(file_dir / "rgb_{}.jpg".format(t)))
             env.engine.get_sensor("semantic_camera").save_image(env.agent, str(file_dir / "semantic_{}.jpg".format(t)))
-            if t == 100:
+            if t == 30:
                 break
             env.step([1, 0.88])
