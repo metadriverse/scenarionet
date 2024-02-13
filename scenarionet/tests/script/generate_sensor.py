@@ -1,11 +1,12 @@
+import pathlib
+
 import pygame
-from metadrive.component.sensors.semantic_camera import SemanticCamera
 from metadrive.component.sensors.depth_camera import DepthCamera
 from metadrive.component.sensors.rgb_camera import RGBCamera
+from metadrive.component.sensors.semantic_camera import SemanticCamera
 from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
-import pathlib
 
 if __name__ == "__main__":
     env = ScenarioEnv(

@@ -1,5 +1,6 @@
 import pathlib
 
+import pygame
 from metadrive.component.sensors.depth_camera import DepthCamera
 from metadrive.component.sensors.rgb_camera import RGBCamera
 from metadrive.component.sensors.semantic_camera import SemanticCamera
