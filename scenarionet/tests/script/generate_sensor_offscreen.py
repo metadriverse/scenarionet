@@ -1,6 +1,5 @@
 import pathlib
 
-import pygame
 from metadrive.component.sensors.depth_camera import DepthCamera
 from metadrive.component.sensors.rgb_camera import RGBCamera
 from metadrive.component.sensors.semantic_camera import SemanticCamera
@@ -8,21 +7,7 @@ from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 
-
-def _quick_fix():
-    """A little workaround to fix issues in offscreen rendering."""
-    from metadrive.envs.base_env import BASE_DEFAULT_CONFIG
-    from metadrive.engine.engine_utils import initialize_engine, close_engine
-    config = BASE_DEFAULT_CONFIG.copy()
-    config["debug"] = True
-    initialize_engine(config)
-    close_engine()
-
-
 if __name__ == "__main__":
-
-    _quick_fix()
-
     env = ScenarioEnv(
         {
             # To enable onscreen rendering, set this config to True.
