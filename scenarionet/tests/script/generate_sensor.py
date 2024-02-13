@@ -5,43 +5,22 @@ from metadrive.component.sensors.rgb_camera import RGBCamera
 from metadrive.engine.asset_loader import AssetLoader
 from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
+import pathlib
 
-NuScenesEnv = ScenarioEnv
 
 if __name__ == "__main__":
-    env = NuScenesEnv(
+    env = ScenarioEnv(
         {
-            "use_render": True,
+            # ===== The scenario and MetaDrive config =====
             "agent_policy": ReplayEgoCarPolicy,
-            "show_interface": True,
-            "interface_panel": ["semantic_camera"],
-            # "need_lane_localization": False,
-            "show_logo": False,
+            "use_render": True,
             "no_traffic": False,
-            "drivable_region_extension": 15,
             "sequential_seed": True,
             "reactive_traffic": False,
-            "show_fps": False,
-            # "debug": True,
-            "render_pipeline": False,
-            "daytime": "08:10",
-            "window_size": (800, 450),
-            "camera_dist": 0.8,
-            "camera_height": 1.5,
-            "camera_pitch": None,
-            "camera_fov": 60,
             "start_scenario_index": 0,
             "num_scenarios": 10,
-            # "force_reuse_object_name": True,
-            # "data_directory": "/home/shady/Downloads/test_processed",
             "horizon": 1000,
             "no_static_vehicles": False,
-            # "show_policy_mark": True,
-            # "show_coordinates": True,
-            # "force_destroy": True,
-            # "default_vehicle_in_traffic": True,
-            "default_vehicle_in_traffic": True,
-            "sensors": dict(semantic_camera=(SemanticCamera, 1600, 900)),
             "vehicle_config": dict(
                 show_navi_mark=False,
                 use_special_color=False,
@@ -52,25 +31,48 @@ if __name__ == "__main__":
             ),
             "data_directory": AssetLoader.file_path("nuscenes", unix_style=False),
 
-            # "image_observation": True,
+            # ===== Set some sensor and visualization configs =====
+            "daytime": "08:10",
+            "window_size": (800, 450),
+            "camera_dist": 0.8,
+            "camera_height": 1.5,
+            "camera_pitch": None,
+            "camera_fov": 60,
+            "interface_panel": ["semantic_camera"],
+            "sensors": dict(
+                semantic_camera=(SemanticCamera, 1600, 900),
+                depth_camera=(DepthCamera, 800, 600),
+                rgb_camera=(RGBCamera, 800, 600),
+            ),
+
+            # ===== Remove useless items in the images =====
+            "show_logo": False,
+            "show_fps": False,
+            "show_interface": True,
         }
     )
 
-    # 0,1,3,4,5,6
-    # for seed in range(10):
-    while True:
+    file_dir = pathlib.Path("images")
+    file_dir.mkdir(exist_ok=True)
+
+    for ep in range(1):
         env.reset(seed=6)
+
+        # Run it once to initialize the TopDownRenderer
+        env.render(
+            mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True,
+        )
+
         for t in range(10000):
-            # env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
-            # ret = env.render(
-            #     mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True
-            # )
-            # pygame.image.save(ret, "top_down_{}_{}.png".format(env.current_seed, t))
-            # env.vehicle.get_camera("depth_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
-            # env.vehicle.get_camera("rgb_camera").save_image(env.vehicle, "rgb_{}.jpg".format(t))
+            env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
+            ret = env.render(
+                mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True,
+                to_image=False
+            )
+            pygame.image.save(ret, str(file_dir / "top_down_{}_{}.png".format(env.current_seed, t)))
+            env.engine.get_sensor("depth_camera").save_image(env.agent, str(file_dir / "depth_{}.jpg".format(t)))
+            env.engine.get_sensor("rgb_camera").save_image(env.agent, str(file_dir / "rgb_{}.jpg".format(t)))
+            env.engine.get_sensor("semantic_camera").save_image(env.agent, str(file_dir / "semantic_{}.jpg".format(t)))
             if t == 100:
-                # env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "depth_{}.jpg".format(t))
-                env.engine.get_sensor("semantic_camera").save_image(env.vehicle, "semantic_{}.jpg".format(t))
                 break
             env.step([1, 0.88])
-            # if d:
