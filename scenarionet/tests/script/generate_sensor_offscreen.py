@@ -11,10 +11,10 @@ if __name__ == "__main__":
     env = ScenarioEnv(
         {
             # To enable onscreen rendering, set this config to True.
-            "use_render": True,
+            "use_render": False,
 
             # !!!!! To enable offscreen rendering, set this config to True !!!!!
-            "image_observation": False,
+            "image_observation": True,
 
             # ===== The scenario and MetaDrive config =====
             "agent_policy": ReplayEgoCarPolicy,
@@ -56,7 +56,7 @@ if __name__ == "__main__":
         }
     )
 
-    file_dir = pathlib.Path("images")
+    file_dir = pathlib.Path("images_offscreen")
     file_dir.mkdir(exist_ok=True)
 
     for ep in range(1):
@@ -71,7 +71,10 @@ if __name__ == "__main__":
         )
 
         for t in range(10000):
-            env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
+
+            # We don't have interface in offscreen. So comment out:
+            # env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
+
             ret = env.render(
                 mode="topdown",
                 screen_size=(1600, 900),
