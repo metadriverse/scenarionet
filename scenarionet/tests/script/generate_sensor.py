@@ -7,7 +7,6 @@ from metadrive.envs.scenario_env import ScenarioEnv
 from metadrive.policy.replay_policy import ReplayEgoCarPolicy
 import pathlib
 
-
 if __name__ == "__main__":
     env = ScenarioEnv(
         {
@@ -60,13 +59,19 @@ if __name__ == "__main__":
 
         # Run it once to initialize the TopDownRenderer
         env.render(
-            mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True,
+            mode="topdown",
+            screen_size=(1600, 900),
+            film_size=(9000, 9000),
+            target_vehicle_heading_up=True,
         )
 
         for t in range(10000):
             env.capture("rgb_deluxe_{}_{}.jpg".format(env.current_seed, t))
             ret = env.render(
-                mode="topdown", screen_size=(1600, 900), film_size=(9000, 9000), target_vehicle_heading_up=True,
+                mode="topdown",
+                screen_size=(1600, 900),
+                film_size=(9000, 9000),
+                target_vehicle_heading_up=True,
                 to_image=False
             )
             pygame.image.save(ret, str(file_dir / "top_down_{}_{}.png".format(env.current_seed, t)))
