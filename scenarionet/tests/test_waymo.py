@@ -70,7 +70,7 @@ def test_waymo_and_sim():
             "data_directory": database_path,
         }
     )
-    for index in range(0, num_scenario):
+    for index in range(0, 20):
         print(index)
         env.reset(seed=index)
         for t in range(10000):
