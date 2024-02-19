@@ -45,13 +45,20 @@ Waymo motion dataset is at `Google Cloud <https://console.cloud.google.com/stora
 For downloading all datasets, ``gsutil`` is required.
 The installation tutorial is at https://cloud.google.com/storage/docs/gsutil_install.
 
+Login you google account via:
+
+```
+gcloud init
+```
+
+
 After this, you can access all data and download them to current directory ``./`` by::
 
-    gsutil -m cp -r "gs://waymo_open_dataset_motion_v_1_2_0/uncompressed/scenario" .
+    gsutil -m cp -r ./ "gs://waymo_open_dataset_motion_v_1_2_0/uncompressed/scenario" .
 
 Or one just can download a part of the dataset using command like::
 
-    gsutil -m cp -r "gs://waymo_open_dataset_motion_v_1_2_0/uncompressed/scenario/training_20s" .
+    gsutil -m cp -r ./ "gs://waymo_open_dataset_motion_v_1_2_0/uncompressed/scenario/training_20s" .
 
 The downloaded data should be stored in a directory like this::
 
