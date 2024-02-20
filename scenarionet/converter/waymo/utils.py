@@ -455,7 +455,7 @@ def preprocess_waymo_scenarios(files, worker_index):
 
     for file in tqdm.tqdm(files, leave=False, position=0, desc="Worker {} Number of raw file".format(worker_index)):
 
-        logger.info(f"Worker {worker_index} reading raw file: {file}")
+        logger.info(f"Worker {worker_index} is reading raw file: {file}")
 
         file_path = os.path.join(file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
@@ -468,6 +468,6 @@ def preprocess_waymo_scenarios(files, worker_index):
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
             yield scenario
 
-    logger.info(f"Worker {worker_index} finished reading {len(files)} files.")
+    logger.info(f"Worker {worker_index} finished read {len(files)} files.")
     # logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))
     # return scenarios

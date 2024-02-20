@@ -218,7 +218,7 @@ def write_to_directory_single_worker(
         kwargs["env"] = make_env(start_index=scenarios[0], num_scenarios=len(scenarios))
 
     count = 0
-    for scenario in tqdm.tqdm(scenarios, position=1, leave=False, desc=f"Worker {worker_index} Number of scenarios"):
+    for scenario in tqdm.tqdm(scenarios, position=2, leave=True, desc=f"Worker {worker_index} Number of scenarios"):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]
