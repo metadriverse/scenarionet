@@ -11,6 +11,8 @@ if __name__ == '__main__':
     from scenarionet.converter.utils import write_to_directory
     from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, preprocess_waymo_scenarios
 
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
     logger = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser(description=desc)
@@ -36,14 +38,14 @@ if __name__ == '__main__':
         default=0,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]"
+        "and select files[start_file_index: start_file_index+num_files]. Default: 0."
     )
     parser.add_argument(
         "--num_files",
-        default=1000,
+        default=None,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]"
+        "and select files[start_file_index: start_file_index+num_files]. Default: None, will read all files."
     )
     args = parser.parse_args()
 
@@ -64,6 +66,12 @@ if __name__ == '__main__':
 
     waymo_data_directory = os.path.join(SCENARIONET_DATASET_PATH, args.raw_data_path)
     files = get_waymo_scenarios(waymo_data_directory, args.start_file_index, args.num_files)
+
+    logger.info(
+        f"We will read {len(files)} raw files. You set the number of workers to {args.num_workers}. "
+        f"Please make sure there will not be too much files to be read in each worker "
+        f"(now it's {len(files) / args.num_workers})!"
+    )
 
     write_to_directory(
         convert_func=convert_waymo_scenario,

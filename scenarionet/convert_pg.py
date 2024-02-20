@@ -4,12 +4,15 @@ if __name__ == '__main__':
     import pkg_resources  # for suppress warning
     import argparse
     import os.path
+    import os
 
     import metadrive
 
     from scenarionet import SCENARIONET_DATASET_PATH
     from scenarionet.converter.pg.utils import get_pg_scenarios, convert_pg_scenario
     from scenarionet.converter.utils import write_to_directory
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
     # For the PG environment config, see: scenarionet/converter/pg/utils.py:6
     parser = argparse.ArgumentParser(description=desc)

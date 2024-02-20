@@ -35,7 +35,7 @@ First of all, we have to install tensorflow and Protobuf::
     conda install protobuf==3.20
 
 .. note::
-    You may fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
+    You may fail to install ``protobuf`` if using ``pip install protobuf==3.20``. If so, install via ``conda install protobuf=3.20``.
 
 
 2. Download TFRecord
@@ -79,11 +79,17 @@ The downloaded data should be stored in a directory like this::
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the following command to extract scenarios in any directory containing ``tfrecord``.
+
+
 Here we take converting raw data in ``training_20s`` as an example::
 
-    python -m scenarionet.convert_waymo -d /path/to/your/database --raw_data_path ./waymo/training_20s --num_files=1000
+    python -m scenarionet.convert_waymo -d /path/to/your/database --raw_data_path ./waymo/training_20s --num_workers 64
 
 Now all converted scenarios will be placed at ``/path/to/your/database`` and are ready to be used in your work.
+
+.. note::
+    When running the conversion, please double check whether GPU is being used. This converter should NOT use GPU.
+    We have disable GPU usage by ``os.environ["CUDA_VISIBLE_DEVICES"] = ""``.
 
 Known Issues: Waymo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

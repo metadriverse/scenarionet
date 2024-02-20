@@ -38,7 +38,7 @@ For Waymo data, we already have the parser in ScenarioNet so just install the Te
     conda install protobuf==3.20
 
 .. note::
-    You may fail to install ``protobuf`` if using ``pip install protobuf==3.20``.
+    You may fail to install ``protobuf`` if using ``pip install protobuf==3.20``. If so, install via ``conda install protobuf=3.20``.
 
 For other datasets like nuPlan and nuScenes, you need to setup `nuplan-devkit <https://github.com/motional/nuplan-devkit>`_ and `nuscenes-devkit <https://github.com/nutonomy/nuscenes-devkit>`_ respectively.
 Guidance on how to setup these datasets and connect them with ScenarioNet can be found at :ref:`datasets`.
