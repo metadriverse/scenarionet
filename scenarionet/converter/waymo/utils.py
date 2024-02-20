@@ -430,6 +430,8 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num):
     # there is 1000 raw data in google cloud, each of them produce about 500 pkl file
     logger.info("\nReading raw data")
     file_list = os.listdir(waymo_data_directory)
+    if num is None:
+        num = len(file_list) - start_index
     assert len(file_list) >= start_index + num and start_index >= 0, \
         "No sufficient files ({}) in raw_data_directory. need: {}, start: {}".format(len(file_list), num, start_index)
     file_list = file_list[start_index:start_index + num]
