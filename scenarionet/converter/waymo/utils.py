@@ -454,8 +454,12 @@ def preprocess_waymo_scenarios(files, worker_index):
     from scenarionet.converter.waymo.waymo_protos import scenario_pb2
 
     for file in tqdm.tqdm(files, leave=False, position=0, desc="Worker {} Number of raw file".format(worker_index)):
+
+        logger.info(f"Worker {worker_index} reading raw file: {file}")
+
         file_path = os.path.join(file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
+            logger.info(f"Worker {worker_index} skip this file: {file}")
             continue
         for data in tf.data.TFRecordDataset(file_path, compression_type="").as_numpy_iterator():
             scenario = scenario_pb2.Scenario()
@@ -463,5 +467,7 @@ def preprocess_waymo_scenarios(files, worker_index):
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
             yield scenario
+
+    logger.info(f"Worker {worker_index} finished reading {len(files)} files.")
     # logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))
     # return scenarios
