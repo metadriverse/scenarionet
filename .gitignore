@@ -25,3 +25,5 @@ dataset/*
 **/wandb/
 /tutorial/*.gif
 /tutorial/.ipynb_checkpoints/
+/scenarionet/tests/waymo_raw
+/scenarionet/tests/waymo_test_data/

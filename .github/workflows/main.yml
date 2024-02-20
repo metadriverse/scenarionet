@@ -4,6 +4,8 @@
 name: test
 
 on:
+  repository_dispatch:
+    types: [metadrive-update]
   push:
     branches: [ main ]
   pull_request:
@@ -33,6 +35,8 @@ jobs:
           python-version: 3.9
       - name: Blackbox tests
         run: |
+          pip install tensorflow==2.11.0
+          pip install protobuf==3.20
           pip install cython
           pip install numpy
           pip install -e .
