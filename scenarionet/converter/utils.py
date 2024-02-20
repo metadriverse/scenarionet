@@ -218,7 +218,7 @@ def write_to_directory_single_worker(
         kwargs["env"] = make_env(start_index=scenarios[0], num_scenarios=len(scenarios))
 
     count = 0
-    for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
+    for scenario in tqdm.tqdm(scenarios, position=1, leave=False, desc=f"Worker {worker_index} Number of scenarios"):
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]
@@ -256,6 +256,8 @@ def write_to_directory_single_worker(
         assert delay_remove == save_path
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
+
+    logger.info(f"Worker {worker_index} finished! Files are saved at: {save_path}")
 
 
 def process_memory():

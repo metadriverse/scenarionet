@@ -453,7 +453,7 @@ def preprocess_waymo_scenarios(files, worker_index):
     """
     from scenarionet.converter.waymo.waymo_protos import scenario_pb2
 
-    for file in tqdm.tqdm(files, desc="Process Waymo scenarios for worker {}".format(worker_index)):
+    for file in tqdm.tqdm(files, leave=False, position=0, desc="Worker {} Number of raw file".format(worker_index)):
         file_path = os.path.join(file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
             continue
