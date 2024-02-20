@@ -6,7 +6,7 @@ from typing import List
 
 from metadrive.scenario.scenario_description import ScenarioDescription as SD
 
-from scenarionet.common_utils import save_summary_anda_mapping, read_dataset_summary
+from scenarionet.common_utils import save_summary_and_mapping, read_dataset_summary
 
 logger = logging.getLogger(__name__)
 
@@ -98,5 +98,5 @@ class ErrorFile:
                 new_summary[scenario] = origin_summary[scenario]
                 scenario_dir = os.path.join(origin_dataset_path, origin_mapping[scenario])
                 new_mapping[scenario] = os.path.relpath(scenario_dir, new_dataset_path)
-        save_summary_anda_mapping(new_summary_file_path, new_mapping_file_path, new_summary, new_mapping)
+        save_summary_and_mapping(new_summary_file_path, new_mapping_file_path, new_summary, new_mapping)
         return new_summary, new_mapping
