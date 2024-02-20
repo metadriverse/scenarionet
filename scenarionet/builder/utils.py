@@ -11,7 +11,7 @@ from typing import Callable, List
 import tqdm
 from metadrive.scenario.scenario_description import ScenarioDescription
 
-from scenarionet.common_utils import save_summary_anda_mapping
+from scenarionet.common_utils import save_summary_and_mapping
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +110,7 @@ def merge_database(
         summaries.pop(file)
         mappings.pop(file)
     if save:
-        save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
+        save_summary_and_mapping(summary_file, mapping_file, summaries, mappings)
 
     return summaries, mappings
 
@@ -144,7 +144,7 @@ def copy_database(from_path, to_path, exist_ok=False, overwrite=False, copy_raw_
             rel_path = mappings[scenario_file]
             shutil.copyfile(os.path.join(to_path, rel_path, scenario_file), os.path.join(to_path, scenario_file))
         mappings = {key: "./" for key in summaries.keys()}
-    save_summary_anda_mapping(summary_file, mapping_file, summaries, mappings)
+    save_summary_and_mapping(summary_file, mapping_file, summaries, mappings)
 
     if remove_source:
         if ScenarioDescription.DATASET.MAPPING_FILE in files and ScenarioDescription.DATASET.SUMMARY_FILE in files \
@@ -204,6 +204,6 @@ def split_database(
         selected_summary[scenario] = summaries[scenario]
         selected_mapping[scenario] = os.path.relpath(osp.join(abs_dir_path, mappings[scenario]), output_abs_path)
 
-    save_summary_anda_mapping(summary_file, mapping_file, selected_summary, selected_mapping)
+    save_summary_and_mapping(summary_file, mapping_file, selected_summary, selected_mapping)
 
     return summaries, mappings

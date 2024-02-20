@@ -15,7 +15,7 @@ import tqdm
 from metadrive.scenario import ScenarioDescription as SD
 
 from scenarionet.builder.utils import merge_database
-from scenarionet.common_utils import save_summary_anda_mapping
+from scenarionet.common_utils import save_summary_and_mapping
 from scenarionet.converter.pg.utils import convert_pg_scenario, make_env
 
 logger = logging.getLogger(__file__)
@@ -249,7 +249,7 @@ def write_to_directory_single_worker(
         count += 1
 
     # store summary file
-    save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping)
+    save_summary_and_mapping(summary_file_path, mapping_file_path, summary, mapping)
 
     # rename and save
     if delay_remove is not None:

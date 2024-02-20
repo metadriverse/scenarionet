@@ -66,7 +66,7 @@ def dict_recursive_remove_array_and_set(d):
     return d
 
 
-def save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping):
+def save_summary_and_mapping(summary_file_path, mapping_file_path, summary, mapping):
     with open(summary_file_path, "wb") as file:
         pickle.dump(dict_recursive_remove_array_and_set(summary), file)
     with open(mapping_file_path, "wb") as file:
