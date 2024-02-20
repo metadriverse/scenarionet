@@ -11,6 +11,8 @@ if __name__ == '__main__':
     from scenarionet.converter.utils import write_to_directory
     from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, preprocess_waymo_scenarios
 
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
     logger = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser(description=desc)
