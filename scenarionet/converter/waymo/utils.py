@@ -431,9 +431,9 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num):
     logger.info("\nReading raw data")
     file_list = os.listdir(waymo_data_directory)
     if num is None:
-        logger.warning("You haven't specified the number of raw files! It is set to {} now.".format(
-            len(file_list) - start_index
-        ))
+        logger.warning(
+            "You haven't specified the number of raw files! It is set to {} now.".format(len(file_list) - start_index)
+        )
         num = len(file_list) - start_index
     assert len(file_list) >= start_index + num and start_index >= 0, \
         "No sufficient files ({}) in raw_data_directory. need: {}, start: {}".format(len(file_list), num, start_index)
