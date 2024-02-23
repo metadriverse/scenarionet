@@ -1,17 +1,18 @@
 desc = "Build database from Waymo scenarios"
 
 if __name__ == '__main__':
-    import pkg_resources  # for suppress warning
     import shutil
     import argparse
     import logging
     import os
+    import tensorflow as tf
 
     from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
     from scenarionet.converter.utils import write_to_directory
-    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, preprocess_waymo_scenarios
+    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, \
+        preprocess_waymo_scenarios
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    tf.config.experimental.set_visible_devices([], "GPU")
 
     logger = logging.getLogger(__name__)
 
@@ -38,14 +39,14 @@ if __name__ == '__main__':
         default=0,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]. Default: 0."
+             "and select files[start_file_index: start_file_index+num_files]. Default: 0."
     )
     parser.add_argument(
         "--num_files",
         default=None,
         type=int,
         help="Control how many files to use. We will list all files in the raw data folder "
-        "and select files[start_file_index: start_file_index+num_files]. Default: None, will read all files."
+             "and select files[start_file_index: start_file_index+num_files]. Default: None, will read all files."
     )
     args = parser.parse_args()
 
