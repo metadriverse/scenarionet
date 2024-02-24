@@ -132,9 +132,9 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len,)),
+                heading=np.zeros(shape=(episode_len, )),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len,)),
+                valid=np.zeros(shape=(episode_len, )),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -187,7 +187,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         interpolate_tracks[id]["metadata"]["track_length"] = new_episode_len
 
         # valid first
-        new_valid = np.zeros(shape=(new_episode_len,))
+        new_valid = np.zeros(shape=(new_episode_len, ))
         if track["state"]["valid"][0]:
             new_valid[0] = 1
         for k, valid in enumerate(track["state"]["valid"][1:], start=1):
@@ -313,10 +313,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         for idx, boundary in enumerate(boundaries[0]):
             block_points = np.array(list(i for i in zip(boundary.coords.xy[0], boundary.coords.xy[1])))
             id = "boundary_{}".format(idx)
-            ret[id] = {
-                SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE,
-                SD.POLYLINE: block_points
-            }
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE, SD.POLYLINE: block_points}
 
         # broken line
         for id in map_objs["lane_divider"]:
@@ -407,7 +404,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
 
 
 def convert_nuscenes_scenario(
-        token, version, nuscenes: NuScenes, map_radius=500, prediction=False, past=2, future=6, only_lane=False
+    token, version, nuscenes: NuScenes, map_radius=500, prediction=False, past=2, future=6, only_lane=False
 ):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
