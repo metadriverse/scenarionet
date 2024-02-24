@@ -132,9 +132,9 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
             type=MetaDriveType.UNSET,
             state=dict(
                 position=np.zeros(shape=(episode_len, 3)),
-                heading=np.zeros(shape=(episode_len, )),
+                heading=np.zeros(shape=(episode_len,)),
                 velocity=np.zeros(shape=(episode_len, 2)),
-                valid=np.zeros(shape=(episode_len, )),
+                valid=np.zeros(shape=(episode_len,)),
                 length=np.zeros(shape=(episode_len, 1)),
                 width=np.zeros(shape=(episode_len, 1)),
                 height=np.zeros(shape=(episode_len, 1))
@@ -187,7 +187,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
         interpolate_tracks[id]["metadata"]["track_length"] = new_episode_len
 
         # valid first
-        new_valid = np.zeros(shape=(new_episode_len, ))
+        new_valid = np.zeros(shape=(new_episode_len,))
         if track["state"]["valid"][0]:
             new_valid[0] = 1
         for k, valid in enumerate(track["state"]["valid"][1:], start=1):
@@ -256,17 +256,7 @@ def get_tracks_from_frames(nuscenes: NuScenes, scene_info, frames, num_to_interp
                 interpolate_tracks[id]["state"][k] = interpolate(v, track["state"]["valid"], new_valid)
         # if id == "ego":
         # ego is valid all time, so we can calculate the velocity in this way
-
-    # Normalize place all object to (0,0)
-    map_center = np.array(interpolate_tracks["ego"]["state"]["position"][0])
-    map_center[-1] = 0
-    normalized_ret = {}
-    for id, track, in interpolate_tracks.items():
-        pos = track["state"]["position"] - map_center
-        track["state"]["position"] = np.asarray(pos)
-        normalized_ret[id] = track
-
-    return normalized_ret, map_center
+    return interpolate_tracks
 
 
 def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, points_distance=1, only_lane=False):
@@ -325,7 +315,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             id = "boundary_{}".format(idx)
             ret[id] = {
                 SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_WHITE,
-                SD.POLYLINE: block_points - np.asarray(map_center)[:2]
+                SD.POLYLINE: block_points
             }
 
         # broken line
@@ -334,7 +324,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             assert line_info["token"] == id
             line = map_api.extract_line(line_info["line_token"]).coords.xy
             line = np.asarray([[line[0][i], line[1][i]] for i in range(len(line[0]))])
-            ret[id] = {SD.TYPE: MetaDriveType.LINE_BROKEN_SINGLE_WHITE, SD.POLYLINE: line - np.asarray(map_center)[:2]}
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_BROKEN_SINGLE_WHITE, SD.POLYLINE: line}
 
         # solid line
         for id in map_objs["road_divider"]:
@@ -342,7 +332,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             assert line_info["token"] == id
             line = map_api.extract_line(line_info["line_token"]).coords.xy
             line = np.asarray([[line[0][i], line[1][i]] for i in range(len(line[0]))])
-            ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_YELLOW, SD.POLYLINE: line - np.asarray(map_center)[:2]}
+            ret[id] = {SD.TYPE: MetaDriveType.LINE_SOLID_SINGLE_YELLOW, SD.POLYLINE: line}
 
         # crosswalk
         for id in map_objs["ped_crossing"]:
@@ -352,7 +342,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
             ret[id] = {
                 SD.TYPE: MetaDriveType.CROSSWALK,
-                SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
+                SD.POLYGON: boundary_polygon,
             }
 
         # walkway
@@ -363,7 +353,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
             boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
             ret[id] = {
                 SD.TYPE: MetaDriveType.BOUNDARY_SIDEWALK,
-                SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
+                SD.POLYGON: boundary_polygon,
             }
 
     # normal lane
@@ -375,9 +365,8 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         # boundary_polygon += [[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))]
         ret[id] = {
             SD.TYPE: MetaDriveType.LANE_SURFACE_STREET,
-            SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)) -
-            np.asarray(map_center),
-            SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
+            SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)),
+            SD.POLYGON: boundary_polygon,
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
             SD.EXIT: map_api.get_outgoing_lane_ids(id),
             SD.LEFT_NEIGHBORS: [],
@@ -393,8 +382,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
         # boundary_polygon += [[boundary[0][i], boundary[1][i], 0.] for i in range(len(boundary[0]))]
         ret[id] = {
             SD.TYPE: MetaDriveType.LANE_SURFACE_UNSTRUCTURE,
-            SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)) -
-            np.asarray(map_center),
+            SD.POLYLINE: np.asarray(discretize_lane(map_api.arcline_path_3[id], resolution_meters=points_distance)),
             # SD.POLYGON: boundary_polygon,
             "speed_limit_kmh": 100,
             SD.ENTRY: map_api.get_incoming_lane_ids(id),
@@ -409,7 +397,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
     #     boundary_polygon = np.asarray([[boundary[0][i], boundary[1][i]] for i in range(len(boundary[0]))])
     #     ret[id] = {
     #         SD.TYPE: MetaDriveType.STOP_LINE,
-    #         SD.POLYGON: boundary_polygon - np.asarray(map_center)[:2],
+    #         SD.POLYGON: boundary_polygon ,
     #     }
 
     #         'stop_line',
@@ -419,7 +407,7 @@ def get_map_features(scene_info, nuscenes: NuScenes, map_center, radius=500, poi
 
 
 def convert_nuscenes_scenario(
-    token, version, nuscenes: NuScenes, map_radius=500, prediction=False, past=2, future=6, only_lane=False
+        token, version, nuscenes: NuScenes, map_radius=500, prediction=False, past=2, future=6, only_lane=False
 ):
     """
     Data will be interpolated to 0.1s time interval, while the time interval of original key frames are 0.5s.
@@ -469,32 +457,25 @@ def convert_nuscenes_scenario(
     result[SD.METADATA]["sample_rate"] = scenario_log_interval
     result[SD.METADATA][SD.TIMESTEP] = np.arange(0., (len(frames) - 1) * 0.5 + 0.1, 0.1)
     # interpolating to 0.1s interval
-    result[SD.TRACKS], map_center = get_tracks_from_frames(nuscenes, scene_info, frames, num_to_interpolate=5)
+    result[SD.TRACKS] = get_tracks_from_frames(nuscenes, scene_info, frames, num_to_interpolate=5)
     result[SD.METADATA][SD.SDC_ID] = "ego"
 
     # No traffic light in nuscenes at this stage
     result[SD.DYNAMIC_MAP_STATES] = {}
-    track_to_predict = result[SD.TRACKS][instance_token]
-    result[SD.METADATA]["tracks_to_predict"] = {
-        instance_token: {
-            "track_index": list(result[SD.TRACKS].keys()).index(instance_token),
-            "track_id": instance_token,
-            "difficulty": 0,
-            "object_type": track_to_predict['type']
+    if prediction:
+        track_to_predict = result[SD.TRACKS][instance_token]
+        result[SD.METADATA]["tracks_to_predict"] = {
+            instance_token: {
+                "track_index": list(result[SD.TRACKS].keys()).index(instance_token),
+                "track_id": instance_token,
+                "difficulty": 0,
+                "object_type": track_to_predict['type']
+            }
         }
-    }
-    # map
-    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius, only_lane=only_lane)
-    # add back map center
-    map_center = map_center[np.newaxis]
-    for k, v in result[SD.TRACKS].items():
-        v['state']['position'] += map_center
 
-    for k, v in result[SD.MAP_FEATURES].items():
-        if 'polygon' in v:
-            v['polygon'] += map_center[:, :v['polygon'].shape[-1]]
-        else:
-            v['polyline'] += map_center[:, :v['polyline'].shape[-1]]
+    # map
+    map_center = np.array(result[SD.TRACKS]["ego"]["state"]["position"][0])
+    result[SD.MAP_FEATURES] = get_map_features(scene_info, nuscenes, map_center, map_radius, only_lane=only_lane)
     del frames_scene_info
     del frames
     del scene_info
