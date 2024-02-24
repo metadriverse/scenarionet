@@ -430,6 +430,11 @@ def get_waymo_scenarios(waymo_data_directory, start_index, num):
     # there is 1000 raw data in google cloud, each of them produce about 500 pkl file
     logger.info("\nReading raw data")
     file_list = os.listdir(waymo_data_directory)
+    if num is None:
+        logger.warning(
+            "You haven't specified the number of raw files! It is set to {} now.".format(len(file_list) - start_index)
+        )
+        num = len(file_list) - start_index
     assert len(file_list) >= start_index + num and start_index >= 0, \
         "No sufficient files ({}) in raw_data_directory. need: {}, start: {}".format(len(file_list), num, start_index)
     file_list = file_list[start_index:start_index + num]
@@ -448,9 +453,13 @@ def preprocess_waymo_scenarios(files, worker_index):
     """
     from scenarionet.converter.waymo.waymo_protos import scenario_pb2
 
-    for file in tqdm.tqdm(files, desc="Process Waymo scenarios for worker {}".format(worker_index)):
+    for file in tqdm.tqdm(files, leave=False, position=0, desc="Worker {} Number of raw file".format(worker_index)):
+
+        logger.info(f"Worker {worker_index} is reading raw file: {file}")
+
         file_path = os.path.join(file)
         if ("tfrecord" not in file_path) or (not os.path.isfile(file_path)):
+            logger.info(f"Worker {worker_index} skip this file: {file}")
             continue
         for data in tf.data.TFRecordDataset(file_path, compression_type="").as_numpy_iterator():
             scenario = scenario_pb2.Scenario()
@@ -458,5 +467,7 @@ def preprocess_waymo_scenarios(files, worker_index):
             # a trick for loging file name
             scenario.scenario_id = scenario.scenario_id + SPLIT_KEY + file
             yield scenario
+
+    logger.info(f"Worker {worker_index} finished read {len(files)} files.")
     # logger.info("Worker {}: Process {} waymo scenarios".format(worker_index, len(scenarios)))
     # return scenarios

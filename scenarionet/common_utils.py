@@ -1,8 +1,11 @@
+import logging
 import os.path
 import pickle
 
 import numpy as np
 from metadrive.scenario import utils as sd_utils
+
+logger = logging.getLogger(__file__)
 
 
 def recursive_equal(data1, data2, need_assert=False):
@@ -66,12 +69,12 @@ def dict_recursive_remove_array_and_set(d):
     return d
 
 
-def save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping):
+def save_summary_and_mapping(summary_file_path, mapping_file_path, summary, mapping):
     with open(summary_file_path, "wb") as file:
         pickle.dump(dict_recursive_remove_array_and_set(summary), file)
     with open(mapping_file_path, "wb") as file:
         pickle.dump(mapping, file)
-    print(
+    logging.info(
         "\n ================ Dataset Summary and Mapping are saved at: {} "
         "================ \n".format(summary_file_path)
     )

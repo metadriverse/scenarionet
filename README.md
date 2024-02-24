@@ -55,7 +55,7 @@ pip install -e.
 
 # Install ScenarioNet
 cd ~/  # Go to the folder you want to host these two repos.
-git clone git@github.com:metadriverse/scenarionet.git
+git clone https://github.com/metadriverse/scenarionet.git
 cd scenarionet
 pip install -e .
 ```

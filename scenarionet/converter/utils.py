@@ -15,7 +15,7 @@ import tqdm
 from metadrive.scenario import ScenarioDescription as SD
 
 from scenarionet.builder.utils import merge_database
-from scenarionet.common_utils import save_summary_anda_mapping
+from scenarionet.common_utils import save_summary_and_mapping
 from scenarionet.converter.pg.utils import convert_pg_scenario, make_env
 
 logger = logging.getLogger(__file__)
@@ -218,7 +218,8 @@ def write_to_directory_single_worker(
         kwargs["env"] = make_env(start_index=scenarios[0], num_scenarios=len(scenarios))
 
     count = 0
-    for scenario in tqdm.tqdm(scenarios, desc="Worker Index: {}".format(worker_index)):
+    # for scenario in tqdm.tqdm(scenarios, position=2, leave=True, desc=f"Worker {worker_index} Number of scenarios"):
+    for scenario in scenarios:
         # convert scenario
         sd_scenario = convert_func(scenario, dataset_version, **kwargs)
         scenario_id = sd_scenario[SD.ID]
@@ -248,14 +249,19 @@ def write_to_directory_single_worker(
             print("Current Memory: {}".format(process_memory()))
         count += 1
 
+        if count % 500 == 0:
+            logger.info(f"Worker {worker_index} has processed {count} scenarios.")
+
     # store summary file
-    save_summary_anda_mapping(summary_file_path, mapping_file_path, summary, mapping)
+    save_summary_and_mapping(summary_file_path, mapping_file_path, summary, mapping)
 
     # rename and save
     if delay_remove is not None:
         assert delay_remove == save_path
         shutil.rmtree(delay_remove)
     os.rename(output_path, save_path)
+
+    logger.info(f"Worker {worker_index} finished! Files are saved at: {save_path}")
 
 
 def process_memory():
