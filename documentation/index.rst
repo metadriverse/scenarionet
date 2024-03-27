@@ -54,6 +54,7 @@ Please feel free to contact us if you have any suggestion or idea!
    waymo.rst
    PG.rst
    lyft.rst
+   argoverse2.rst
    new_data.rst
 
 
