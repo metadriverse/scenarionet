@@ -224,11 +224,12 @@ def convert_av2_scenario(scenario, version):
 
     # === Waymo specific data. Storing them here ===
     md_scenario[SD.METADATA]["current_time_index"] = 49
-    md_scenario[SD.METADATA]["sdc_track_index"] = scenario.focal_track_id
 
     # obj id
     obj_keys = list(tracks.keys())
     md_scenario[SD.METADATA]["objects_of_interest"] = [obj_keys[idx] for idx, cat in enumerate(category) if cat == 2]
+
+    md_scenario[SD.METADATA]["sdc_track_index"] = obj_keys.index('AV')
 
     track_index = [obj_keys.index(scenario.focal_track_id)]
     track_id = [scenario.focal_track_id]
