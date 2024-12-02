@@ -1,17 +1,18 @@
 desc = "Build database from Waymo scenarios"
 
 if __name__ == '__main__':
-    import pkg_resources  # for suppress warning
     import shutil
     import argparse
     import logging
     import os
+    import tensorflow as tf
 
     from scenarionet import SCENARIONET_DATASET_PATH, SCENARIONET_REPO_PATH
     from scenarionet.converter.utils import write_to_directory
-    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, preprocess_waymo_scenarios
+    from scenarionet.converter.waymo.utils import convert_waymo_scenario, get_waymo_scenarios, \
+        preprocess_waymo_scenarios
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    tf.config.experimental.set_visible_devices([], "GPU")
 
     logger = logging.getLogger(__name__)
 
