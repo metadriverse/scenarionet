@@ -29,7 +29,7 @@ if __name__ == "__main__":
             "vehicle_config": dict(
                 show_navi_mark=False,
                 use_special_color=False,
-                image_source="semantic_camera",
+                # image_source="semantic_camera",
                 lidar=dict(num_lasers=120, distance=50),
                 lane_line_detector=dict(num_lasers=0, distance=50),
                 side_detector=dict(num_lasers=12, distance=50)
@@ -43,11 +43,11 @@ if __name__ == "__main__":
             "camera_height": 1.5,
             "camera_pitch": None,
             "camera_fov": 60,
-            "interface_panel": ["semantic_camera"],
+            # "interface_panel": ["semantic_camera"],
             "sensors": dict(
-                semantic_camera=(SemanticCamera, 1600, 900),
-                depth_camera=(DepthCamera, 800, 600),
-                rgb_camera=(RGBCamera, 800, 600),
+                # semantic_camera=(SemanticCamera, 1600, 900),
+                # depth_camera=(DepthCamera, 800, 600),
+                rgb_camera=(RGBCamera, 1600, 900),
             ),
 
             # ===== Remove useless items in the images =====
@@ -66,8 +66,8 @@ if __name__ == "__main__":
         # Run it once to initialize the TopDownRenderer
         env.render(
             mode="topdown",
-            screen_size=(1600, 900),
-            film_size=(9000, 9000),
+            screen_size=(900, 900),  # The output image size
+            film_size=(9000, 9000),  # The internal canvas size. You can use this to "crop" images.
             target_vehicle_heading_up=True,
             semantic_map=True,
         )
@@ -86,10 +86,16 @@ if __name__ == "__main__":
                 to_image=False
             )
             pygame.image.save(ret, str(file_dir / "bev_{}.png".format(t)))
-            env.engine.get_sensor("depth_camera").save_image(env.agent, str(file_dir / "depth_{}.jpg".format(t)))
+            # env.engine.get_sensor("depth_camera").save_image(env.agent, str(file_dir / "depth_{}.jpg".format(t)))
             env.engine.get_sensor("rgb_camera").save_image(env.agent, str(file_dir / "rgb_{}.jpg".format(t)))
-            env.engine.get_sensor("semantic_camera").save_image(env.agent, str(file_dir / "semantic_{}.jpg".format(t)))
+            # env.engine.get_sensor("semantic_camera").save_image(env.agent, str(file_dir / "semantic_{}.jpg".format(t)))
             print("Image at step {} is saved at: {}".format(t, file_dir))
+
+            scenario = env.engine.data_manager.current_scenario
+            print(
+                f"Current scenario ID {scenario['id']}, dataset version {scenario['version']}, len: {scenario['length']}"
+            )
+
             if t == 30:
                 break
             env.step([1, 0.88])
