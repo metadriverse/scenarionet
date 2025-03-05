@@ -4,7 +4,7 @@ import tempfile
 from dataclasses import dataclass
 from os.path import join
 from typing import Union
-
+from scenarionet.converter.nuplan.block_utils.route_utils import route_roadblock_correction
 import numpy as np
 from metadrive.scenario import ScenarioDescription as SD
 from metadrive.type import MetaDriveType
@@ -69,7 +69,8 @@ def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None] = None, bu
         # filter
         "scenario_filter=all_scenarios",  # simulate only one log
         "scenario_filter.remove_invalid_goals=true",
-        "scenario_filter.shuffle=true",
+        "scenario_filter.expand_scenarios=false",
+        "scenario_filter.shuffle=false",
         "scenario_filter.log_names=[{}]".format(log_string),
         # "scenario_filter.scenario_types={}".format(all_scenario_types),
         # "scenario_filter.scenario_tokens=[]",
@@ -78,7 +79,7 @@ def get_nuplan_scenarios(data_root, map_root, logs: Union[list, None] = None, bu
         # "scenario_filter.limit_total_scenarios=1000",
         # "scenario_filter.expand_scenarios=true",
         # "scenario_filter.limit_scenarios_per_type=10",  # use 10 scenarios per scenario type
-        "scenario_filter.timestamp_threshold_s=20",  # minial scenario duration (s)
+        "scenario_filter.timestamp_threshold_s=10",  # minial scenario duration (s)
     ]
 
     base_config_path = os.path.join(nuplan_package_path, "planning", "script")
@@ -175,7 +176,7 @@ def get_line_type(nuplan_type):
         raise ValueError("Unknown line tyep: {}".format(nuplan_type))
 
 
-def extract_map_features(map_api, center, radius=500):
+def extract_map_features(map_api, center, route_block_ids, radius=500):
     ret = {}
     np.seterr(all='ignore')
     # Center is Important !
@@ -235,7 +236,9 @@ def extract_map_features(map_api, center, radius=500):
                         if layer == SemanticMapLayer.ROADBLOCK else [],
                     SD.RIGHT_NEIGHBORS: [edge.id for edge in block.interior_edges[index + 1:]] \
                         if layer == SemanticMapLayer.ROADBLOCK else [],
-                    SD.POLYGON: polygon
+                    SD.POLYGON: polygon,
+                    "is_sdc_route": lane_meta_data.get_roadblock_id() in route_block_ids,
+                    "speed_limit_mps": lane_meta_data.speed_limit_mps,
                 }
                 if layer == SemanticMapLayer.ROADBLOCK_CONNECTOR:
                     continue
@@ -513,8 +516,15 @@ def convert_nuplan_scenario(scenario: NuPlanScenario, version):
     # traffic light
     result[SD.DYNAMIC_MAP_STATES] = extract_traffic_light(scenario, scenario_center)
 
+    # route
+    route_block_ids = scenario.get_route_roadblock_ids()
+    try:
+        route_block_ids = route_roadblock_correction(state, scenario.map_api, route_block_ids)
+    except Exception as e:
+        logger.error("Route correction failed: {}".format(e))
+
     # map
-    result[SD.MAP_FEATURES] = extract_map_features(scenario.map_api, scenario_center)
+    result[SD.MAP_FEATURES] = extract_map_features(scenario.map_api, scenario_center, route_block_ids)
 
     return result
 
